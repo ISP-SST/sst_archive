@@ -7,3 +7,5 @@ from dataset.models import DataLocation
 class DataLocationAdmin(admin.ModelAdmin):
     """Admin class for the DataLocation model"""
     list_display = ['file_name', 'file_path', 'file_size']
+    search_fields = ['file_name']
+

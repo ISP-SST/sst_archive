@@ -1,0 +1,37 @@
+{% extends "frontend/base.html" %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h2>Login</h2>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        Your username and password didn't match. Please try again.
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <table>
+        <tr class="row">
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr class="row">
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+        </tr>
+        <tr>
+            <td><button class="btn btn-primary" type="submit">Log in</button></td>
+        </tr>
+        </table>
+
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+
+</div>
+{% endblock %}

@@ -1,6 +1,8 @@
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 
@@ -8,7 +10,7 @@ from dataset.models import Dataset
 from data_access.utils import DataSelectionZipIterator
 # from .complex_filters import get_complex_filter, InvalidFilterError
 from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
-from .forms import SearchForm, get_initial_search_form, persist_search_form
+from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
 
 
 class DatasetListView(ListView):
@@ -151,9 +153,29 @@ def download_selected_data(request):
                                  headers={'Content-Disposition': 'attachment; filename*=utf-8\'\'' + file_name})
 
 
-def login(request):
-    return render(request, 'frontend/login.html', {})
-
-
 def access_denied(request):
     return render(request, 'frontend/access_denied.html', {})
+
+
+def register(request: HttpRequest) -> HttpResponse:
+    if request.user.is_authenticated:
+        return redirect('/')
+
+    if request.method == 'GET':
+        form = RegistrationForm()
+        return render(request, 'frontend/account_register.html', {'registration_form': form})
+    elif request.method == 'POST':
+        form = RegistrationForm(request.POST)
+
+        if not form.is_valid():
+            return render(request, 'frontend/account_register.html', {'registration_form': form})
+
+        email = form.cleaned_data.get('email')
+        password = form.cleaned_data.get('password')
+
+        new_user = User.objects.create_user(email, email, password)
+        new_user.save()
+
+        login(request, new_user)
+        return redirect('/')
+

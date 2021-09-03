@@ -21,3 +21,7 @@ def has_access_to_data_location(user, data_location, date=datetime.date.today())
             return False
 
     return True
+
+
+def get_data_location_release_comments(data_location):
+    return data_location.access_control.release_comment

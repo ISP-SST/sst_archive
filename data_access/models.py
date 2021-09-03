@@ -6,6 +6,8 @@ class DataLocationAccessControl(models.Model):
     data_location = models.OneToOneField('dataset.DataLocation', on_delete=models.CASCADE,
                                          related_name='access_control', null=False, unique=True)
     release_date = models.DateField(null=True)
+    release_comment = models.TextField(verbose_name='Release comment', help_text='Comment about the release restrictions'
+                                                                                 'for this data.', null=True)
 
 
 class DataLocationAccessGrant(models.Model):
@@ -24,3 +26,10 @@ class DataLocationAccessGrant(models.Model):
         ordering = ['user_email']
         verbose_name = 'Data location access grant'
         unique_together = [('user_email', 'data_location')]
+        permissions = (
+            ("can_access_protected_data", "Can access protected data"),
+        )
+
+
+    def __str__(self):
+        return '%s - %s' % (self.data_location.file_name, self.user_email)

@@ -21,4 +21,4 @@ class DataLocation(models.Model):
         unique_together = [('dataset', 'file_name')]
 
     def __str__(self):
-        return self.file_path
+        return self.file_name

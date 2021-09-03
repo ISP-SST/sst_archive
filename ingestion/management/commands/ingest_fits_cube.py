@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand, CommandError
 from astropy.io import fits
 import os.path
-from datetime import date, datetime
+from datetime import datetime
 
 
 from dataset.models import DataLocation, Dataset
-from data_access.models import AccessControl
+from data_access.models import DataLocationAccessControl, DataLocationAccessGrant
 
 
 def _generate_observation_id(fits_header):
@@ -59,7 +59,11 @@ class Command(BaseCommand):
         # Create access control row for this observation.
         release_date_str = fits_header['RELEASE']
         release_date = datetime.strptime(release_date_str, "%Y-%m-%d").date()
-        access_control = AccessControl(data_location=data_location, release_date=release_date)
+
+        release_comment = fits_header['RELEASEC']
+        access_control = DataLocationAccessControl(data_location=data_location,
+                                                   release_date=release_date,
+                                                   release_comment=release_comment)
         access_control.save()
 
         # access_control.assign_permission_to_user()

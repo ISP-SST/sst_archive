@@ -10,4 +10,5 @@ class DataLocationAccessControlAdmin(admin.ModelAdmin):
 
 @admin.register(DataLocationAccessGrant)
 class DataLocationAccessGrantAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['data_location__file_name', 'user__email']
+    autocomplete_fields = ['data_location']

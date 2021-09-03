@@ -1,0 +1,25 @@
+{% extends "frontend/base.html" %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h2>Register User</h2>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <!-- Please correct errors in the form below. -->
+    </div>
+    {% endif %}
+
+    <form action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+        {{ registration_form }}
+
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form>
+
+</div>
+{% endblock %}
