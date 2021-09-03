@@ -1,0 +1,31 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}SST Archive - Datasets{% endblock %}
+
+{% block content %}
+    <h2>All datasets</h2>
+
+    <table class="table" style="table-layout: fixed">
+        <thead class=".thead-light">
+        <tr>
+            <th scope="col">Dataset</th>
+            <th scope="col"># Observations in set</th>
+        </tr>
+        </thead>
+        <tbody>
+{% if dataset_list %}
+    {% for set in dataset_list %}
+        <tr>
+            <th scope="row"><a href="{% url 'dataset_detail' set.name %}">{{ set.name }}</a></th>
+            <td>{{ set.estimated_metadata_count }}</td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr colspan="0">
+        <td>No datasets registered in the system yet.</td>
+    </tr>
+{% endif %}
+        </tbody>
+        </table>
+
+{% endblock %}

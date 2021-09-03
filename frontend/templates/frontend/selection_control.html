@@ -1,0 +1,9 @@
+<a href="{% url 'toggle_metadata_selection' dataset oid %}">
+    <button class="btn btn-sm {% if selected %}btn-warning{% else %}btn-light{% endif %}" type="submit">
+        {% if selected %}
+        <i class="bi bi-dash-lg"></i>
+        {% else %}
+        <i class="bi bi-plus-lg"></i>
+        {% endif %}
+    </button>
+</a>

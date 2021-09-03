@@ -1,0 +1,26 @@
+[
+  {
+    "model": "dataset.dataset",
+    "pk": 1,
+    "fields": {
+      "name": "CRISP",
+      "description": "CRISP dataset.",
+      "contact_email": "daniel.nitsche@astro.su.se",
+      "instrument": "CRISP",
+      "user_group": 1,
+      "metadata_content_type": 9
+    }
+  },
+  {
+    "model": "dataset.dataset",
+    "pk": 2,
+    "fields": {
+      "name": "CHROMIS",
+      "description": "CHROMIS dataset.",
+      "contact_email": "daniel.nitsche@astro.su.se",
+      "instrument": "CHROMIS",
+      "user_group": 2,
+      "metadata_content_type": 10
+    }
+  }
+]

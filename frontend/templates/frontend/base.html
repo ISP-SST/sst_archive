@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <!-- <link rel="stylesheet" href="{% static 'frontend/style.css' %}"> -->
+    <title>{% block title %}SST Archive{% endblock %}</title>
+</head>
+
+<body>
+    <div id="main-container" class="container">
+
+        <header class="row">
+            <h1>SST Archive</h1>
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'dataset_list' %}">Datasets</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#"></a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+        </header>
+
+        <div class="row">
+            <div id="sidebar" class="col-lg-3">
+                {% block sidebar %}
+                {% include "frontend/search_sidebar.html" %}
+                {% include "frontend/selection_sidebar.html" %}
+                {% endblock %}
+            </div>
+
+            <div id="content"  class="col-lg-9">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

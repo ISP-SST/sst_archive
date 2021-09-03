@@ -1,0 +1,48 @@
+{% extends "frontend/base.html" %}
+
+{% load selection_tags %}
+{% load pagination_controls %}
+
+{% block title %}SST Archive - Datasets{% endblock %}
+
+{% block content %}
+    <h2>Search results</h2>
+
+    <table class="table" style="table-layout: fixed">
+        <thead class=".thead-light">
+        <tr>
+            <th scope="col" style="width: 5em">Select</th>
+            <th scope="col">Observation ID</th>
+            <th scope="col" style="width: 10em">Dataset</th>
+            <th scope="col">Observation Date (Began)</th>
+            <th scope="col" style="width: 7em">Data Size</th>
+            <th scope="col" style="width: 5em">Download</th>
+        </tr>
+        </thead>
+        <tbody>
+{% if page_obj %}
+    {% for metadata in page_obj %}
+        <tr>
+            <td scope="row">
+               {% show_selection_control metadata.dataset metadata.oid metadata.selected %}
+            </td>
+            <td scope="row">
+                <a href="{% url 'metadata_detail' metadata.dataset metadata.oid  %}">{{ metadata.oid }}</a>
+            </td>
+            <td scope="row">{{ metadata.dataset }}</td>
+            <td scope="row">{{ metadata.date }}</td>
+            <td scope="row">{{ metadata.file_size|filesizeformat }}</td>
+            <td scope="row"><a class="download-symbol bi bi-download" href="{% url 'download_data_cube' metadata.dataset metadata.oid %}"></a></td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr colspan="100%">
+        <td>Search yielded no results.</td>
+    </tr>
+{% endif %}
+        </tbody>
+    </table>
+
+    {% pagination_controls paginator page_obj %}
+
+{% endblock %}
