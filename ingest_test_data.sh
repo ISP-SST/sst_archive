@@ -3,6 +3,9 @@
 BASE_DIR="/Users/dani2978/Mounted/science_data"
 
 FITS_CUBES=(
+# These are imported locally so that the archiving feature can be tested properly.
+# "2019-04-19/CRISP/nb_6173_2019-04-19T17:34:39_scans=0-4_stokes_corrected_export2021-05-28T15:08:12_im.fits"
+# "2020-08-30/CRISP/nb_6173_2020-08-30T11:35:24_scans=0-4_stokes_corrected_export2021-06-08T11:37:04_im.fits"
 "2019-04-19/CHROMIS/nb_3950_2019-04-19T10:33:27_scans=0-99_corrected_export2021-03-24T15:47:37_im.fits"
 "2019-04-19/CRISP/nb_6173_2019-04-19T10:33:29_scans=0-34_stokes_corrected_export2021-05-28T14:11:49_im.fits"
 "2019-04-19/CRISP/nb_8542_2019-04-19T10:33:29_scans=0-34_stokes_corrected_export2021-05-29T10:14:36_im.fits"
@@ -10,7 +13,6 @@ FITS_CUBES=(
 "2019-04-19/CRISP/nb_6173_2019-04-19T11:03:06_scans=0-17_stokes_corrected_export2021-05-28T14:52:02_im.fits"
 "2019-04-19/CHROMIS/nb_3950_2019-04-19T10:49:53_scans=0-65_corrected_export2021-03-24T20:19:25_im.fits"
 "2019-04-19/CRISP/nb_6173_2019-04-19T15:26:41_scans=0-35_stokes_corrected_export2021-05-28T15:07:33_im.fits"
-"2019-04-19/CRISP/nb_6173_2019-04-19T17:34:39_scans=0-4_stokes_corrected_export2021-05-28T15:08:12_im.fits"
 "2019-04-19/CRISP/nb_6173_2019-04-19T17:42:24_scans=0-27_stokes_corrected_export2021-05-28T15:12:13_im.fits"
 "2019-04-19/CHROMIS/nb_3950_2019-04-19T11:03:06_scans=0-31,33-46,48-51_corrected_export2021-03-24T20:31:22_im.fits"
 "2019-04-19/CRISP/nb_6173_2019-04-19T18:23:36_scans=0-12,15-29_stokes_corrected_export2021-05-28T15:45:54_im.fits"
@@ -76,7 +78,6 @@ FITS_CUBES=(
 "2020-08-30/CRISP/nb_6173_2020-08-30T11:06:20_scans=0-10_stokes_corrected_export2021-06-08T10:35:43_im.fits"
 "2020-08-30/CRISP/nb_6563_2020-08-30T11:06:20_scans=0-10_corrected_export2021-06-08T10:56:08_im.fits"
 "2020-08-30/CRISP/nb_8542_2020-08-30T11:06:20_scans=0-10_stokes_corrected_export2021-06-08T11:08:39_im.fits"
-"2020-08-30/CRISP/nb_6173_2020-08-30T11:35:24_scans=0-4_stokes_corrected_export2021-06-08T11:37:04_im.fits"
 "2020-08-30/CRISP/nb_6563_2020-08-30T11:35:24_scans=0-4_corrected_export2021-06-08T11:39:51_im.fits"
 "2020-08-30/CRISP/nb_8542_2020-08-30T11:35:24_scans=0-4_stokes_corrected_export2021-06-08T11:46:13_im.fits"
 "2020-08-30/CHROMIS/nb_4846_2020-08-30T11:06:20_scans=0-18_corrected_export2021-06-08T10:29:56_im.fits"
@@ -104,10 +105,11 @@ for file in "${FITS_CUBES[@]}"; do
   if [ "$MAX_COUNT" -le 0 ]; then
     echo "Hit max count of cubes to import, aborting."
     break;
+  else
+    ((MAX_COUNT=MAX_COUNT - 1))
   fi
 
   echo "Ingesting FITS cube: ${file}"
   ./manage.py ingest_fits_cube -f "${BASE_DIR}/${file}"
 
-  ((MAX_COUNT=MAX_COUNT - 1))
 done

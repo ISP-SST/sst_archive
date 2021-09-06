@@ -14,24 +14,25 @@
 
         <header class="row">
             <div class="row">
-                <h1 class="col-md-8">SST Archive</h1>
+                <h1 class="col-8 mt-3">SST Archive</h1>
 
                 {% if user.is_authenticated %}
-                <div class="col-md-4 text-right">
-                    <p class="text-right">Logged in as <i>{{ user.email }}</i></p>
-                    <a href="{% url 'logout' %}">Log out</a>
+                <div class="col-4 text-right">
+                    <small>Logged in as <i>{{ user.email }}</i>
+                        <a href="{% url 'logout' %}">Log out</a>
+                    </small>
                 </div>
                 {% else %}
-                <div class="col-md-4 text-right">
-                    <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
-                    <a href="{% url 'register' %}">Register</a>
+                <div class="col-4 text-right">
+                    <small>
+                        <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
+                        <a href="{% url 'register' %}">Register</a>
+                    </small>
                 </div>
                 {% endif %}
-
-
             </div>
 
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                   <li class="nav-item active">

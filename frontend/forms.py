@@ -6,7 +6,9 @@ import json
 
 
 def initial_start_date():
-    return datetime.date.today() - datetime.timedelta(weeks=52)
+    # Start date defaults to three years back.
+    today = datetime.date.today()
+    return today.replace(year=today.year - 3)
 
 
 class SearchForm(forms.Form):

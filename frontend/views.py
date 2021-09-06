@@ -67,10 +67,10 @@ class SearchResult:
         self.selected = selected
 
 
-def _create_search_result_from_metadata(request, metadata):
-    return SearchResult(metadata.oid, metadata.data_location.dataset.name, metadata.date_beg,
+def _create_search_result_from_metadata(request, dataset, metadata):
+    return SearchResult(metadata.oid, dataset.name, metadata.date_beg,
                         metadata.data_location.file_size,
-                        is_selected_in_session(request, metadata.data_location.dataset.name, metadata.oid))
+                        is_selected_in_session(request, dataset.name, metadata.oid))
 
 
 def search_view(request):
@@ -111,9 +111,11 @@ def search_view(request):
     date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date}
     complete_query = { **extra_query_args, **date_query }
 
+    count = dataset_query.count()
+
     for dataset_obj in dataset_query:
-        metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query)
-        results += [_create_search_result_from_metadata(request, metadata) for metadata in metadata_list]
+        metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query).prefetch_related('data_location')
+        results += [_create_search_result_from_metadata(request, dataset_obj, metadata) for metadata in metadata_list]
 
     paginator = Paginator(results, 25)
     page_number = request.GET.get('page', 1)
