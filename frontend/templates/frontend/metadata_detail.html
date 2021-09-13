@@ -10,13 +10,26 @@
 
     <h2>Observation {{ metadata.oid }}</h2>
 
-    <div class="mb-5 col-12">
-        <div class="card">
-            <div class="card-body row">
-                <p class="col-2">File size: {{ metadata.data_location.file_size|filesizeformat }}</p>
-                <a class="card-link col-6" href="{% url 'download_data_cube' dataset.name metadata.oid %}">
-                    <button class="btn btn-primary"><i class="bi bi-download"></i> Download FITS data cube</button>
-                </a>
+
+    <div class="row">
+        <h3>Preview</h3>
+        <div class="mb-5 col-8">
+            {% load static %}
+            {% if metadata.data_location.animated_preview %}
+            <img src="{{ metadata.data_location.animated_preview.animated_gif }}" />
+            {% elif metadata.data_location.thumbnail %}
+            <img src="{{ metadata.data_location.thumbnail.image_url }}" />
+            {% endif %}
+        </div>
+
+        <div class="mt-5 col-4">
+            <div class="card">
+                <div class="card-body row">
+                    <a class="text-center card-link" href="{% url 'download_data_cube' dataset.name metadata.oid %}">
+                        <button class="btn btn-primary"><i class="bi bi-download"></i> Download FITS data cube</button>
+                    </a>
+                    <span class="text-center">{{ metadata.data_location.file_size|filesizeformat }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -34,7 +47,7 @@
         {% for key, value in metadata_fields.items %}
         <tr>
             <th scope="row">{{ key }}</th>
-            <td style="overflow: scroll">{{ value }}</td>
+            <td style="overflow: auto">{{ value }}</td>
         </tr>
         {% endfor %}
         </tbody>

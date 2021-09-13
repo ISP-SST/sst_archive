@@ -6,7 +6,8 @@ class BaseMetadataAdmin(admin.ModelAdmin):
 	list_display = ['oid', 'date_beg']
 	list_filter = []
 	readonly_fields = []
-	
+	search_fields = ['data_location__file_name']
+
 	def get_readonly_fields(self, request, obj=None):
 		'''Return a list or tuple of field names that will be displayed as read-only'''
 		

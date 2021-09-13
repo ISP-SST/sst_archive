@@ -1,3 +1,7 @@
+import base64
+import uuid
+
+import django
 from django.db import models
 
 
@@ -6,8 +10,12 @@ class DataLocationAccessControl(models.Model):
     data_location = models.OneToOneField('dataset.DataLocation', on_delete=models.CASCADE,
                                          related_name='access_control', null=False, unique=True)
     release_date = models.DateField(null=True)
-    release_comment = models.TextField(verbose_name='Release comment', help_text='Comment about the release restrictions'
-                                                                                 'for this data.', null=True)
+    release_comment = models.TextField(verbose_name='Release comment',
+                                       help_text='Comment about the release restrictions'
+                                                 'for this data.', null=True)
+
+    def __str__(self):
+        return self.data_location.file_name
 
 
 class DataLocationAccessGrant(models.Model):
@@ -30,6 +38,29 @@ class DataLocationAccessGrant(models.Model):
             ("can_access_protected_data", "Can access protected data"),
         )
 
-
     def __str__(self):
         return '%s - %s' % (self.data_location.file_name, self.user_email)
+
+
+def generate_token():
+    return base64.b64encode(uuid.uuid4().bytes).decode('utf-8')
+
+
+class DataLocationAccessToken(models.Model):
+    """Access token, or ticket, that grants the carrier of that token access to the specified DataLocation. Access can
+    be further restricted by an expiration date that dictates for how long the token will be valid."""
+    data_location = models.ForeignKey('dataset.DataLocation', verbose_name='Data location',
+                                      help_text='The data location that this token gives provides access to.',
+                                      on_delete=models.CASCADE, related_name='access_token')
+    token_string = models.CharField('Token String', unique=True, max_length=255,
+                                    help_text='Unique textual representation of token',
+                                    default=generate_token)
+    grant_date = models.DateTimeField('Grant Date', help_text='The time and date when this access token was created',
+                                      default=django.utils.timezone.now)
+    expiration_date = models.DateTimeField('Expiration date',
+                                           help_text='The time and date when this access token expires',
+                                           default=django.utils.timezone.now)
+    comment = models.TextField('Comment')
+
+    def __str__(self):
+        return '%s' % (self.token_string)

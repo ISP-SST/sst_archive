@@ -41,12 +41,14 @@ INSTALLED_APPS = [
 
     # Add debug toolbar
     'debug_toolbar',
+    'django_q',
 
     'dataset',
     'metadata',
     'data_access',
     'ingestion',
     'frontend',
+    'extra_data',
 ]
 
 
@@ -95,6 +97,23 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
+    }
+}
+
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 4,
+    'timeout': 90,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default'
+}
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -135,6 +154,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [BASE_DIR / 'assets']
+
+GIF_URL_ROOT = '/static/animated_gifs/'
+GIF_ROOT = BASE_DIR / 'assets' / 'animated_gifs'
+
+GENERATED_URL_ROOT = '/static/generated/'
+GENERATED_ROOT = BASE_DIR / 'assets' / 'generated'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

@@ -6,8 +6,8 @@ from django.http import StreamingHttpResponse, HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 
-from dataset.models import Dataset
-from data_access.utils import DataSelectionZipIterator
+from dataset.models import Dataset, DataLocation
+from data_access.utils import DataSelectionZipIterator, schedule_archiving_of_files
 # from .complex_filters import get_complex_filter, InvalidFilterError
 from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
 from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
@@ -59,17 +59,23 @@ def metadata_detail(request, dataset, oid):
 
 
 class SearchResult:
-    def __init__(self, oid, dataset, date, file_size, selected=False):
+    def __init__(self, oid, dataset, date, file_size, thumbnail, selected=False):
         self.oid = oid
         self.dataset = dataset
         self.date = date
         self.file_size = file_size
+        self.thumbnail = thumbnail
         self.selected = selected
 
 
 def _create_search_result_from_metadata(request, dataset, metadata):
+    if hasattr(metadata.data_location, 'thumbnail'):
+        thumbnail = metadata.data_location.thumbnail.image_url if metadata.data_location.thumbnail else None
+    else:
+        thumbnail = None
+
     return SearchResult(metadata.oid, dataset.name, metadata.date_beg,
-                        metadata.data_location.file_size,
+                        metadata.data_location.file_size, thumbnail,
                         is_selected_in_session(request, dataset.name, metadata.oid))
 
 
@@ -111,10 +117,8 @@ def search_view(request):
     date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date}
     complete_query = { **extra_query_args, **date_query }
 
-    count = dataset_query.count()
-
     for dataset_obj in dataset_query:
-        metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query).prefetch_related('data_location')
+        metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query).prefetch_related('data_location').prefetch_related('data_location__thumbnail')
         results += [_create_search_result_from_metadata(request, dataset_obj, metadata) for metadata in metadata_list]
 
     paginator = Paginator(results, 25)
@@ -149,10 +153,18 @@ def download_selected_data(request):
 
         selection_map[dataset].append(oid)
 
-    file_iterator = DataSelectionZipIterator(selection_map)
-    file_name = "SSTDataCubeArchive.zip"
-    return StreamingHttpResponse(file_iterator, content_type='application/zip',
-                                 headers={'Content-Disposition': 'attachment; filename*=utf-8\'\'' + file_name})
+    ROOT_DIR = '/Users/dani2978/local_science_data'
+    files = []
+
+    import os
+    for dataset, oids in selection_map.items():
+        file_info_query = Dataset.objects.get(name__iexact=dataset).metadata_model.objects.filter(
+            oid__in=oids).values_list('data_location__file_path', 'data_location__file_name',
+                                      'data_location__file_size').iterator()
+        files += [os.path.relpath(os.path.join(file_info[0], file_info[1]), ROOT_DIR) for file_info in file_info_query]
+
+    id = schedule_archiving_of_files(ROOT_DIR, files)
+    return HttpResponse(str(id), status=200)
 
 
 def access_denied(request):

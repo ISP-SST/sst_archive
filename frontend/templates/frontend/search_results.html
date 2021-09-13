@@ -12,7 +12,7 @@
         <thead class=".thead-light">
         <tr>
             <th scope="col" style="width: 5em">Select</th>
-            <th scope="col">Observation ID</th>
+            <th scope="col" style="">Preview</th>
             <th scope="col" style="width: 10em">Dataset</th>
             <th scope="col">Observation Date (Began)</th>
             <th scope="col" style="width: 7em">Data Size</th>
@@ -27,7 +27,11 @@
                {% show_selection_control metadata.dataset metadata.oid metadata.selected %}
             </td>
             <td scope="row">
+                {% if metadata.thumbnail %}
+                <a href="{% url 'metadata_detail' metadata.dataset metadata.oid  %}"><img style="width: 50%" src="{{ metadata.thumbnail }}"/></a>
+                {% else %}
                 <a href="{% url 'metadata_detail' metadata.dataset metadata.oid  %}">{{ metadata.oid }}</a>
+                {% endif %}
             </td>
             <td scope="row">{{ metadata.dataset }}</td>
             <td scope="row">{{ metadata.date }}</td>
