@@ -26,6 +26,7 @@ The quickest way to get the system up and running:
     # Create the database
     ./manage.py makemigrations
     ./manage.py migrate
+    ./manage.py collectstatic --noinput
 
     # Create your own super user to access the admin portal
     ./manage.py createsuperuser --username <YOUR-USERNAME> --email <YOUR-EMAIL>
