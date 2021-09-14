@@ -14,7 +14,9 @@ def initial_start_date():
 class SearchForm(forms.Form):
     start_date = forms.DateField(label='Start', initial=initial_start_date, widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'class':'form-control', 'placeholder':'Select a date', 'type':'date'}))
     end_date = forms.DateField(label='End', initial=datetime.date.today, widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'class':'form-control', 'placeholder':'Select a date', 'type':'date'}))
-    dataset = forms.ChoiceField(label='Datasets', choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')), widget=forms.Select(attrs={'class':'form-select'}))
+    dataset = forms.ChoiceField(label='Instrument', choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')), widget=forms.Select(attrs={'class':'form-select'}))
+    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class':'form-select'}))
+    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class':'form-select'}))
     query = forms.CharField(label='Query', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 

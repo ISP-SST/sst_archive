@@ -2,12 +2,12 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
-from django.http import StreamingHttpResponse, HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 
-from dataset.models import Dataset, DataLocation
-from data_access.utils import DataSelectionZipIterator, schedule_archiving_of_files
+from data_access.utils import schedule_archiving_of_files
+from dataset.models import Dataset
 # from .complex_filters import get_complex_filter, InvalidFilterError
 from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
 from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
@@ -22,7 +22,7 @@ class DatasetListView(ListView):
 
 def dataset_detail(request, dataset):
     dataset = Dataset.objects.get(name__iexact=dataset)
-    metadata_list =  dataset.metadata_model.objects.all()
+    metadata_list = dataset.metadata_model.objects.all()
 
     paginator = Paginator(metadata_list, 25)
     page_number = request.GET.get('page', 1)
@@ -86,13 +86,16 @@ def search_view(request):
         # TODO(daniel): Handle this error case.
         pass
 
-    if not hasattr(form, 'cleaned_data') or  'start_date' not in form.cleaned_data:
+    if not hasattr(form, 'cleaned_data') or 'start_date' not in form.cleaned_data:
         form = SearchForm(data=get_initial_search_form(request))
         form.full_clean()
 
     start_date = form.cleaned_data['start_date']
     end_date = form.cleaned_data['end_date']
     dataset = form.cleaned_data['dataset']
+
+    wavemin = form.cleaned_data['wavemin']
+    wavemax = form.cleaned_data['wavemax']
 
     query = form.cleaned_data['query']
     extra_query_args = {}
@@ -114,11 +117,14 @@ def search_view(request):
 
     dataset_query = Dataset.objects.all() if dataset == 'all' else Dataset.objects.filter(name__iexact=dataset)
 
-    date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date}
-    complete_query = { **extra_query_args, **date_query }
+    # TODO(daniel): wavemin + wavemax query is incorrect.
+    date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date,
+                  'wavemin__gte': wavemin, 'wavemax__lte': wavemax}
+    complete_query = {**extra_query_args, **date_query}
 
     for dataset_obj in dataset_query:
-        metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query).prefetch_related('data_location').prefetch_related('data_location__thumbnail')
+        metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query).prefetch_related(
+            'data_location').prefetch_related('data_location__thumbnail')
         results += [_create_search_result_from_metadata(request, dataset_obj, metadata) for metadata in metadata_list]
 
     paginator = Paginator(results, 25)
@@ -192,4 +198,3 @@ def register(request: HttpRequest) -> HttpResponse:
 
         login(request, new_user)
         return redirect('/')
-
