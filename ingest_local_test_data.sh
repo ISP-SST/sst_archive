@@ -18,6 +18,6 @@ for file in "${FITS_CUBES[@]}"; do
   fi
 
   echo "Ingesting FITS cube: ${file}"
-  ./manage.py ingest_fits_cube -f "${BASE_DIR}/${file}"
+  ./manage.py ingest_fits_cube --generate-image-previews --generate-animated-previews -f "${BASE_DIR}/${file}"
 
 done

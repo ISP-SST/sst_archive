@@ -40,6 +40,7 @@ def download_data_cube(request: HttpRequest, dataset: str, oid: str) -> HttpResp
         return render(request, 'data_access/token_prompt.html', {
             'dataset': dataset,
             'oid': oid,
+            'data_location': data_location,
             'form': form,
             'release_comment': data_location.access_control.release_comment
         }, status=403)

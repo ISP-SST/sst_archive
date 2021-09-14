@@ -24,6 +24,9 @@ def generate_animated_gif_preview(data_cube, gif_file):
 
     image_data = data_cube[0].data
 
+    # FIXME(daniel): The animated preview has the same issue with scaling/rotation as the
+    #                static preview. See generate_image_preview.py.
+
     print('Image data shape: ')
     print(image_data.shape)
 

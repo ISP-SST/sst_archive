@@ -10,7 +10,7 @@
 <p>{{ release_comment }}</p>
 {% endif %}
 
-<p>A valid access token is required to access this observation with identifieer <i>{{ oid }}</i>.</p>
+<p>A valid access token is required to access this observation data cube <i>{{ data_location.file_name }}</i>.</p>
 
 <form method="POST" action="{{ request.path }}">
     {% csrf_token %}

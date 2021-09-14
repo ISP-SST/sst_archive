@@ -13,6 +13,12 @@ def generate_image_preview(data_cube, preview_file):
 
     image_data = data_cube[0].data
 
+    # FIXME(daniel): This plot does not take into consideration the WCS coordinates
+    #                included in the FITS cube. Rotation and scaling is likely off.
+    #                Perhaps these kinds of previews should rather be created in IDL
+    #                since crispex, for example, already knows how to display the data
+    #                properly.
+
     fig, ax = plt.subplots()
 
     plt.axis('off')

@@ -26,9 +26,9 @@ class SearchForm(forms.Form):
     dataset = forms.ChoiceField(label='Instrument',
                                 choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')),
                                 widget=forms.Select(attrs={'class': 'form-select'}))
-    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class': 'form-select'}),
+    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                required=False)
-    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-select'}),
+    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                required=False)
     query = forms.CharField(label='Query', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 

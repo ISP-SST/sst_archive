@@ -32,7 +32,10 @@ def has_valid_token_for_data_location(data_location, token_string, datetime_now=
     if data_location_requires_access_grant(data_location, datetime_now):
         try:
             token = DataLocationAccessToken.objects.get(token_string=token_string, data_location=data_location)
-            return token.grant_date <= datetime_now < token.expiration_date
+            # FIXME(daniel): We should take the grant date into account and only allow downloads after that date,
+            #                but due to apparent time skew we can't always assume that datetime_now will be afte
+            #                grant date if the token was added very recently.
+            return datetime_now < token.expiration_date
         except DataLocationAccessToken.DoesNotExist:
             return False
 

@@ -6,6 +6,7 @@ FITS_CUBES=(
 # These are imported locally so that the archiving feature can be tested properly.
 # "2019-04-19/CRISP/nb_6173_2019-04-19T17:34:39_scans=0-4_stokes_corrected_export2021-05-28T15:08:12_im.fits"
 # "2020-08-30/CRISP/nb_6173_2020-08-30T11:35:24_scans=0-4_stokes_corrected_export2021-06-08T11:37:04_im.fits"
+
 "2019-04-19/CHROMIS/nb_3950_2019-04-19T10:33:27_scans=0-99_corrected_export2021-03-24T15:47:37_im.fits"
 "2019-04-19/CRISP/nb_6173_2019-04-19T10:33:29_scans=0-34_stokes_corrected_export2021-05-28T14:11:49_im.fits"
 "2019-04-19/CRISP/nb_8542_2019-04-19T10:33:29_scans=0-34_stokes_corrected_export2021-05-29T10:14:36_im.fits"
@@ -83,6 +84,7 @@ FITS_CUBES=(
 "2020-08-30/CHROMIS/nb_4846_2020-08-30T11:06:20_scans=0-18_corrected_export2021-06-08T10:29:56_im.fits"
 "2020-08-30/CHROMIS/nb_3950_2020-08-30T11:06:20_scans=0-18_corrected_export2021-06-08T10:30:07_im.fits"
 "2020-08-30/CHROMIS/nb_3950_2020-08-30T11:35:24_scans=0-7_corrected_export2021-06-08T11:54:22_im.fits"
+
 "2020-04-24/CHROMIS/nb_3950_2020-04-24T11:26:25_scans=0-23,25,26,28-188,190-211,215-258,260-287,289-317,321-331,333-335_corrected_export2021-06-08T08:58:48_im.fits"
 "2020-10-16/CHROMIS/nb_3950_2020-10-16T09:11:04_scans=0-10_corrected_export2021-06-08T13:10:07_im.fits"
 "2020-08-30/CHROMIS/nb_4846_2020-08-30T11:35:24_scans=0-8_corrected_export2021-06-08T13:03:29_im.fits"
@@ -110,6 +112,5 @@ for file in "${FITS_CUBES[@]}"; do
   fi
 
   echo "Ingesting FITS cube: ${file}"
-  ./manage.py ingest_fits_cube -f "${BASE_DIR}/${file}"
-
+  ./manage.py ingest_fits_cube --generate-image-previews --generate-animated-previews -f "${BASE_DIR}/${file}"
 done

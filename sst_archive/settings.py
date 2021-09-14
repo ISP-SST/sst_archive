@@ -167,6 +167,10 @@ GIF_ROOT = BASE_DIR / 'assets' / 'generated' / 'gifs'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
+# This information is available in the FITS cubes, but it may not be safe
+# to use it directly from there. At least we shouldn't assume that the
+# timezone string will be compatible with Python's set of timezones.
+OBSERVATION_TIMEZONE = 'UTC'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
