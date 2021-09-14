@@ -8,7 +8,6 @@ from django.views.generic import ListView
 
 from data_access.utils import schedule_archiving_of_files
 from dataset.models import Dataset
-# from .complex_filters import get_complex_filter, InvalidFilterError
 from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
 from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
 
@@ -99,13 +98,6 @@ def search_view(request):
 
     query = form.cleaned_data['query']
     extra_query_args = {}
-    """
-    try:
-        other_parsed_query = get_complex_filter(query)
-        extra_query_args = other_parsed_query.children
-    except InvalidFilterError:
-        pass
-    """
 
     if len(query) > 0:
         query_parts = query.split(',')
