@@ -93,8 +93,11 @@ def search_view(request):
     end_date = form.cleaned_data['end_date']
     dataset = form.cleaned_data['dataset']
 
-    wavemin = form.cleaned_data['wavemin']
-    wavemax = form.cleaned_data['wavemax']
+    wavemax = None
+    wavemin = None
+    if 'wavemin' in form.cleaned_data and form.cleaned_data['wavemin'] != '' and 'wavemax' in form.cleaned_data and form.cleaned_data['wavemax'] != '':
+        wavemin = form.cleaned_data['wavemin']
+        wavemax = form.cleaned_data['wavemax']
 
     query = form.cleaned_data['query']
     extra_query_args = {}
@@ -109,10 +112,14 @@ def search_view(request):
 
     dataset_query = Dataset.objects.all() if dataset == 'all' else Dataset.objects.filter(name__iexact=dataset)
 
-    # TODO(daniel): wavemin + wavemax query is incorrect.
-    date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date,
-                  'wavemin__gte': wavemin, 'wavemax__lte': wavemax}
+
+    date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date}
     complete_query = {**extra_query_args, **date_query}
+
+    if wavemin and wavemax:
+        # TODO(daniel): wavemin + wavemax query is incorrect.
+        wavelnth_query = {'wavemin__gte': wavemin, 'wavemax__lte': wavemax}
+        complete_query = {**complete_query, **wavelnth_query}
 
     for dataset_obj in dataset_query:
         metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query).prefetch_related(

@@ -1,5 +1,4 @@
-import base64
-import uuid
+import secrets
 
 import django
 from django.db import models
@@ -43,7 +42,10 @@ class DataLocationAccessGrant(models.Model):
 
 
 def generate_token():
-    return base64.b64encode(uuid.uuid4().bytes).decode('utf-8')
+    # TODO(daniel): While a 16-bit secure token is unlikely to create collisions in the database,
+    #               we should still have a retry-loop that catches such errors and regenerates a
+    #               new token. In practice there will be very few tokens active at the same time.
+    return secrets.token_urlsafe(16)
 
 
 class DataLocationAccessToken(models.Model):
@@ -63,4 +65,8 @@ class DataLocationAccessToken(models.Model):
     comment = models.TextField('Comment')
 
     def __str__(self):
-        return '%s' % (self.token_string)
+        return '%s (%s)' % (self.token_string, self.data_location.file_name)
+
+
+# TODO(daniel): We might want a step that continuously prunes expired tokens from
+#               the database.

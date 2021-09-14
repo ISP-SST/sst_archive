@@ -1,8 +1,9 @@
+import datetime
+import json
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
-import datetime
-import json
 
 
 def initial_start_date():
@@ -12,18 +13,31 @@ def initial_start_date():
 
 
 class SearchForm(forms.Form):
-    start_date = forms.DateField(label='Start', initial=initial_start_date, widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'class':'form-control', 'placeholder':'Select a date', 'type':'date'}))
-    end_date = forms.DateField(label='End', initial=datetime.date.today, widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'class':'form-control', 'placeholder':'Select a date', 'type':'date'}))
-    dataset = forms.ChoiceField(label='Instrument', choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')), widget=forms.Select(attrs={'class':'form-select'}))
-    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class':'form-select'}))
-    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class':'form-select'}))
+    start_date = forms.DateField(label='Start', initial=initial_start_date, widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                                                                   attrs={
+                                                                                                       'class': 'form-control',
+                                                                                                       'placeholder': 'Select a date',
+                                                                                                       'type': 'date'}))
+    end_date = forms.DateField(label='End', initial=datetime.date.today, widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                                                                attrs={
+                                                                                                    'class': 'form-control',
+                                                                                                    'placeholder': 'Select a date',
+                                                                                                    'type': 'date'}))
+    dataset = forms.ChoiceField(label='Instrument',
+                                choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')),
+                                widget=forms.Select(attrs={'class': 'form-select'}))
+    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class': 'form-select'}),
+                               required=False)
+    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-select'}),
+                               required=False)
     query = forms.CharField(label='Query', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 class RegistrationForm(forms.Form):
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    confirm_password = forms.CharField(label='Confirm Password',
+                                       widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     error_css_class = "alert alert-danger"
 

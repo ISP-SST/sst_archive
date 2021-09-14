@@ -11,7 +11,7 @@ from astropy.visualization import astropy_mpl_style
 def generate_image_preview(data_cube, preview_file):
     plt.style.use(astropy_mpl_style)
 
-    image_data = data_cube[2].data
+    image_data = data_cube[0].data
 
     fig, ax = plt.subplots()
 

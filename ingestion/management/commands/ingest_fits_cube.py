@@ -61,7 +61,14 @@ def _create_or_update_data_location(fits_cube, dataset):
 def _create_gif_preview(hdus, data_location):
     try:
         preview = AnimatedGifPreview.objects.get(data_location=data_location)
-        gif_path = preview.animated_gif
+        gif_uri = preview.animated_gif
+        filename = os.path.basename(gif_uri)
+        expected_gif_uri = os.path.join(settings.GIF_URL_ROOT, filename)
+        gif_path = os.path.join(settings.GIF_ROOT, filename)
+
+        if gif_uri != expected_gif_uri:
+            preview.animated_gif = expected_gif_uri
+            preview.save()
     except AnimatedGifPreview.DoesNotExist:
         gif_filename = '%s.gif' % uuid.uuid4()
         gif_path = os.path.join(settings.GIF_ROOT, gif_filename)
@@ -117,7 +124,7 @@ class Command(BaseCommand):
         _generate_access_control_entities(data_location, fits_header)
 
         # Generate an animated GIF as a preview.
-        # _create_gif_preview(hdus, data_location)
+        _create_gif_preview(hdus, data_location)
 
         # Generate static image preview.
         _create_image_preview(hdus, data_location)

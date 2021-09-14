@@ -9,6 +9,11 @@ from astropy.visualization import astropy_mpl_style
 from astropy.io import fits
 
 
+def _get_frame_data(image_data, index):
+    frame_data = image_data[index][0][0]
+    return frame_data
+
+
 def generate_animated_gif_preview(data_cube, gif_file):
     matplotlib.rc('font', family='sans-serif')
     matplotlib.rc('font', serif='Helvetica Neue')
@@ -17,7 +22,7 @@ def generate_animated_gif_preview(data_cube, gif_file):
 
     plt.style.use(astropy_mpl_style)
 
-    image_data = data_cube[2].data
+    image_data = data_cube[0].data
 
     print('Image data shape: ')
     print(image_data.shape)
@@ -26,11 +31,11 @@ def generate_animated_gif_preview(data_cube, gif_file):
 
     fig, ax = plt.subplots()
 
-    im = plt.imshow(image_data[index][0][0], animated=True, interpolation="nearest")
+    im = plt.imshow(_get_frame_data(image_data, index), animated=True, interpolation="nearest")
 
     def _update_video(index):
         print('Updating video with frame index %d' % index)
-        im.set_array(image_data[index][0][0])
+        im.set_array(_get_frame_data(image_data, index))
         return im,
 
     n_frames = len(image_data)

@@ -157,11 +157,12 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [BASE_DIR / 'assets']
 
-GIF_URL_ROOT = '/static/animated_gifs/'
-GIF_ROOT = BASE_DIR / 'assets' / 'animated_gifs'
-
 GENERATED_URL_ROOT = '/static/generated/'
 GENERATED_ROOT = BASE_DIR / 'assets' / 'generated'
+
+GIF_URL_ROOT = '/static/generated/gifs'
+GIF_ROOT = BASE_DIR / 'assets' / 'generated' / 'gifs'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

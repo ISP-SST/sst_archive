@@ -2,4 +2,4 @@
 
 This application is responsible for:
  * Providing download URLs for data cubes
- * Enabling access control to said data cubes through models and verification steps
+ * Enabling access control to said data cubes
