@@ -13,16 +13,20 @@ def initial_start_date():
 
 
 class SearchForm(forms.Form):
-    start_date = forms.DateField(label='Start', initial=initial_start_date, widget=forms.DateInput(format=('%Y-%m-%d'),
-                                                                                                   attrs={
-                                                                                                       'class': 'form-control',
-                                                                                                       'placeholder': 'Select a date',
-                                                                                                       'type': 'date'}))
-    end_date = forms.DateField(label='End', initial=datetime.date.today, widget=forms.DateInput(format=('%Y-%m-%d'),
-                                                                                                attrs={
-                                                                                                    'class': 'form-control',
-                                                                                                    'placeholder': 'Select a date',
-                                                                                                    'type': 'date'}))
+    start_date = forms.DateField(label='Start Date',
+                                 initial=initial_start_date,
+                                 widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                        attrs={
+                                                            'class': 'form-control',
+                                                            'placeholder': 'Select a date',
+                                                            'type': 'date'}))
+    end_date = forms.DateField(label='End Date',
+                               initial=datetime.date.today,
+                               widget=forms.DateInput(format=('%Y-%m-%d'),
+                                                      attrs={
+                                                          'class': 'form-control',
+                                                          'placeholder': 'Select a date',
+                                                          'type': 'date'}))
     dataset = forms.ChoiceField(label='Instrument',
                                 choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')),
                                 widget=forms.Select(attrs={'class': 'form-select'}))
@@ -30,6 +34,11 @@ class SearchForm(forms.Form):
                                required=False)
     wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                required=False)
+    polarimetry = forms.ChoiceField(label='Polarimetry',
+                                     choices=(('any', 'Any'),
+                                              ('polarimetric', 'Polarimetric'),
+                                              ('nonpolarimetric', 'Non-Polarimetric')),
+                                     widget=forms.Select(attrs={'class': 'form-select'}), required=False)
     query = forms.CharField(label='Query', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 

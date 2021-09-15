@@ -6,14 +6,17 @@
     {% if selection_list %}
 
     <table class="table row overflow-hidden" style="table-layout: fixed">
-    {% for selection in selection_list %}
+        {% for selection in selection_list %}
         <tr>
             <td>{% show_selection_control selection.dataset selection.oid True %}</td>
-            <td style="max-width: 14em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><small><a href="{% url 'metadata_detail' selection.dataset selection.oid %}">{{ selection.oid }}</a></small></td>
-            <td><a href="{% url 'download_data_cube' selection.dataset selection.oid %}"><i class="bi bi-download"></i></a></td>
+            <td style="max-width: 14em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><small><a
+                    href="{% url 'metadata_detail' selection.dataset selection.oid %}">{{ selection.oid }}</a></small>
+            </td>
+            <td><a href="{% url 'download_data_cube' selection.dataset selection.oid %}"><i class="bi bi-download"></i></a>
+            </td>
             <td></td>
         </tr>
-    {% endfor %}
+        {% endfor %}
     </table>
 
     <div class="row mt-2">
@@ -25,8 +28,9 @@
     </div>
 
     {% else %}
-    <p><i>No metadata selected yet.</i></p>
+    <p><i>No observations selected yet.</i></p>
 
-    <p><small>Search or browse for metadata to add to your selection to create a compressed archive of the data files.</small></p>
+    <p><small>Search or browse for observations to add to your selection to create a compressed archive of those data
+        cubes.</small></p>
     {% endif %}
 </div>

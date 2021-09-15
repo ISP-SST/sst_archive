@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     path('datasets/', views.DatasetListView.as_view(), name='dataset_list'),
-    path('', views.DatasetListView.as_view(), name='index'),
+    path('', views.search_view, name='index'),
     path('datasets/<dataset>/', views.dataset_detail, name='dataset_detail'),
     path('datasets/<dataset>/metadata/<oid>/', views.metadata_detail, name='metadata_detail'),
     path('search', views.search_view, name='search'),

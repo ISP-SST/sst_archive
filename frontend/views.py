@@ -99,6 +99,14 @@ def search_view(request):
         wavemin = form.cleaned_data['wavemin']
         wavemax = form.cleaned_data['wavemax']
 
+    polarimetry_query = {}
+    if 'polarimetry' in form.cleaned_data:
+        pol = form.cleaned_data['polarimetry']
+        if pol == 'polarimetric':
+            polarimetry_query['naxis4__exact'] = 4
+        elif pol == 'nonpolarimetric':
+            polarimetry_query['naxis4__exact'] = 1
+
     query = form.cleaned_data['query']
     extra_query_args = {}
 
@@ -112,9 +120,8 @@ def search_view(request):
 
     dataset_query = Dataset.objects.all() if dataset == 'all' else Dataset.objects.filter(name__iexact=dataset)
 
-
     date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date}
-    complete_query = {**extra_query_args, **date_query}
+    complete_query = {**extra_query_args, **date_query, **polarimetry_query}
 
     if wavemin and wavemax:
         # TODO(daniel): wavemin + wavemax query is incorrect.
