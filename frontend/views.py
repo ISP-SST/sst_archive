@@ -1,81 +1,60 @@
+import os
+
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
 
 from data_access.utils import schedule_archiving_of_files
-from dataset.models import Dataset
+from dataset.models import DataLocation, Instrument
 from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
 from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
 
 
-class DatasetListView(ListView):
-    model = Dataset
-    paginate_by = 50
-    template_name = 'frontend/dataset_list.html'
-    context_object_name = 'dataset_list'
-
-
-def dataset_detail(request, dataset):
-    dataset = Dataset.objects.get(name__iexact=dataset)
-    metadata_list = dataset.metadata_model.objects.all()
-
-    paginator = Paginator(metadata_list, 25)
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-
-    context = {
-        'dataset': dataset,
-        'metadata': metadata_list,
-        'page_obj': page_obj,
-        'paginator': paginator,
-    }
-    return render(request, 'frontend/dataset_detail.html', context)
-
-
-def metadata_detail(request, dataset, oid):
-    dataset = Dataset.objects.get(name__iexact=dataset)
-    metadata = dataset.metadata_model.objects.get(oid=oid)
+def file_detail(request, filename):
+    data_location = DataLocation.objects.select_related('animated_preview', 'thumbnail').get(file_name__iexact=filename)
+    metadata = data_location.instrument.metadata_model.objects.get(data_location=data_location)
 
     metadata_fields = {field.verbose_name: field.value_from_object(metadata) for field in metadata._meta.get_fields()}
 
+    # FIXME(daniel): We shouldn't need to pop these from the fields.
     metadata_fields.pop('fits header', None)
     metadata_fields.pop('ID', None)
     metadata_fields.pop('data location', None)
     metadata_fields.pop('Observation ID', None)
 
     context = {
-        'dataset': dataset,
+        'data_location': data_location,
         'metadata': metadata,
         'metadata_dict': model_to_dict(metadata),
         'metadata_fields': metadata_fields,
     }
 
-    return render(request, 'frontend/metadata_detail.html', context)
+    return render(request, 'frontend/file_detail.html', context)
 
 
 class SearchResult:
-    def __init__(self, oid, dataset, date, file_size, thumbnail, selected=False):
+    def __init__(self, oid, filename, instrument, date, file_size, thumbnail, selected=False):
         self.oid = oid
-        self.dataset = dataset
+        self.filename = filename
+        self.instrument = instrument
         self.date = date
         self.file_size = file_size
         self.thumbnail = thumbnail
         self.selected = selected
 
 
-def _create_search_result_from_metadata(request, dataset, metadata):
+def _create_search_result_from_metadata(request, data_location, metadata):
     if hasattr(metadata.data_location, 'thumbnail'):
         thumbnail = metadata.data_location.thumbnail.image_url if metadata.data_location.thumbnail else None
     else:
         thumbnail = None
 
-    return SearchResult(metadata.oid, dataset.name, metadata.date_beg,
+    return SearchResult(metadata.oid, data_location.file_name, data_location.instrument.name, metadata.date_beg,
                         metadata.data_location.file_size, thumbnail,
-                        is_selected_in_session(request, dataset.name, metadata.oid))
+                        is_selected_in_session(request, data_location.file_name))
 
 
 def search_view(request):
@@ -89,14 +68,17 @@ def search_view(request):
         form = SearchForm(data=get_initial_search_form(request))
         form.full_clean()
 
-    start_date = form.cleaned_data['start_date']
-    end_date = form.cleaned_data['end_date']
-    dataset = form.cleaned_data['dataset']
+    start_date = form.cleaned_data['start_date'] if 'start_date' in form.cleaned_data else None
+    end_date = form.cleaned_data['end_date'] if 'end_date' in form.cleaned_data else None
+
+    instrument = form.cleaned_data['instrument'] if 'instrument' in form.cleaned_data else 'all'
+
+    wavemin = None
+    if 'wavemin' in form.cleaned_data and form.cleaned_data['wavemin'] != '':
+        wavemin = form.cleaned_data['wavemin']
 
     wavemax = None
-    wavemin = None
-    if 'wavemin' in form.cleaned_data and form.cleaned_data['wavemin'] != '' and 'wavemax' in form.cleaned_data and form.cleaned_data['wavemax'] != '':
-        wavemin = form.cleaned_data['wavemin']
+    if 'wavemax' in form.cleaned_data and form.cleaned_data['wavemax'] != '':
         wavemax = form.cleaned_data['wavemax']
 
     polarimetry_query = {}
@@ -118,20 +100,27 @@ def search_view(request):
 
     persist_search_form(request, form.cleaned_data)
 
-    dataset_query = Dataset.objects.all() if dataset == 'all' else Dataset.objects.filter(name__iexact=dataset)
-
-    date_query = {'date_beg__gte': start_date, 'date_end__lte': end_date}
+    date_query = {}
+    if start_date:
+        date_query['date_beg__gte'] = start_date
+    if end_date:
+        date_query['date_end__lte'] = end_date
     complete_query = {**extra_query_args, **date_query, **polarimetry_query}
 
-    if wavemin and wavemax:
-        # TODO(daniel): wavemin + wavemax query is incorrect.
-        wavelnth_query = {'wavemin__gte': wavemin, 'wavemax__lte': wavemax}
-        complete_query = {**complete_query, **wavelnth_query}
+    # TODO(daniel): wavemin + wavemax query is incorrect.
+    if wavemin:
+        complete_query['wavelnth__gte'] = wavemin
+    if wavemax:
+        complete_query['wavelnth__lte'] = wavemax
 
-    for dataset_obj in dataset_query:
-        metadata_list = dataset_obj.metadata_model.objects.filter(**complete_query).prefetch_related(
-            'data_location').prefetch_related('data_location__thumbnail')
-        results += [_create_search_result_from_metadata(request, dataset_obj, metadata) for metadata in metadata_list]
+    instruments_queryset = Instrument.objects.all()
+    if instrument != 'all':
+        instruments_queryset = instruments_queryset.filter(name__iexact=instrument)
+
+    for instrument in instruments_queryset:
+        metadata_list = instrument.metadata_model.objects.filter(**complete_query).select_related(
+            'data_location', 'data_location__instrument', 'data_location__thumbnail')
+        results += [_create_search_result_from_metadata(request, metadata.data_location, metadata) for metadata in metadata_list]
 
     paginator = Paginator(results, 25)
     page_number = request.GET.get('page', 1)
@@ -146,41 +135,26 @@ def search_view(request):
     return render(request, 'frontend/search_results.html', context)
 
 
-def toggle_metadata_selection(request, dataset, oid):
+def toggle_file_selection(request, filename):
     return_url = request.META.get('HTTP_REFERER', '/')
-    toggle_selection_from_session(request, dataset, oid)
+    toggle_selection_from_session(request, filename)
     return redirect(return_url)
 
 
 def download_selected_data(request):
     selection_list = load_selections(request)
 
-    selection_map = {}
-    for selection in selection_list:
-        dataset = selection['dataset']
-        oid = selection['oid']
-
-        if dataset not in selection_map:
-            selection_map[dataset] = []
-
-        selection_map[dataset].append(oid)
-
     ROOT_DIR = '/Users/dani2978/local_science_data'
     files = []
 
-    import os
-    for dataset, oids in selection_map.items():
-        file_info_query = Dataset.objects.get(name__iexact=dataset).metadata_model.objects.filter(
-            oid__in=oids).values_list('data_location__file_path', 'data_location__file_name',
-                                      'data_location__file_size').iterator()
-        files += [os.path.relpath(os.path.join(file_info[0], file_info[1]), ROOT_DIR) for file_info in file_info_query]
+    file_list = list(map(lambda selection: selection.filename, selection_list))
+
+    file_info_query = DataLocation.objects.filter(file_name__in=file_list).values_list(
+        'data_location__file_path', 'data_location__file_name', 'data_location__file_size').iterator()
+    files += [os.path.relpath(os.path.join(file_info[0], file_info[1]), ROOT_DIR) for file_info in file_info_query]
 
     id = schedule_archiving_of_files(ROOT_DIR, files)
     return HttpResponse(str(id), status=200)
-
-
-def access_denied(request):
-    return render(request, 'frontend/access_denied.html', {})
 
 
 def register(request: HttpRequest) -> HttpResponse:

@@ -1,3 +1,13 @@
-<h1>Something went wrong</h1>
+
+{% extends "frontend/base.html" %}
+
+{% block title %}SST Archive - 404{% endblock %}
+
+{% block content %}
+
+<h2>Something went wrong</h2>
+
 <p>The file "{{ filename }}" does not exist at the expected location.</p>
 <p>Please contact the system administrator.</p>
+
+{% endblock %}

@@ -6,14 +6,12 @@ from django.shortcuts import render
 from data_access.forms import TokenForm
 from data_access.utils import data_location_requires_access_grant, has_access_to_data_location, \
     has_valid_token_for_data_location
-from dataset.models import Dataset, DataLocation
+from dataset.models import DataLocation
 
 
-def download_data_cube(request: HttpRequest, dataset: str, oid: str) -> HttpResponse:
+def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
     """View that lets the user download a datacube if they have the right access token or user permissions."""
-    dataset_obj = Dataset.objects.get(name__iexact=dataset)
-    metadata = dataset_obj.metadata_model.objects.get(oid=oid)
-    data_location: DataLocation = metadata.data_location
+    data_location = DataLocation.objects.get(file_name__iexact=filename)
 
     form = TokenForm()
 
@@ -38,8 +36,6 @@ def download_data_cube(request: HttpRequest, dataset: str, oid: str) -> HttpResp
 
     if not access_granted:
         return render(request, 'data_access/token_prompt.html', {
-            'dataset': dataset,
-            'oid': oid,
             'data_location': data_location,
             'form': form,
             'release_comment': data_location.access_control.release_comment

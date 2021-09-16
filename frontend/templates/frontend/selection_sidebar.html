@@ -8,11 +8,11 @@
     <table class="table row overflow-hidden" style="table-layout: fixed">
         {% for selection in selection_list %}
         <tr>
-            <td>{% show_selection_control selection.dataset selection.oid True %}</td>
+            <td>{% show_selection_control selection.filename True %}</td>
             <td style="max-width: 14em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><small><a
-                    href="{% url 'metadata_detail' selection.dataset selection.oid %}">{{ selection.oid }}</a></small>
+                    href="{% url 'file_detail' selection.filename %}">{{ selection.filename }}</a></small>
             </td>
-            <td><a href="{% url 'download_data_cube' selection.dataset selection.oid %}"><i class="bi bi-download"></i></a>
+            <td><a href="{% url 'download_data_cube' selection.filename %}"><i class="bi bi-download"></i></a>
             </td>
             <td></td>
         </tr>

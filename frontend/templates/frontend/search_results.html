@@ -24,19 +24,21 @@
     {% for metadata in page_obj %}
         <tr>
             <td scope="row">
-               {% show_selection_control metadata.dataset metadata.oid metadata.selected %}
+               {% show_selection_control metadata.filename metadata.selected %}
             </td>
             <td scope="row">
+                <a href="{% url 'file_detail' metadata.filename %}">
                 {% if metadata.thumbnail %}
-                <a href="{% url 'metadata_detail' metadata.dataset metadata.oid  %}"><img style="width: 50%" src="{{ metadata.thumbnail }}"/></a>
+                <img style="width: 50%" src="{{ metadata.thumbnail }}"/>
                 {% else %}
-                <a href="{% url 'metadata_detail' metadata.dataset metadata.oid  %}">{{ metadata.oid }}</a>
+                {{ metadata.oid }}
                 {% endif %}
+                </a>
             </td>
-            <td scope="row">{{ metadata.dataset }}</td>
+            <td scope="row">{{ metadata.instrument }}</td>
             <td scope="row">{{ metadata.date }}</td>
             <td scope="row">{{ metadata.file_size|filesizeformat }}</td>
-            <td scope="row"><a class="download-symbol bi bi-download" href="{% url 'download_data_cube' metadata.dataset metadata.oid %}"></a></td>
+            <td scope="row"><a class="download-symbol bi bi-download" href="{% url 'download_data_cube' metadata.filename %}"></a></td>
         </tr>
     {% endfor %}
 {% else %}

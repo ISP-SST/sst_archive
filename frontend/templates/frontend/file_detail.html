@@ -8,27 +8,27 @@
 
     {% if metadata %}
 
-    <h2>Observation {{ metadata.oid }}</h2>
+    <!-- <h2>Observation {{ metadata.oid }}</h2> -->
 
 
     <div class="row">
-        <h3>Preview</h3>
+        <h3>Preview of {{ data_location.file_name }}</h3>
         <div class="mb-5 col-8">
             {% load static %}
-            {% if metadata.data_location.animated_preview %}
-            <img src="{{ metadata.data_location.animated_preview.animated_gif }}" />
-            {% elif metadata.data_location.thumbnail %}
-            <img src="{{ metadata.data_location.thumbnail.image_url }}" />
+            {% if data_location.animated_preview %}
+            <img src="{{ data_location.animated_preview.animated_gif }}" />
+            {% elif data_location.thumbnail %}
+            <img src="{{ data_location.thumbnail.image_url }}" />
             {% endif %}
         </div>
 
         <div class="mt-5 col-4">
             <div class="card">
                 <div class="card-body row">
-                    <a class="text-center card-link" href="{% url 'download_data_cube' dataset.name metadata.oid %}">
+                    <a class="text-center card-link" href="{% url 'download_data_cube' data_location.file_name %}">
                         <button class="btn btn-primary"><i class="bi bi-download"></i> Download FITS data cube</button>
                     </a>
-                    <span class="text-center">{{ metadata.data_location.file_size|filesizeformat }}</span>
+                    <span class="text-center">{{ data_location.file_size|filesizeformat }}</span>
                 </div>
             </div>
         </div>
