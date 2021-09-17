@@ -8,7 +8,7 @@ from datetime import datetime
 from django.conf import settings
 from django.utils.timezone import make_aware
 
-from dataset.models import DataLocation, Dataset
+from dataset.models import DataLocation, Instrument
 from data_access.models import DataLocationAccessControl
 from extra_data.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
@@ -46,15 +46,15 @@ def _generate_access_control_entities(data_location, fits_header):
     access_control.save()
 
 
-def _create_or_update_data_location(fits_cube, dataset):
+def _create_or_update_data_location(fits_cube, instrument):
     (fits_cube_path, fits_cube_name) = os.path.split(fits_cube)
     cube_size = os.path.getsize(fits_cube)
 
     try:
-        data_location = DataLocation.objects.get(dataset=dataset, file_path=fits_cube_path, file_name=fits_cube_name)
+        data_location = DataLocation.objects.get(instrument=instrument, file_path=fits_cube_path, file_name=fits_cube_name)
         data_location.file_size = cube_size
     except DataLocation.DoesNotExist:
-        data_location = DataLocation(dataset=dataset, file_path=fits_cube_path, file_size=cube_size,
+        data_location = DataLocation(instrument=instrument, file_path=fits_cube_path, file_size=cube_size,
                                      file_name=fits_cube_name)
 
     data_location.save()
@@ -98,8 +98,8 @@ def _create_image_preview(hdus, data_location):
     preview.save()
 
 
-def _create_or_update_metadata(fits_header, dataset, data_location, oid=None):
-    new_model_type = dataset.metadata_model
+def _create_or_update_metadata(fits_header, instrument, data_location, oid=None):
+    new_model_type = instrument.metadata_model
 
     fields = [field.name for field in new_model_type._meta.get_fields()]
 
@@ -109,7 +109,7 @@ def _create_or_update_metadata(fits_header, dataset, data_location, oid=None):
         oid = _generate_observation_id(fits_header)
 
     for key in fits_header:
-        model_keyword = str(key).lower().replace('-', '_')
+        model_keyword = str(key).lower().replace('-', '_').replace(' ', '_')
         if model_keyword in fields:
             properties[model_keyword] = fits_header.get(key)
 
@@ -162,15 +162,15 @@ class Command(BaseCommand):
         # TODO(daniel): Check that 'INSTRUME' key exists in header.
         instrument = str(fits_header['INSTRUME']).strip().lower()
 
-        dataset = Dataset.objects.get(name__iexact=instrument)
+        instrument = Instrument.objects.get(name__iexact=instrument)
 
-        data_location = _create_or_update_data_location(fits_cube, dataset)
+        data_location = _create_or_update_data_location(fits_cube, instrument)
 
         _generate_access_control_entities(data_location, fits_header)
 
         oid = options.get('observation_id', None)
         print('Extracting metadata from FITS cube...')
-        _create_or_update_metadata(fits_header, dataset, data_location, oid)
+        _create_or_update_metadata(fits_header, instrument, data_location, oid)
 
         if options['generate_image_previews']:
             # Generate static image preview.
