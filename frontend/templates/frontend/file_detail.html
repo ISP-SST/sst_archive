@@ -45,10 +45,12 @@
         </thead>
         <tbody>
         {% for key, value in metadata_fields.items %}
+        {% if value is not None %}
         <tr>
             <th scope="row">{{ key }}</th>
             <td class="overflow-auto">{{ value }}</td>
         </tr>
+        {% endif %}
         {% endfor %}
         </tbody>
     </table>

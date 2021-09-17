@@ -8,15 +8,16 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 
 from data_access.utils import schedule_archiving_of_files
-from dataset.models import DataLocation, Instrument
+from dataset.models import DataLocation
 from .complex_filters import get_complex_filter
 from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
 from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
 
 
 def file_detail(request, filename):
-    data_location = DataLocation.objects.select_related('animated_preview', 'thumbnail').get(file_name__iexact=filename)
-    metadata = data_location.instrument.metadata_model.objects.get(data_location=data_location)
+    data_location = DataLocation.objects.select_related('animated_preview', 'thumbnail', 'metadata').get(
+        file_name__iexact=filename)
+    metadata = data_location.metadata
 
     metadata_fields = {field.verbose_name: field.value_from_object(metadata) for field in metadata._meta.get_fields()}
 
@@ -86,41 +87,37 @@ def search_view(request):
     if 'polarimetry' in form.cleaned_data:
         pol = form.cleaned_data['polarimetry']
         if pol == 'polarimetric':
-            polarimetry_query['naxis4__exact'] = 4
+            polarimetry_query['metadata__naxis4__exact'] = 4
         elif pol == 'nonpolarimetric':
-            polarimetry_query['naxis4__exact'] = 1
+            polarimetry_query['metadata__naxis4__exact'] = 1
 
     query = form.cleaned_data['query']
     freeform_query_q = get_complex_filter(query)
-
-    results = []
 
     persist_search_form(request, form.cleaned_data)
 
     date_query = {}
     if start_date:
-        date_query['date_beg__gte'] = start_date
+        date_query['metadata__date_beg__gte'] = start_date
     if end_date:
-        date_query['date_end__lte'] = end_date
+        date_query['metadata__date_end__lte'] = end_date
 
     complete_query = {**date_query, **polarimetry_query}
 
-    # TODO(daniel): wavemin + wavemax query is incorrect.
     if wavemin:
-        complete_query['wavelnth__gte'] = wavemin
+        complete_query['metadata__wavelnth__gte'] = wavemin
     if wavemax:
-        complete_query['wavelnth__lte'] = wavemax
+        complete_query['metadata__wavelnth__lte'] = wavemax
 
-    instruments_queryset = Instrument.objects.all()
-    if instrument != 'all':
-        instruments_queryset = instruments_queryset.filter(name__iexact=instrument)
+    instruments_query = {'instrument__name__iexact': instrument} if instrument != 'all' else {}
 
-    for instrument in instruments_queryset:
-        metadata_list = instrument.metadata_model.objects.filter(freeform_query_q).filter(
-            **complete_query).select_related(
-            'data_location', 'data_location__instrument', 'data_location__thumbnail')
-        results += [_create_search_result_from_metadata(request, metadata.data_location, metadata) for metadata in
-                    metadata_list]
+    data_locations = DataLocation.objects.filter(**instruments_query).filter(freeform_query_q).filter(
+        **complete_query).select_related('metadata', 'instrument', 'thumbnail').only('metadata__oid', 'file_name',
+                                                                                     'instrument__name',
+                                                                                     'metadata__date_beg',
+                                                                                     'file_size', 'thumbnail')
+    results = [_create_search_result_from_metadata(request, data_location, data_location.metadata) for data_location in
+               data_locations]
 
     paginator = Paginator(results, 25)
     page_number = request.GET.get('page', 1)
