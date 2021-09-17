@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 
 from data_access.utils import schedule_archiving_of_files
 from dataset.models import DataLocation, Instrument
+from .complex_filters import get_complex_filter
 from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
 from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
 
@@ -90,11 +91,7 @@ def search_view(request):
             polarimetry_query['naxis4__exact'] = 1
 
     query = form.cleaned_data['query']
-    extra_query_args = {}
-
-    if len(query) > 0:
-        query_parts = query.split(',')
-        extra_query_args = {part.split('=')[0]: part.split('=')[1] for part in query_parts}
+    freeform_query_q = get_complex_filter(query)
 
     results = []
 
@@ -105,7 +102,8 @@ def search_view(request):
         date_query['date_beg__gte'] = start_date
     if end_date:
         date_query['date_end__lte'] = end_date
-    complete_query = {**extra_query_args, **date_query, **polarimetry_query}
+
+    complete_query = {**date_query, **polarimetry_query}
 
     # TODO(daniel): wavemin + wavemax query is incorrect.
     if wavemin:
@@ -118,9 +116,11 @@ def search_view(request):
         instruments_queryset = instruments_queryset.filter(name__iexact=instrument)
 
     for instrument in instruments_queryset:
-        metadata_list = instrument.metadata_model.objects.filter(**complete_query).select_related(
+        metadata_list = instrument.metadata_model.objects.filter(freeform_query_q).filter(
+            **complete_query).select_related(
             'data_location', 'data_location__instrument', 'data_location__thumbnail')
-        results += [_create_search_result_from_metadata(request, metadata.data_location, metadata) for metadata in metadata_list]
+        results += [_create_search_result_from_metadata(request, metadata.data_location, metadata) for metadata in
+                    metadata_list]
 
     paginator = Paginator(results, 25)
     page_number = request.GET.get('page', 1)
