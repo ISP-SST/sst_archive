@@ -114,8 +114,6 @@ class InvalidFilterError(Exception):
 
 def get_complex_filter(search_expression, ignore_bad_filters=False):
     """Parse a complex search expression into a Q filter usable by Django"""
-    print("Running complex filter")
-
     try:
         parse_result = SearchExpressionParser.parseString(search_expression, parseAll=True)
     except ParseException as why:
