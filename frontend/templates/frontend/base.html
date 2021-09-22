@@ -1,54 +1,69 @@
 {% load static %}
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <!-- <link rel="stylesheet" href="{% static 'frontend/style.css' %}"> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+
     <title>{% block title %}SST Archive Prototype{% endblock %}</title>
 </head>
 
 <body>
-    <div id="main-container" class="container">
+<div id="main-container" class="container">
 
-        <header class="row mb-5">
-            <div class="row">
-                <h1 class="col-8 mt-3"><a style="color: #000000; text-decoration: none" href="{% url 'search' %}">SST Archive Prototype</a></h1>
-
-                {% if user.is_authenticated %}
-                <div class="col-4 text-right">
-                    <small>
-                        Logged in as <i>{{ user.email }}</i>
-                        <a href="{% url 'logout' %}">Log out</a>
-                        {% if user.is_staff %}
-                        <p><a href="{% url 'admin:index' %}">Admin</a></p>
-                        {% endif %}
-                    </small>
-                </div>
-                {% else %}
-                <div class="col-4 text-right">
-                    <small>
-                        <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
-                        <a href="{% url 'register' %}">Register</a>
-                    </small>
-                </div>
-                {% endif %}
-            </div>
-        </header>
-
+    <header class="row mb-5">
         <div class="row">
-            <div id="sidebar" class="col-3">
-                {% block sidebar %}
-                {% include "frontend/search_sidebar.html" %}
-                {% include "frontend/selection_sidebar.html" %}
-                {% endblock %}
-            </div>
+            <h1 class="col-8 mt-3"><a style="color: #000000; text-decoration: none" href="{% url 'search' %}">SST
+                Archive Prototype</a></h1>
 
-            <div id="content"  class="col-9 ml-5">
-                {% block content %}{% endblock %}
+            {% if user.is_authenticated %}
+            <div class="col-4 text-right">
+                <small>
+                    Logged in as <i>{{ user.email }}</i>
+                    <a href="{% url 'logout' %}">Log out</a>
+                    {% if user.is_staff %}
+                    <p><a href="{% url 'admin:index' %}">Admin</a></p>
+                    {% endif %}
+                </small>
             </div>
+            {% else %}
+            <div class="col-4 text-right">
+                <small>
+                    <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
+                    <a href="{% url 'register' %}">Register</a>
+                </small>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="row">
+        <div id="sidebar" class="col-3">
+            {% block sidebar %}
+            {% include "frontend/search_sidebar.html" %}
+            {% include "frontend/selection_sidebar.html" %}
+            {% endblock %}
+        </div>
+
+        <div id="content" class="col-9 ml-5">
+            {% block content %}{% endblock %}
         </div>
     </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+<script lang="javascript">
+
+</script>
 </body>
 </html>

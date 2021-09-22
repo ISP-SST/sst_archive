@@ -38,7 +38,7 @@ def file_detail(request, filename):
 
 
 class SearchResult:
-    def __init__(self, oid, filename, instrument, date, file_size, thumbnail, selected=False):
+    def __init__(self, oid, filename, instrument, date, file_size, thumbnail, additional_values, selected=False):
         self.oid = oid
         self.filename = filename
         self.instrument = instrument
@@ -46,17 +46,41 @@ class SearchResult:
         self.file_size = file_size
         self.thumbnail = thumbnail
         self.selected = selected
+        self.additional_values = additional_values
 
 
-def _create_search_result_from_metadata(request, data_location, metadata):
+def _create_search_result_from_metadata(request, data_location, metadata, additional_columns):
     if hasattr(metadata.data_location, 'thumbnail'):
         thumbnail = metadata.data_location.thumbnail.image_url if metadata.data_location.thumbnail else None
     else:
         thumbnail = None
 
+    metadata_additional_fields = [field_spec.removeprefix('metadata__') for field_spec in additional_columns.get_field_specs()
+                                  if field_spec.startswith('metadata__')]
+    metadata_additional_values = [getattr(metadata, field) for field in metadata_additional_fields if hasattr(metadata, field)]
+
     return SearchResult(metadata.oid, data_location.file_name, data_location.instrument.name, metadata.date_beg,
-                        metadata.data_location.file_size, thumbnail,
+                        metadata.data_location.file_size, thumbnail, metadata_additional_values,
                         is_selected_in_session(request, data_location.file_name))
+
+
+class AdditionalColumns:
+    class Column():
+        def __init__(self, column_name, column_field_spec):
+            self.column_name = column_name
+            self.column_field_spec = column_field_spec
+
+    def __init__(self):
+        self.additional_columns = []
+
+    def add(self, column_name, column_field_spec):
+        self.additional_columns.append(self.Column(column_name, column_field_spec))
+
+    def get_names(self):
+        return [col.column_name for col in self.additional_columns]
+
+    def get_field_specs(self):
+        return [col.column_field_spec for col in self.additional_columns]
 
 
 def search_view(request):
@@ -75,6 +99,8 @@ def search_view(request):
 
     instrument = form.cleaned_data['instrument'] if 'instrument' in form.cleaned_data else 'all'
 
+    additional_columns = AdditionalColumns()
+
     wavemin = None
     if 'wavemin' in form.cleaned_data and form.cleaned_data['wavemin'] != '':
         wavemin = form.cleaned_data['wavemin']
@@ -82,6 +108,12 @@ def search_view(request):
     wavemax = None
     if 'wavemax' in form.cleaned_data and form.cleaned_data['wavemax'] != '':
         wavemax = form.cleaned_data['wavemax']
+
+    spectral_line_ids = None
+    spectral_lines = None
+    if 'spectral_lines' in form.cleaned_data and form.cleaned_data['spectral_lines'] != '':
+        spectral_lines = form.cleaned_data['spectral_lines']
+        spectral_line_ids = [int(sl) for sl in spectral_lines]
 
     polarimetry_query = {}
     if 'polarimetry' in form.cleaned_data:
@@ -104,6 +136,10 @@ def search_view(request):
 
     complete_query = {**date_query, **polarimetry_query}
 
+    if spectral_line_ids:
+        complete_query['metadata__filter1__in'] = spectral_line_ids
+        additional_columns.add('Spectral Line', 'metadata__filter1')
+
     if wavemin:
         complete_query['metadata__wavelnth__gte'] = wavemin
     if wavemax:
@@ -115,8 +151,9 @@ def search_view(request):
         **complete_query).select_related('metadata', 'instrument', 'thumbnail').only('metadata__oid', 'file_name',
                                                                                      'instrument__name',
                                                                                      'metadata__date_beg',
-                                                                                     'file_size', 'thumbnail')
-    results = [_create_search_result_from_metadata(request, data_location, data_location.metadata) for data_location in
+                                                                                     'file_size', 'thumbnail',
+                                                                                     *additional_columns.get_field_specs())
+    results = [_create_search_result_from_metadata(request, data_location, data_location.metadata, additional_columns) for data_location in
                data_locations]
 
     paginator = Paginator(results, 25)
@@ -127,6 +164,7 @@ def search_view(request):
         'search_results': results,
         'paginator': paginator,
         'page_obj': page_obj,
+        'additional_column_names': additional_columns.get_names(),
     }
 
     return render(request, 'frontend/search_results.html', context)

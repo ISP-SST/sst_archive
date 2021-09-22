@@ -5,11 +5,34 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 
+from frontend.utils import get_memory_cache
+
 
 def initial_start_date():
     # Start date defaults to three years back.
     today = datetime.date.today()
     return today.replace(year=today.year - 3)
+
+
+class DropdownCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
+    template_name = 'frontend/widgets/dropdown_checkbox_select.html'
+
+
+def get_spectral_line_choices():
+    cache = get_memory_cache()
+
+    SPECTRAL_LINES_CACHE_KEY = 'known_spectral_line_choices'
+
+    choices = cache.get(SPECTRAL_LINES_CACHE_KEY)
+
+    if not choices:
+        # Repopulate cache.
+        from metadata.models import CombinedMetadata
+        choices = [('%s' % (metadata[0]), '%s Å (%s)' % (metadata[0], metadata[1])) for
+               metadata in CombinedMetadata.objects.order_by('filter1').values_list('filter1', 'waveband').distinct()]
+        cache.set(SPECTRAL_LINES_CACHE_KEY, choices)
+
+    return choices
 
 
 class SearchForm(forms.Form):
@@ -34,6 +57,9 @@ class SearchForm(forms.Form):
                                required=False)
     wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                required=False)
+    spectral_lines = forms.MultipleChoiceField(label='Spectral Lines',
+                               choices=get_spectral_line_choices,
+                               widget=DropdownCheckboxSelectMultiple)
     polarimetry = forms.ChoiceField(label='Polarimetry',
                                     choices=(('any', 'Any'),
                                              ('polarimetric', 'Polarimetric'),
@@ -70,6 +96,7 @@ def get_initial_search_form(request):
 
 
 def persist_search_form(request, cleaned_form_data):
+    # request.session['search_form'] = serializers.serialize("json", cleaned_form_data)
     request.session['search_form'] = json.dumps(cleaned_form_data, cls=DjangoJSONEncoder)
 
 

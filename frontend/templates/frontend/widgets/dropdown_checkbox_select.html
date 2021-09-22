@@ -1,0 +1,23 @@
+{% with id=widget.attrs.id %}
+<div class="dropdown">
+  <button type="button" class=" dropdown-toggle form-control" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+    Select Spectral Lines
+  </button>
+
+  <div {% if id %}id="{{ id }}"{% endif %} class="{% if widget.attrs.class %}{{ widget.attrs.class }}{% endif %} dropdown-menu" aria-labelledby="dropdownMenuButton">
+    {% for group, options, index in widget.optgroups %}
+      {% if group %}
+        <div class="form-group">{{ group }}<div {% if id %}id="{{ id }}_{{ index }}"{% endif %}>
+      {% endif %}
+        {% for option in options %}
+            <div class="dropdown-item">
+              {% include option.template_name with widget=option %}
+            </div>
+        {% endfor %}
+      {% if group %}
+        </div></div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endwith %}

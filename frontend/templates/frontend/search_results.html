@@ -12,11 +12,14 @@
         <thead class=".thead-light">
         <tr>
             <th scope="col" style="width: 5em">Select</th>
-            <th scope="col" style="">Preview</th>
-            <th scope="col" style="width: 10em">Instrument</th>
-            <th scope="col">Observation Date (Began)</th>
-            <th scope="col" style="width: 7em">Data Size</th>
+            <th scope="col" style="width: 12em">Preview</th>
+            <th scope="col" style="width: 7em">Instrument</th>
+            <th scope="col" style="width: 12em">Observation Date (Began)</th>
+            <th scope="col" style="width: 6em">Data Size</th>
             <th scope="col" style="width: 5em">Download</th>
+            {% for column_name in additional_column_names %}
+                <th scope="col" style="width: 4em">{{ column_name }}</th>
+            {% endfor %}
         </tr>
         </thead>
         <tbody>
@@ -37,8 +40,11 @@
             </td>
             <td scope="row">{{ metadata.instrument }}</td>
             <td scope="row">{{ metadata.date }}</td>
-            <td scope="row">{{ metadata.file_size|filesizeformat }}</td>
-            <td scope="row"><a class="download-symbol bi bi-download" href="{% url 'download_data_cube' metadata.filename %}"></a></td>
+            <td scope="row" class="text-center">{{ metadata.file_size|filesizeformat }}</td>
+            <td scope="row" class="text-center"><a class="download-symbol bi bi-download" href="{% url 'download_data_cube' metadata.filename %}"></a></td>
+            {% for value in metadata.additional_values %}
+            <td scope="row">{{ value }}</td>
+            {% endfor %}
         </tr>
     {% endfor %}
 {% else %}
