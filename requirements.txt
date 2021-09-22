@@ -2,5 +2,15 @@ Django~=3.2.6
 astropy~=4.3.1
 pyparsing~=2.4.7
 django_debug_toolbar~=3.2.2
+djangorestframework~=3.12.4
+django-filter~=2.4.0
+
+# Added django-q for queueing asynchronous tasks. If we end up
+# compressing FITS cube in storage we might not need to queue
+# it up since just TAR-ing on the fly (without compression)
+# should be feasible for streaming in "real-time".
 django_q~=1.3.9
+
+# Currently used for generating static and animated previews.
+# Likely not going to be relevant in the future if the
 matplotlib~=3.4.3

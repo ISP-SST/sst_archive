@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-b0ddy$h-j+*9$emw*!92l4tip7&8q)vj%7-m$hr_ksj1xwf7ih'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 INTERNAL_IPS = ['127.0.0.1']
 
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # Add debug toolbar
     'debug_toolbar',
     'django_q',
+    'rest_framework',
+    'django_filters',
 
     'dataset',
     'metadata',
@@ -49,8 +51,14 @@ INSTALLED_APPS = [
     'ingestion',
     'frontend',
     'extra_data',
+    'api',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -180,3 +188,26 @@ SCIENCE_DATA_ROOT = '/Users/dani2978/science_data/'
 ZIP_ARCHIVE_MAX_FILE_SIZE = 20*1024*1024*1024 # 20 GB
 ZIP_ARCHIVE_MISSING_FILE_NAME = 'missing_files.txt'
 ZIP_ARCHIVE_MAX_SIZE = 20*1024*1024*1024 # 20 GB
+
+
+LOGGING = {
+    'version': 1,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
+}
