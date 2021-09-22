@@ -42,7 +42,7 @@ class DataLocationAccessGrant(models.Model):
 
 
 def generate_token():
-    # TODO(daniel): While a 16-bit secure token is unlikely to create collisions in the database,
+    # TODO(daniel): While a 16 byte secure token is unlikely to create collisions in the database,
     #               we should still have a retry-loop that catches such errors and regenerates a
     #               new token. In practice there will be very few tokens active at the same time.
     return secrets.token_urlsafe(16)
