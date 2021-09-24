@@ -9,12 +9,12 @@ from astropy.visualization import astropy_mpl_style
 from astropy.io import fits
 
 
-def _get_frame_data(image_data, index):
-    frame_data = image_data[index][0][0]
+def _get_frame_data(image_data, index, wavelength_index=0):
+    frame_data = image_data[index][0][wavelength_index]
     return frame_data
 
 
-def generate_animated_gif_preview(data_cube, gif_file):
+def generate_animated_gif_preview(data_cube, gif_file, wavelength_pos=0.0):
     matplotlib.rc('font', family='sans-serif')
     matplotlib.rc('font', serif='Helvetica Neue')
     matplotlib.rc('text', usetex='false')
@@ -34,11 +34,14 @@ def generate_animated_gif_preview(data_cube, gif_file):
 
     fig, ax = plt.subplots()
 
-    im = plt.imshow(_get_frame_data(image_data, index), animated=True, interpolation="nearest")
+    max_wavelength_index = len(image_data[0][0]) - 1
+    wavelength_index = round(max_wavelength_index * wavelength_pos)
+
+    im = plt.imshow(_get_frame_data(image_data, index, wavelength_index), animated=True, interpolation="nearest")
 
     def _update_video(index):
         print('Updating video with frame index %d' % index)
-        im.set_array(_get_frame_data(image_data, index))
+        im.set_array(_get_frame_data(image_data, index, wavelength_index))
         return im,
 
     n_frames = len(image_data)
@@ -54,6 +57,7 @@ def main():
     parser = argparse.ArgumentParser(description='Export primary FITS cube data to video.')
     parser.add_argument('image_file', help='file to export data from')
     parser.add_argument('output', default=None, help='output image file')
+    parser.add_argument('--wavelength-pos', type=float, default=0.0, help='normalized wavelength position (0.0 - 1.0)')
 
     args = parser.parse_args()
 
@@ -65,7 +69,7 @@ def main():
 
     data_cube = fits.open(args.image_file)
 
-    generate_animated_gif_preview(data_cube, gif_file)
+    generate_animated_gif_preview(data_cube, gif_file, args.wavelength_pos)
 
 
 if __name__ == '__main__':
