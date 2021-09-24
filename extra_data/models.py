@@ -1,13 +1,6 @@
 from django.db import models
 
 
-class ExtraData(models.Model):
-    """This was just created as a proof of concept. Not used. Nothing to see here."""
-    data_location = models.ForeignKey('dataset.DataLocation', related_name='extra_data', null=True,
-                                      blank=True, on_delete=models.SET_NULL)
-    new_field = models.TextField(verbose_name='NEW_FIELD', help_text='New Test Field', blank=True, null=True)
-
-
 # TODO(daniel): These models that link to a file should probably be using the Django FilePathField instead.
 
 

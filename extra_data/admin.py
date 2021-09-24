@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from extra_data.models import ExtraData, AnimatedGifPreview, ImagePreview
-
-
-@admin.register(ExtraData)
-class CrispAdmin(admin.ModelAdmin):
-	pass
+from extra_data.models import AnimatedGifPreview, ImagePreview
 
 
 @admin.register(AnimatedGifPreview)
