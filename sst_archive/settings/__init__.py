@@ -57,9 +57,10 @@ INSTALLED_APPS = [
     'metadata',
     'data_access',
     'ingestion',
-    'frontend',
     'extra_data',
+    'tags',
     'api',
+    'frontend',
 ]
 
 REST_FRAMEWORK = {

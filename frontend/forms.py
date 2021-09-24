@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 
 from frontend.utils import get_memory_cache
+from tags.models import Tag
 
 
 def initial_start_date():
@@ -16,6 +17,17 @@ def initial_start_date():
 
 class DropdownCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     template_name = 'frontend/widgets/dropdown_checkbox_select.html'
+
+    def __init__(self, attrs=None):
+        if attrs:
+            self.full_field_name = attrs.get('full_field_name', None)
+        super().__init__(attrs)
+
+    def get_context(self, name, value, attrs):
+        return {
+            **super().get_context(name, value, attrs),
+            'full_field_name': self.full_field_name
+        }
 
 
 def get_spectral_line_choices():
@@ -31,6 +43,21 @@ def get_spectral_line_choices():
         choices = [('%s' % (metadata[0]), '%s Å (%s)' % (metadata[0], metadata[1])) for
                metadata in CombinedMetadata.objects.order_by('filter1').values_list('filter1', 'waveband').distinct()]
         cache.set(SPECTRAL_LINES_CACHE_KEY, choices)
+
+    return choices
+
+
+def get_features_choices():
+    cache = get_memory_cache()
+    FEATURES_CACHE_KEY = 'known_features'
+
+    choices = cache.get(FEATURES_CACHE_KEY)
+
+    if not choices:
+        # Repopulate cache.
+        tags = Tag.objects.filter(category__name__iexact='Features')
+        choices = [(tag.name, tag.name) for tag in tags]
+        cache.set(FEATURES_CACHE_KEY, choices)
 
     return choices
 
@@ -53,19 +80,27 @@ class SearchForm(forms.Form):
     instrument = forms.ChoiceField(label='Instrument',
                                    choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')),
                                    widget=forms.Select(attrs={'class': 'form-select'}))
-    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
-                               required=False)
-    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
-                               required=False)
     spectral_lines = forms.MultipleChoiceField(label='Spectral Lines',
                                choices=get_spectral_line_choices,
-                               widget=DropdownCheckboxSelectMultiple)
+                               widget=DropdownCheckboxSelectMultiple(
+                                   attrs={
+                                       'full_field_name': 'Spectral Lines'
+                                   }
+                               ))
+    features = forms.MultipleChoiceField(label='Features', choices=get_features_choices, widget=DropdownCheckboxSelectMultiple(attrs={
+        'full_field_name': 'Features'
+    }))
     polarimetry = forms.ChoiceField(label='Polarimetry',
                                     choices=(('any', 'Any'),
                                              ('polarimetric', 'Polarimetric'),
                                              ('nonpolarimetric', 'Non-Polarimetric')),
                                     widget=forms.Select(attrs={'class': 'form-select'}), required=False)
     query = forms.CharField(label='Query', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                               required=False)
+    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                               required=False)
+
 
 
 class RegistrationForm(forms.Form):
