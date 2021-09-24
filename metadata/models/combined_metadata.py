@@ -18,10 +18,10 @@ class CombinedMetadata(models.Model):
         verbose_name_plural = 'Combined Metadata'
         ordering = ['date_beg']
 
-    oid = models.TextField('Observation ID',
+    oid = models.CharField('Observation ID',
                            help_text='Unique identification string for the observation metadata, usually in the form '
                                      'YYYYMMDDHHMMSS; cannot be modified once it is set',
-                           unique=True, db_index=True)
+                           unique=True, db_index=True, max_length=255)
     data_location = models.OneToOneField('dataset.DataLocation', related_name='metadata', null=True,
                                       blank=True, on_delete=models.SET_NULL)
     fits_header = models.TextField(null=True, blank=True)

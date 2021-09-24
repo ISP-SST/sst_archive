@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='Crisp',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('oid', models.TextField(db_index=True, help_text='Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS; cannot be modified once it is set', unique=True, verbose_name='Observation ID')),
+                ('oid', models.CharField(db_index=True, help_text='Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS; cannot be modified once it is set', unique=True, verbose_name='Observation ID', max_length=255)),
                 ('fits_header', models.TextField(blank=True, null=True)),
                 ('date_beg', models.DateTimeField(blank=True, db_index=True, help_text='Start time of the observation [UTC]', null=True, verbose_name='DATE-BEG')),
                 ('date_end', models.DateTimeField(blank=True, db_index=True, help_text='End time of the observation [UTC]', null=True, verbose_name='DATE-END')),
@@ -263,7 +263,7 @@ class Migration(migrations.Migration):
             name='Chromis',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('oid', models.TextField(db_index=True, help_text='Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS; cannot be modified once it is set', unique=True, verbose_name='Observation ID')),
+                ('oid', models.CharField(db_index=True, help_text='Unique identification string for the observation metadata, usually in the form YYYYMMDDHHMMSS; cannot be modified once it is set', unique=True, verbose_name='Observation ID', max_length=255)),
                 ('fits_header', models.TextField(blank=True, null=True)),
                 ('date_beg', models.DateTimeField(blank=True, db_index=True, help_text='Start time of the observation [UTC]', null=True, verbose_name='DATE-BEG')),
                 ('date_end', models.DateTimeField(blank=True, db_index=True, help_text='End time of the observation [UTC]', null=True, verbose_name='DATE-END')),
