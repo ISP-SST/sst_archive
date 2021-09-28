@@ -12,6 +12,7 @@ from data_access.models import DataLocationAccessControl
 from extra_data.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from ingestion.utils.generate_image_preview import generate_image_preview
+from metadata.models import CombinedMetadata
 
 
 def _generate_observation_id(fits_header):
@@ -100,9 +101,9 @@ def _create_image_preview(hdus, data_location):
 
 
 def _create_or_update_metadata(fits_header, instrument, data_location, oid=None):
-    new_model_type = instrument.metadata_model
+    model_type = CombinedMetadata
 
-    fields = [field.name for field in new_model_type._meta.get_fields()]
+    fields = [field.name for field in model_type._meta.get_fields()]
 
     properties = {'fits_header': fits_header.tostring()}
 
@@ -117,9 +118,9 @@ def _create_or_update_metadata(fits_header, instrument, data_location, oid=None)
     properties['oid'] = oid
 
     try:
-        model = new_model_type.objects.get(oid=oid)
-    except new_model_type.DoesNotExist:
-        model = new_model_type(**properties)
+        model = model_type.objects.get(oid=oid)
+    except model_type.DoesNotExist:
+        model = model_type(**properties)
 
     for (key, value) in properties.items():
         attr = getattr(model, key)
@@ -163,7 +164,7 @@ class Command(BaseCommand):
         # TODO(daniel): Check that 'INSTRUME' key exists in header.
         instrument = str(fits_header['INSTRUME']).strip().lower()
 
-        instrument = Instrument.objects.get(name__iexact=instrument)
+        instrument, created = Instrument.objects.get_or_create(name=instrument.upper())
 
         data_location = _create_or_update_data_location(fits_cube, instrument)
 

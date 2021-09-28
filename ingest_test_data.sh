@@ -103,6 +103,8 @@ FITS_CUBES=(
 
 MAX_COUNT=100
 
+INGESTION_OPTIONS="--generate-animated-previews --generate-image-previews"
+
 for file in "${FITS_CUBES[@]}"; do
   if [ "$MAX_COUNT" -le 0 ]; then
     echo "Hit max count of cubes to import, aborting."
@@ -112,5 +114,5 @@ for file in "${FITS_CUBES[@]}"; do
   fi
 
   echo "Ingesting FITS cube: ${file}"
-  ./manage.py ingest_fits_cube --generate-image-previews --generate-animated-previews -f "${BASE_DIR}/${file}"
+  ./manage.py ingest_fits_cube ${INGESTION_OPTIONS} -f "${BASE_DIR}/${file}"
 done

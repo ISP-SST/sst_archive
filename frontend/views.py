@@ -51,9 +51,12 @@ class SearchResult:
         self.additional_values = additional_values
 
 
-def _create_search_result_from_metadata(request, data_location, metadata, additional_columns):
-    if hasattr(metadata.data_location, 'thumbnail'):
-        thumbnail = metadata.data_location.thumbnail.image_url if metadata.data_location.thumbnail else None
+def _create_search_result_from_metadata(request, data_location, additional_columns):
+    if not hasattr(data_location, 'metadata') or not data_location.metadata:
+        return None
+
+    if hasattr(data_location, 'thumbnail'):
+        thumbnail = data_location.thumbnail.image_url if data_location.thumbnail else None
     else:
         thumbnail = None
 
@@ -67,8 +70,8 @@ def _create_search_result_from_metadata(request, data_location, metadata, additi
         additional_values += [getattr(target_obj, field) for field in additional_fields if
                               hasattr(target_obj, field)]
 
-    return SearchResult(metadata.oid, data_location.file_name, data_location.instrument.name, metadata.date_beg,
-                        metadata.data_location.file_size, thumbnail, additional_values,
+    return SearchResult(data_location.metadata.oid, data_location.file_name, data_location.instrument.name,
+                        data_location.metadata.date_beg, data_location.file_size, thumbnail, additional_values,
                         is_selected_in_session(request, data_location.file_name))
 
 
@@ -187,9 +190,11 @@ def search_view(request):
                                               data_location=OuterRef('pk')).values('tag__name')
         data_locations = data_locations.annotate(feature_tags=Subquery(tags))
 
-    results = [_create_search_result_from_metadata(request, data_location, data_location.metadata, additional_columns)
+    results = [_create_search_result_from_metadata(request, data_location, additional_columns)
                for data_location in
                data_locations]
+
+    results = list(filter(None, results))
 
     paginator = Paginator(results, 25)
     page_number = request.GET.get('page', 1)
