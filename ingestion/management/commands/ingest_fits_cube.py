@@ -1,9 +1,8 @@
-import uuid
-
 from django.core.management.base import BaseCommand, CommandError
 from astropy.io import fits
 import os.path
 from datetime import datetime
+from pathlib import Path
 
 from django.conf import settings
 from django.utils.timezone import make_aware
@@ -73,7 +72,7 @@ def _create_gif_preview(hdus, data_location):
             preview.animated_gif = expected_gif_uri
             preview.save()
     except AnimatedGifPreview.DoesNotExist:
-        gif_filename = '%s.gif' % uuid.uuid4()
+        gif_filename = Path(data_location.file_name).with_suffix('.gif')
         gif_path = os.path.join(settings.GIF_ROOT, gif_filename)
         gif_uri = os.path.join(settings.GIF_URL_ROOT, gif_filename)
         preview = AnimatedGifPreview(data_location=data_location, animated_gif=gif_uri)
@@ -88,7 +87,7 @@ def _create_image_preview(hdus, data_location):
         image_path = preview.image_path
         image_url_path = preview.image_url
     except ImagePreview.DoesNotExist:
-        image_filename = '%s.png' % uuid.uuid4()
+        image_filename = Path(data_location.file_name).with_suffix('.png')
         image_path = os.path.join(settings.GENERATED_ROOT, 'images', image_filename)
         image_url_path = os.path.join(settings.GENERATED_URL_ROOT, 'images', image_filename)
         preview = ImagePreview(data_location=data_location, image_path=image_path, image_url=image_url_path)
