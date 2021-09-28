@@ -12,8 +12,8 @@ class DataLocationManager(models.Manager):
 class DataLocation(models.Model):
     instrument = models.ForeignKey('Instrument', on_delete=models.CASCADE, null=True)
     file_path = models.CharField(help_text='Path to the file, relative to the file root and excluding the name of the '
-                                           'file', max_length=255)
-    file_name = models.CharField(help_text='Full file name including extension (.fits)', max_length=255, unique=True)
+                                           'file', max_length=191)
+    file_name = models.CharField(help_text='Full file name including extension (.fits)', max_length=120, unique=True)
     file_size = models.PositiveBigIntegerField(help_text='Size of the file in bytes')
 
     objects = DataLocationManager()

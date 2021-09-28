@@ -8,6 +8,9 @@ DATABASES = {
 		'USER': 'sst_archive',
 		'HOST': 'localhost',
 		'PASSWORD': get_secret('DB_PASSWORD'),
+		'OPTIONS': {
+			'sql_mode': 'STRICT_TRANS_TABLES'
+		}
 	}
 }
 

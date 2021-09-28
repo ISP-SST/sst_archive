@@ -21,7 +21,7 @@ class CombinedMetadata(models.Model):
     oid = models.CharField('Observation ID',
                            help_text='Unique identification string for the observation metadata, usually in the form '
                                      'YYYYMMDDHHMMSS; cannot be modified once it is set',
-                           unique=True, db_index=True, max_length=255)
+                           unique=True, db_index=True, max_length=191)
     data_location = models.OneToOneField('dataset.DataLocation', related_name='metadata', null=True,
                                       blank=True, on_delete=models.SET_NULL)
     fits_header = models.TextField(null=True, blank=True)

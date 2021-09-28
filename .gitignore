@@ -1,7 +1,9 @@
 *.pyc
 .DS_Store
 /.idea
-db.sqlite3
+
+/venv
+/db.sqlite3
 
 /assets/generated
 /static
