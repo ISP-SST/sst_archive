@@ -24,7 +24,7 @@ class DataLocationAccessGrant(models.Model):
     # the time of the grant. Data can currently be ingested without a user account.
     # TODO: Would we rather have a strict requirement on the specific user being registered in the system prior to
     #       ingestion in the pipeline?
-    user_email = models.CharField(verbose_name='User email', max_length=200)
+    user_email = models.CharField(verbose_name='User email', max_length=191)
     data_location = models.ForeignKey('dataset.DataLocation', verbose_name='Data location',
                                       help_text='The data location that this grant gives the user access to.',
                                       on_delete=models.CASCADE, related_name='access_grants', null=False)
@@ -54,7 +54,7 @@ class DataLocationAccessToken(models.Model):
     data_location = models.ForeignKey('dataset.DataLocation', verbose_name='Data location',
                                       help_text='The data location that this token gives provides access to.',
                                       on_delete=models.CASCADE, related_name='access_token')
-    token_string = models.CharField('Token String', unique=True, max_length=255,
+    token_string = models.CharField('Token String', unique=True, max_length=191,
                                     help_text='Unique textual representation of token',
                                     default=generate_token)
     grant_date = models.DateTimeField('Grant Date', help_text='The time and date when this access token was created',
