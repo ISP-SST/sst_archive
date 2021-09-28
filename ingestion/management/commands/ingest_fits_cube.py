@@ -78,7 +78,8 @@ def _create_gif_preview(hdus, data_location):
         preview = AnimatedGifPreview(data_location=data_location, animated_gif=gif_uri)
         preview.save()
 
-    generate_animated_gif_preview(hdus, gif_path)
+    if not os.path.isfile(gif_path):
+        generate_animated_gif_preview(hdus, gif_path)
 
 
 def _create_image_preview(hdus, data_location):
@@ -92,7 +93,8 @@ def _create_image_preview(hdus, data_location):
         image_url_path = os.path.join(settings.GENERATED_URL_ROOT, 'images', image_filename)
         preview = ImagePreview(data_location=data_location, image_path=image_path, image_url=image_url_path)
 
-    generate_image_preview(hdus, image_path)
+    if not os.path.isfile(image_path):
+        generate_image_preview(hdus, image_path)
 
     preview.save()
 
