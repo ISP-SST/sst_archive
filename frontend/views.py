@@ -16,6 +16,15 @@ from .file_selection import toggle_selection_from_session, is_selected_in_sessio
 from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
 
 
+
+# Compatibility function. Was introduced in Python 3.9, but we're currently only on 3.7.
+def removeprefix(self, prefix):
+    if self.startswith(prefix):
+        return self[len(prefix):]
+    else:
+        return self[:]
+
+
 def file_detail(request, filename):
     data_location = DataLocation.objects.select_related('animated_preview', 'thumbnail', 'metadata').get(
         file_name__iexact=filename)
@@ -64,7 +73,7 @@ def _create_search_result_from_metadata(request, data_location, additional_colum
     additional_values = []
 
     for prefix, target_obj in attributes:
-        additional_fields = [field_spec.removeprefix(prefix) for field_spec in
+        additional_fields = [removeprefix(field_spec, prefix) for field_spec in
                              additional_columns.get_field_specs()
                              if field_spec.startswith(prefix)]
         additional_values += [getattr(target_obj, field) for field in additional_fields if
