@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from rest_framework.utils.field_mapping import get_nested_relation_kwargs
 
-from dataset.models import DataLocation, Instrument
 from metadata.models import Metadata
 from api.utils import get_only_nested_fields, get_immediate_fields
+from observations.models import DataCube, Instrument
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -78,14 +78,14 @@ class InstrumentSerializer(DynamicFieldsModelSerializer):
 class MetadataSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Metadata
-        exclude = ['id', 'fits_header', 'data_location']
+        exclude = ['id', 'fits_header', 'data_cube']
 
 
-class DataLocationSerializer(DynamicFieldsModelSerializer):
+class DataCubeSerializer(DynamicFieldsModelSerializer):
     class Meta:
-        model = DataLocation
+        model = DataCube
         # Note that any field based on a reverse relation MUST be explicitly
         # specified in this list of fields. If not, the serializer
         # will not serialize that field..
-        fields = ['id', 'file_name', 'file_path', 'file_size', 'metadata', 'instrument']
+        fields = ['id', 'filename', 'path', 'size', 'metadata', 'instrument']
         depth = 1

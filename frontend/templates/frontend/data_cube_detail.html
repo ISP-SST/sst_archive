@@ -11,22 +11,22 @@
     {% if metadata %}
 
     <div class="row">
-        <h3>Preview of {{ data_location.file_name }}</h3>
+        <h3>Preview of {{ data_cube.filename }}</h3>
         <div class="mb-5 col-8">
-            {% if data_location.animated_preview %}
-            <img src="{% static data_location.animated_preview.animated_gif %}" />
-            {% elif data_location.thumbnail %}
-            <img src="{% static data_location.thumbnail.image_url %}" />
+            {% if data_cube.animated_preview %}
+            <img src="{% static data_cube.animated_preview.animated_gif %}" />
+            {% elif data_cube.thumbnail %}
+            <img src="{% static data_cube.thumbnail.image_url %}" />
             {% endif %}
         </div>
 
         <div class="mt-5 col-4">
             <div class="card">
                 <div class="card-body row">
-                    <a class="text-center card-link" href="{% url 'download_data_cube' data_location.file_name %}">
+                    <a class="text-center card-link" href="{% url 'download_data_cube' data_cube.filename %}">
                         <button class="btn btn-primary"><i class="bi bi-download"></i> Download FITS data cube</button>
                     </a>
-                    <span class="text-center">{{ data_location.file_size|filesizeformat }}</span>
+                    <span class="text-center">{{ data_cube.size|filesizeformat }}</span>
                 </div>
             </div>
         </div>

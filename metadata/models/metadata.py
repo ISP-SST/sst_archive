@@ -6,7 +6,7 @@ class MetadataManager(models.Manager):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.select_related('data_location')
+        queryset = queryset.select_related('data_cube')
         return queryset
 
 
@@ -22,8 +22,6 @@ class Metadata(models.Model):
                            help_text='Unique identification string for the observation metadata, usually in the form '
                                      'YYYYMMDDHHMMSS; cannot be modified once it is set',
                            unique=True, db_index=True, max_length=191)
-    data_location = models.OneToOneField('dataset.DataLocation', related_name='metadata', null=True,
-                                      blank=True, on_delete=models.SET_NULL)
     data_cube = models.OneToOneField('observations.DataCube', related_name='metadata', null=True, blank=True,
                                      on_delete=models.SET_NULL)
     fits_header = models.TextField(null=True, blank=True)

@@ -1,12 +1,10 @@
 from django.core.paginator import Paginator
-from django.db.models import OuterRef, Subquery
 from django.shortcuts import render
 
-from dataset.models import DataLocation
+from observations.models import DataCube
 from frontend.complex_filters import get_complex_filter
 from frontend.file_selection import is_selected_in_session
 from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
-from tags.models import DataLocationTag
 
 
 # Compatibility function. Was introduced in Python 3.9, but we're currently only on 3.7.
@@ -29,16 +27,16 @@ class SearchResult:
         self.additional_values = additional_values
 
 
-def _create_search_result_from_metadata(request, data_location, additional_columns):
-    if not hasattr(data_location, 'metadata') or not data_location.metadata:
+def _create_search_result_from_metadata(request, cube, additional_columns):
+    if not hasattr(cube, 'metadata') or not cube.metadata:
         return None
 
-    if hasattr(data_location, 'thumbnail'):
-        thumbnail = data_location.thumbnail.image_url if data_location.thumbnail else None
+    if hasattr(cube, 'thumbnail'):
+        thumbnail = cube.thumbnail.image_url if cube.thumbnail else None
     else:
         thumbnail = None
 
-    attributes = [('metadata__', data_location.metadata), ('tags__', data_location.tags), ('', data_location)]
+    attributes = [('metadata__', cube.metadata), ('', cube)]
     additional_values = []
 
     for prefix, target_obj in attributes:
@@ -48,9 +46,9 @@ def _create_search_result_from_metadata(request, data_location, additional_colum
         additional_values += [getattr(target_obj, field) for field in additional_fields if
                               hasattr(target_obj, field)]
 
-    return SearchResult(data_location.metadata.oid, data_location.file_name, data_location.instrument.name,
-                        data_location.metadata.date_beg, data_location.file_size, thumbnail, additional_values,
-                        is_selected_in_session(request, data_location.file_name))
+    return SearchResult(cube.oid, cube.filename, cube.instrument.name,
+                        cube.metadata.date_beg, cube.size, thumbnail, additional_values,
+                        is_selected_in_session(request, cube.filename))
 
 
 class AdditionalColumns:
@@ -137,27 +135,27 @@ def search_view(request):
     if instrument and instrument != 'all':
         complete_query['instrument__name__iexact'] = instrument
 
-    data_locations = DataLocation.objects.all()
+    data_cubes = DataCube.objects.all()
 
-    data_locations = data_locations.filter(freeform_query_q).filter(
-        **complete_query).select_related('metadata', 'instrument', 'thumbnail').prefetch_related('tags').only(
-        'metadata__oid', 'file_name',
+    data_cubes = data_cubes.filter(freeform_query_q).filter(
+        **complete_query).select_related('metadata', 'instrument', 'thumbnail') .only(
+        'oid', 'filename',
         'instrument__name',
         'metadata__date_beg',
-        'file_size', 'thumbnail',
+        'size', 'thumbnail',
         *additional_columns.get_only_specs())
 
+    """
     if features:
         # FIXME(daniel): This subquery does not leave us with one row per file. If a file has multiple tags we
         #                now also get multiple rows for that file, but the "feature_tags" property is also not
         #                correctly set to represent the correct names of each of the tags.
         tags = DataLocationTag.objects.filter(tag__category__name__iexact='Features',
                                               data_location=OuterRef('pk')).values('tag__name')
-        data_locations = data_locations.annotate(feature_tags=Subquery(tags))
+        data_locations = data_cubes.annotate(feature_tags=Subquery(tags))
+    """
 
-    results = [_create_search_result_from_metadata(request, data_location, additional_columns)
-               for data_location in
-               data_locations]
+    results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
 
     results = list(filter(None, results))
 

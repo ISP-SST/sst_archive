@@ -13,6 +13,7 @@ from extra_data.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from ingestion.utils.generate_image_preview import generate_image_preview
 from metadata.models import Metadata
+from observations.models import DataCube
 
 
 def _generate_observation_id(fits_header):
@@ -29,41 +30,41 @@ def _generate_observation_id(fits_header):
     return '%s_%s_%s' % (date_beg.strip(), filter1.strip(), scannum)
 
 
-def _generate_access_control_entities(data_location, fits_header):
+def _generate_access_control_entities(data_cube, fits_header):
     # Create access control row for this observation.
     release_date_str = fits_header['RELEASE']
     release_date = datetime.strptime(release_date_str, "%Y-%m-%d").date()
 
     release_comment = fits_header['RELEASEC']
     try:
-        access_control = DataLocationAccessControl.objects.get(data_location=data_location)
+        access_control = DataLocationAccessControl.objects.get(data_cube=data_cube)
         access_control.release_date = release_date
         access_control.release_comment = release_comment
     except DataLocationAccessControl.DoesNotExist:
-        access_control = DataLocationAccessControl(data_location=data_location,
+        access_control = DataLocationAccessControl(data_cube=data_cube,
                                                    release_date=release_date,
                                                    release_comment=release_comment)
     access_control.save()
 
 
-def _create_or_update_data_location(fits_cube, instrument):
+def _create_or_update_data_cube(fits_cube, instrument):
     (fits_cube_path, fits_cube_name) = os.path.split(fits_cube)
     cube_size = os.path.getsize(fits_cube)
 
     try:
-        data_location = DataLocation.objects.get(instrument=instrument, file_path=fits_cube_path, file_name=fits_cube_name)
-        data_location.file_size = cube_size
+        data_cube = DataCube.objects.get(instrument=instrument, file_path=fits_cube_path, file_name=fits_cube_name)
+        data_cube.size = cube_size
     except DataLocation.DoesNotExist:
-        data_location = DataLocation(instrument=instrument, file_path=fits_cube_path, file_size=cube_size,
+        data_cube = DataLocation(instrument=instrument, file_path=fits_cube_path, file_size=cube_size,
                                      file_name=fits_cube_name)
 
-    data_location.save()
-    return data_location
+    data_cube.save()
+    return data_cube
 
 
-def _create_gif_preview(hdus, data_location):
+def _create_gif_preview(hdus, data_cube):
     try:
-        preview = AnimatedGifPreview.objects.get(data_location=data_location)
+        preview = AnimatedGifPreview.objects.get(data_cube=data_cube)
         gif_uri = preview.animated_gif
         filename = os.path.basename(gif_uri)
         expected_gif_uri = os.path.join(settings.GIF_URL_ROOT, filename)
@@ -73,26 +74,26 @@ def _create_gif_preview(hdus, data_location):
             preview.animated_gif = expected_gif_uri
             preview.save()
     except AnimatedGifPreview.DoesNotExist:
-        gif_filename = Path(data_location.file_name).with_suffix('.gif')
+        gif_filename = Path(data_cube.filename).with_suffix('.gif')
         gif_path = os.path.join(settings.GIF_ROOT, gif_filename)
         gif_uri = os.path.join(settings.GIF_URL_ROOT, gif_filename)
-        preview = AnimatedGifPreview(data_location=data_location, animated_gif=gif_uri)
+        preview = AnimatedGifPreview(data_cube=data_cube, animated_gif=gif_uri)
         preview.save()
 
     if not os.path.isfile(gif_path):
         generate_animated_gif_preview(hdus, gif_path)
 
 
-def _create_image_preview(hdus, data_location):
+def _create_image_preview(hdus, data_cube):
     try:
-        preview = ImagePreview.objects.get(data_location=data_location)
+        preview = ImagePreview.objects.get(data_cube=data_cube)
         image_path = preview.image_path
         image_url_path = preview.image_url
     except ImagePreview.DoesNotExist:
-        image_filename = Path(data_location.file_name).with_suffix('.png')
+        image_filename = Path(data_cube.filename).with_suffix('.png')
         image_path = os.path.join(settings.GENERATED_ROOT, 'images', image_filename)
         image_url_path = os.path.join(settings.GENERATED_URL_ROOT, 'images', image_filename)
-        preview = ImagePreview(data_location=data_location, image_path=image_path, image_url=image_url_path)
+        preview = ImagePreview(data_cube=data_cube, image_path=image_path, image_url=image_url_path)
 
     if not os.path.isfile(image_path):
         generate_image_preview(hdus, image_path)
@@ -100,7 +101,7 @@ def _create_image_preview(hdus, data_location):
     preview.save()
 
 
-def _create_or_update_metadata(fits_header, data_location, oid=None):
+def _create_or_update_metadata(fits_header, data_cube, oid=None):
     model_type = Metadata
 
     fields = [field.name for field in model_type._meta.get_fields()]
@@ -140,7 +141,7 @@ def _create_or_update_metadata(fits_header, data_location, oid=None):
 
         setattr(model, key, value)
 
-    model.data_location = data_location
+    model.data_cube = data_cube
     model.save()
 
 
@@ -170,21 +171,21 @@ class Command(BaseCommand):
 
         instrument, created = Instrument.objects.get_or_create(name=instrument.upper())
 
-        data_location = _create_or_update_data_location(fits_cube, instrument)
+        data_cube = _create_or_update_data_cube(fits_cube, instrument)
 
-        _generate_access_control_entities(data_location, fits_header)
+        _generate_access_control_entities(data_cube, fits_header)
 
         oid = options.get('observation_id', None)
         print('Extracting metadata from FITS cube...')
-        _create_or_update_metadata(fits_header, data_location, oid)
+        _create_or_update_metadata(fits_header, data_cube, oid)
 
         if options['generate_image_previews']:
             # Generate static image preview.
             print('Generating image preview...')
-            _create_image_preview(hdus, data_location)
+            _create_image_preview(hdus, data_cube)
 
         if options['generate_animated_previews']:
             # Generate an animated GIF as a preview.
             print('Generating animated GIF preview...')
-            _create_gif_preview(hdus, data_location)
+            _create_gif_preview(hdus, data_cube)
 

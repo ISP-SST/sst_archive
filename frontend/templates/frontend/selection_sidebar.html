@@ -10,7 +10,7 @@
         <tr>
             <td>{% show_selection_control selection.filename True %}</td>
             <td style="max-width: 14em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><small><a
-                    href="{% url 'file_detail' selection.filename %}">{{ selection.filename }}</a></small>
+                    href="{% url 'data_cube_detail' selection.filename %}">{{ selection.filename }}</a></small>
             </td>
             <td><a href="{% url 'download_data_cube' selection.filename %}"><i class="bi bi-download"></i></a>
             </td>

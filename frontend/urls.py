@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     path('', views.search_view, name='index'),
-    path('files/<filename>', views.file_detail, name='file_detail'),
+    path('files/<filename>', views.data_cube_detail, name='data_cube_detail'),
     path('search', views.search_view, name='search'),
     path('toggle-file-selection/<filename>', views.toggle_file_selection,
          name='toggle_file_selection'),

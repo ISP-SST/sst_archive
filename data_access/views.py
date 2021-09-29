@@ -4,14 +4,14 @@ from django.http import HttpRequest, HttpResponse, FileResponse
 from django.shortcuts import render
 
 from data_access.forms import TokenForm
-from data_access.utils import data_location_requires_access_grant, has_access_to_data_location, \
-    has_valid_token_for_data_location
-from dataset.models import DataLocation
+from data_access.utils import data_cube_requires_access_grant, has_access_to_data_cube, \
+    has_valid_token_for_data_cube
+from observations.models import DataCube
 
 
 def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
     """View that lets the user download a datacube if they have the right access token or user permissions."""
-    data_location = DataLocation.objects.get(file_name__iexact=filename)
+    data_cube = DataCube.objects.get(file_name__iexact=filename)
 
     form = TokenForm()
 
@@ -22,27 +22,26 @@ def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
             token = form.cleaned_data.get('token')
 
     access_granted = False
-    if data_location_requires_access_grant(data_location):
+    if data_cube_requires_access_grant(data_cube):
         if token:
-            if has_valid_token_for_data_location(data_location, token):
+            if has_valid_token_for_data_cube(data_cube, token):
                 access_granted = True
             else:
                 form.add_error('token', 'The specified token is not valid for the selected data cube.')
         elif request.user.is_authenticated:
             access_granted = request.user.has_perm(
-                'data_access.can_access_protected_data') or has_access_to_data_location(request.user, data_location)
+                'data_access.can_access_protected_data') or has_access_to_data_cube(request.user, data_cube)
     else:
         access_granted = True
 
     if not access_granted:
         return render(request, 'data_access/token_prompt.html', {
-            'data_location': data_location,
+            'data_cube': data_cube,
             'form': form,
-            'release_comment': data_location.access_control.release_comment
+            'release_comment': data_cube.access_control.release_comment
         }, status=403)
 
-    path_to_cube = os.path.join(data_location.file_path, data_location.file_name)
-    if not os.path.exists(path_to_cube):
-        return render(request, 'data_access/file_not_found.html', {'filename': data_location.file_name}, status=404)
+    if not os.path.exists(data_cube.path):
+        return render(request, 'data_access/file_not_found.html', {'filename': data_cube.filename}, status=404)
 
-    return FileResponse(open(path_to_cube, 'rb'), filename=data_location.file_name)
+    return FileResponse(open(data_cube.path, 'rb'), filename=data_cube.file_name)

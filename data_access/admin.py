@@ -5,16 +5,16 @@ from .models import DataLocationAccessControl, DataLocationAccessGrant, DataLoca
 
 @admin.register(DataLocationAccessControl)
 class DataLocationAccessControlAdmin(admin.ModelAdmin):
-    search_fields = ['data_location__file_name', 'release_date']
+    search_fields = ['data_cube__filename', 'release_date']
 
 
 @admin.register(DataLocationAccessGrant)
 class DataLocationAccessGrantAdmin(admin.ModelAdmin):
-    search_fields = ['data_location__file_name', 'user__email']
-    autocomplete_fields = ['data_location']
+    search_fields = ['data_cube__filename', 'user__email']
+    autocomplete_fields = ['data_cube']
 
 
 @admin.register(DataLocationAccessToken)
 class DataLocationAccessTokenAdmin(admin.ModelAdmin):
-    search_fields =  ['data_location__file_name', 'token_string']
-    autocomplete_fields = ['data_location']
+    search_fields =  ['data_cube__filename', 'token_string']
+    autocomplete_fields = ['data_cube']

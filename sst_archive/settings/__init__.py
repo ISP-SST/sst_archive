@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'data_access',
     'ingestion',
     'extra_data',
-    'tags',
     'api',
     'frontend',
 ]

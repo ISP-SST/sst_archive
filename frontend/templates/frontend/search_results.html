@@ -27,7 +27,7 @@
     {% for metadata in page_obj %}
         <tr>
             <td scope="row">
-                <a href="{% url 'file_detail' metadata.filename %}">
+                <a href="{% url 'data_cube_detail' metadata.filename %}">
                 {% if metadata.thumbnail %}
                 <img style="width: 50%" src="{% static metadata.thumbnail %}"/>
                 {% else %}
