@@ -38,8 +38,34 @@ Cons:
 
 #### Decision
 
-Go with HTTP endpoint in the long run.
+Go with HTTP endpoint in the long run, but use the script during prototype phase. 
 
 ### Ingestion Architecture
 
-The practical implementation should be implemented in a modular fashion where it's easy to introduce additional content. 
+The implementation should be modular in a fashion where it's easy to introduce additional content. 
+
+Some of the known items we need to ingest:
+
+#### Metadata
+
+Metadata is ingested in full in order to allow for complex searches or scenarios where we haven't found a need to
+create dedicated database tables for the attributes in question.
+
+Metadata can be ingested by transforming the name of each keyword in the FITS header to a format compatible Python
+member names. Every transformed keyword is checked to see if it exists in the Metadata model class. If it does it is
+assigned to the metadata. Dates are handled as a special case, since they need to be explicitly interpreted as UTC. 
+
+#### Preview images/animations
+
+TBD
+
+#### Features (tags)
+
+A list of valid features likely needs to be available before the ingestion process is started so that the user can
+choose from this list (or create a new tag) rather than opening things up for users to inventing their own terminology
+and variations on spelling.
+
+#### FITS header
+
+The FITS header is ingested as text in order to easily extract even more information from the metadata in the future
+without needing to reprocess the FITS cubes. 
