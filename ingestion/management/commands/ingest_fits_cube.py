@@ -100,7 +100,7 @@ def _create_image_preview(hdus, data_location):
     preview.save()
 
 
-def _create_or_update_metadata(fits_header, instrument, data_location, oid=None):
+def _create_or_update_metadata(fits_header, data_location, oid=None):
     model_type = CombinedMetadata
 
     fields = [field.name for field in model_type._meta.get_fields()]
@@ -176,7 +176,7 @@ class Command(BaseCommand):
 
         oid = options.get('observation_id', None)
         print('Extracting metadata from FITS cube...')
-        _create_or_update_metadata(fits_header, instrument, data_location, oid)
+        _create_or_update_metadata(fits_header, data_location, oid)
 
         if options['generate_image_previews']:
             # Generate static image preview.

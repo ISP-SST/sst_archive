@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class DataLocationManager(models.Manager):
     """Manager that optimize the queries by selecting the foreign objects"""
 
@@ -17,7 +18,6 @@ class DataLocation(models.Model):
     file_size = models.PositiveBigIntegerField(help_text='Size of the file in bytes')
 
     objects = DataLocationManager()
-
 
     def __str__(self):
         return self.file_name

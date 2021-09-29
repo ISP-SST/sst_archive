@@ -1,20 +1,12 @@
-import os
-
-from django.contrib.auth import login
-from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import OuterRef, Subquery
-from django.forms.models import model_to_dict
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
-from data_access.utils import schedule_archiving_of_files
 from dataset.models import DataLocation
+from frontend.complex_filters import get_complex_filter
+from frontend.file_selection import is_selected_in_session
+from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
 from tags.models import DataLocationTag
-from .complex_filters import get_complex_filter
-from .file_selection import toggle_selection_from_session, is_selected_in_session, load_selections
-from .forms import SearchForm, get_initial_search_form, persist_search_form, RegistrationForm
-
 
 
 # Compatibility function. Was introduced in Python 3.9, but we're currently only on 3.7.
@@ -23,29 +15,6 @@ def removeprefix(self, prefix):
         return self[len(prefix):]
     else:
         return self[:]
-
-
-def file_detail(request, filename):
-    data_location = DataLocation.objects.select_related('animated_preview', 'thumbnail', 'metadata').get(
-        file_name__iexact=filename)
-    metadata = data_location.metadata
-
-    metadata_fields = {field.verbose_name: field.value_from_object(metadata) for field in metadata._meta.get_fields()}
-
-    # FIXME(daniel): We shouldn't need to pop these from the fields.
-    metadata_fields.pop('fits header', None)
-    metadata_fields.pop('ID', None)
-    metadata_fields.pop('data location', None)
-    metadata_fields.pop('Observation ID', None)
-
-    context = {
-        'data_location': data_location,
-        'metadata': metadata,
-        'metadata_dict': model_to_dict(metadata),
-        'metadata_fields': metadata_fields,
-    }
-
-    return render(request, 'frontend/file_detail.html', context)
 
 
 class SearchResult:
@@ -217,48 +186,3 @@ def search_view(request):
     }
 
     return render(request, 'frontend/search_results.html', context)
-
-
-def toggle_file_selection(request, filename):
-    return_url = request.META.get('HTTP_REFERER', '/')
-    toggle_selection_from_session(request, filename)
-    return redirect(return_url)
-
-
-def download_selected_data(request):
-    selection_list = load_selections(request)
-
-    ROOT_DIR = '/Users/dani2978/local_science_data'
-    files = []
-
-    file_list = list(map(lambda selection: selection.filename, selection_list))
-
-    file_info_query = DataLocation.objects.filter(file_name__in=file_list).values_list(
-        'data_location__file_path', 'data_location__file_name', 'data_location__file_size').iterator()
-    files += [os.path.relpath(os.path.join(file_info[0], file_info[1]), ROOT_DIR) for file_info in file_info_query]
-
-    id = schedule_archiving_of_files(ROOT_DIR, files)
-    return HttpResponse(str(id), status=200)
-
-
-def register(request: HttpRequest) -> HttpResponse:
-    if request.user.is_authenticated:
-        return redirect('/')
-
-    if request.method == 'GET':
-        form = RegistrationForm()
-        return render(request, 'frontend/account_register.html', {'registration_form': form})
-    elif request.method == 'POST':
-        form = RegistrationForm(request.POST)
-
-        if not form.is_valid():
-            return render(request, 'frontend/account_register.html', {'registration_form': form})
-
-        email = form.cleaned_data.get('email')
-        password = form.cleaned_data.get('password')
-
-        new_user = User.objects.create_user(email, email, password)
-        new_user.save()
-
-        login(request, new_user)
-        return redirect('/')
