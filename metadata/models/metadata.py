@@ -24,6 +24,8 @@ class Metadata(models.Model):
                            unique=True, db_index=True, max_length=191)
     data_location = models.OneToOneField('dataset.DataLocation', related_name='metadata', null=True,
                                       blank=True, on_delete=models.SET_NULL)
+    data_cube = models.OneToOneField('observations.DataCube', related_name='metadata', null=True, blank=True,
+                                     on_delete=models.SET_NULL)
     fits_header = models.TextField(null=True, blank=True)
     date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation [UTC]', blank=True, null=True,
                                     db_index=True)
