@@ -97,14 +97,6 @@ def search_view(request):
 
     additional_columns = AdditionalColumns()
 
-    wavemin = None
-    if 'wavemin' in form.cleaned_data and form.cleaned_data['wavemin'] != '':
-        wavemin = form.cleaned_data['wavemin']
-
-    wavemax = None
-    if 'wavemax' in form.cleaned_data and form.cleaned_data['wavemax'] != '':
-        wavemax = form.cleaned_data['wavemax']
-
     spectral_line_ids = None
     if 'spectral_lines' in form.cleaned_data and form.cleaned_data['spectral_lines'] != '':
         spectral_lines = form.cleaned_data['spectral_lines']
@@ -136,11 +128,6 @@ def search_view(request):
     if spectral_line_ids:
         complete_query['metadata__filter1__in'] = spectral_line_ids
         additional_columns.add('Spectral Line', 'metadata__filter1', 'metadata__filter1')
-
-    if wavemin:
-        complete_query['metadata__wavelnth__gte'] = wavemin
-    if wavemax:
-        complete_query['metadata__wavelnth__lte'] = wavemax
 
     if features:
         complete_query['tags__tag__category__name__iexact'] = 'Features'

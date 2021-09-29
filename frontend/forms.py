@@ -96,11 +96,6 @@ class SearchForm(forms.Form):
                                              ('nonpolarimetric', 'Non-Polarimetric')),
                                     widget=forms.Select(attrs={'class': 'form-select'}), required=False)
     query = forms.CharField(label='Query', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    wavemin = forms.FloatField(label='Min Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
-                               required=False)
-    wavemax = forms.FloatField(label='Max Wavelength', widget=forms.NumberInput(attrs={'class': 'form-control'}),
-                               required=False)
-
 
 
 class RegistrationForm(forms.Form):
