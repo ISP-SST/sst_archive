@@ -12,7 +12,7 @@ from data_access.models import DataLocationAccessControl
 from extra_data.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from ingestion.utils.generate_image_preview import generate_image_preview
-from metadata.models import CombinedMetadata
+from metadata.models import Metadata
 
 
 def _generate_observation_id(fits_header):
@@ -101,7 +101,7 @@ def _create_image_preview(hdus, data_location):
 
 
 def _create_or_update_metadata(fits_header, data_location, oid=None):
-    model_type = CombinedMetadata
+    model_type = Metadata
 
     fields = [field.name for field in model_type._meta.get_fields()]
 

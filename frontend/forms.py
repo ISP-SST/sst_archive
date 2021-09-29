@@ -39,9 +39,9 @@ def get_spectral_line_choices():
 
     if not choices:
         # Repopulate cache.
-        from metadata.models import CombinedMetadata
+        from metadata.models import Metadata
         choices = [('%s' % (metadata[0]), '%s Å (%s)' % (metadata[0], metadata[1])) for
-               metadata in CombinedMetadata.objects.order_by('filter1').values_list('filter1', 'waveband').distinct()]
+               metadata in Metadata.objects.order_by('filter1').values_list('filter1', 'waveband').distinct()]
         cache.set(SPECTRAL_LINES_CACHE_KEY, choices)
 
     return choices

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.utils.field_mapping import get_nested_relation_kwargs
 
 from dataset.models import DataLocation, Instrument
-from metadata.models import CombinedMetadata
+from metadata.models import Metadata
 from api.utils import get_only_nested_fields, get_immediate_fields
 
 
@@ -77,7 +77,7 @@ class InstrumentSerializer(DynamicFieldsModelSerializer):
 
 class MetadataSerializer(DynamicFieldsModelSerializer):
     class Meta:
-        model = CombinedMetadata
+        model = Metadata
         exclude = ['id', 'fits_header', 'data_location']
 
 

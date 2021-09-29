@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class CombinedMetadataManager(models.Manager):
+class MetadataManager(models.Manager):
     """Manager that optimize the queries by selecting the foreign objects"""
 
     def get_queryset(self):
@@ -10,12 +10,12 @@ class CombinedMetadataManager(models.Manager):
         return queryset
 
 
-class CombinedMetadata(models.Model):
+class Metadata(models.Model):
     """Model for the joint set of metadata present in CRISP and CHROMIS"""
 
     class Meta:
-        verbose_name = 'Combined Metadata'
-        verbose_name_plural = 'Combined Metadata'
+        verbose_name = 'Metadata'
+        verbose_name_plural = 'Metadata'
         ordering = ['date_beg']
 
     oid = models.CharField('Observation ID',
@@ -370,7 +370,7 @@ class CombinedMetadata(models.Model):
     origin = models.TextField(verbose_name='ORIGIN', help_text='', blank=True, null=True)
     prmode2 = models.TextField(verbose_name='PRMODE2', help_text='Processing mode', blank=True, null=True)
 
-    objects = CombinedMetadataManager()
+    objects = MetadataManager()
 
     def __str__(self):
         return self.oid

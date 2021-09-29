@@ -1,1 +1,1 @@
-from .combined_metadata import *
+from .metadata import *
