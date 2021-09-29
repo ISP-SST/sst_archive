@@ -17,8 +17,11 @@ DATABASES = {
 # TODO(daniel): This should be updated with the proper hostname of the service.
 ALLOWED_HOSTS = ['*']
 
-DEBUG = False
+DEBUG = True
 
 SECRET_KEY = get_secret('SECRET_KEY')
 
-SCIENCE_DATA_ROOT = '/storage/science_data/'
+# Points to a read-only science data folder that has been mounted.
+SCIENCE_DATA_ROOT = '/srv/www/dubshen/sst_archive/science_data/'
+
+STATIC_URL = '/sst_archive/static/'
