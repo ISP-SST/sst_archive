@@ -170,10 +170,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [BASE_DIR / 'assets']
 
-GENERATED_URL_ROOT = '/static/generated/'
+GENERATED_URL_ROOT = 'generated/'
 GENERATED_ROOT = BASE_DIR / 'assets' / 'generated'
 
-GIF_URL_ROOT = '/static/generated/gifs'
+GIF_URL_ROOT = 'generated/gifs'
 GIF_ROOT = BASE_DIR / 'assets' / 'generated' / 'gifs'
 
 

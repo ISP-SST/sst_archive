@@ -2,6 +2,7 @@
 
 {% load selection_tags %}
 {% load pagination_controls %}
+{% load static %}
 
 {% block title %}SST Archive - Datasets{% endblock %}
 
@@ -32,7 +33,7 @@
             <td scope="row">
                 <a href="{% url 'file_detail' metadata.filename %}">
                 {% if metadata.thumbnail %}
-                <img style="width: 50%" src="{{ metadata.thumbnail }}"/>
+                <img style="width: 50%" src="{% static metadata.thumbnail %}"/>
                 {% else %}
                 {{ metadata.oid }}
                 {% endif %}

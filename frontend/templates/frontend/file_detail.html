@@ -1,5 +1,7 @@
 {% extends "frontend/base.html" %}
 
+{% load static %}
+
 {% block title %}SST Archive - {{ metadata.oid }}{% endblock %}
 
 {% block content %}
@@ -11,11 +13,10 @@
     <div class="row">
         <h3>Preview of {{ data_location.file_name }}</h3>
         <div class="mb-5 col-8">
-            {% load static %}
             {% if data_location.animated_preview %}
-            <img src="{{ data_location.animated_preview.animated_gif }}" />
+            <img src="{% static data_location.animated_preview.animated_gif %}" />
             {% elif data_location.thumbnail %}
-            <img src="{{ data_location.thumbnail.image_url }}" />
+            <img src="{% static data_location.thumbnail.image_url %}" />
             {% endif %}
         </div>
 

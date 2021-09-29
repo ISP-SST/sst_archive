@@ -130,8 +130,12 @@ def _create_or_update_metadata(fits_header, instrument, data_location, oid=None)
             except ValueError:
                 value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
 
-            from zoneinfo import ZoneInfo
-            timezone = ZoneInfo(settings.OBSERVATION_TIMEZONE)
+            try:
+                import zoneinfo
+            except ImportError:
+                from backports import zoneinfo
+
+            timezone = zoneinfo.ZoneInfo(settings.OBSERVATION_TIMEZONE)
             value = make_aware(value, timezone=timezone)
 
         setattr(model, key, value)
