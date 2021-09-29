@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'django_filters',
 
     'observations',
-    'dataset',
     'metadata',
     'data_access',
     'ingestion',
