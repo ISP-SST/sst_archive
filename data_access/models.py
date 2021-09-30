@@ -4,8 +4,8 @@ import django
 from django.db import models
 
 
-class DataLocationAccessControl(models.Model):
-    """Contains information about the access restrictions put on the data pointed to by the DataLocation."""
+class DataCubeAccessControl(models.Model):
+    """Contains information about the access restrictions put on the data pointed to by the DataCube."""
     data_cube = models.OneToOneField('observations.DataCube', on_delete=models.CASCADE,
                                          related_name='access_control', null=True, unique=True)
     release_date = models.DateField(null=True)
@@ -17,9 +17,9 @@ class DataLocationAccessControl(models.Model):
         return self.data_cube.filename
 
 
-class DataLocationAccessGrant(models.Model):
-    """Creates a link between a user and a DataLocation, signalling that the user has read access to the file pointed
-    to by the DataLocation."""
+class DataCubeAccessGrant(models.Model):
+    """Creates a link between a user and a DataCube, signalling that the user has read access to the file pointed
+    to by the DataCube."""
     # The email is used to link the access rights to a user without requiring the user to be registered in the system at
     # the time of the grant. Data can currently be ingested without a user account.
     # TODO: Would we rather have a strict requirement on the specific user being registered in the system prior to
@@ -48,8 +48,8 @@ def generate_token():
     return secrets.token_urlsafe(16)
 
 
-class DataLocationAccessToken(models.Model):
-    """Access token, or ticket, that grants the carrier of that token access to the specified DataLocation. Access can
+class DataCubeAccessToken(models.Model):
+    """Access token, or ticket, that grants the carrier of that token access to the specified DataCube. Access can
     be further restricted by an expiration date that dictates for how long the token will be valid."""
     data_cube = models.ForeignKey('observations.DataCube', verbose_name='Data Cube',
                                   help_text='The data cube that this token gives provides access to.',

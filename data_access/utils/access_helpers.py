@@ -3,11 +3,11 @@ import datetime
 import django
 from pytz import utc
 
-from data_access.models import DataLocationAccessGrant, DataLocationAccessToken
+from data_access.models import DataCubeAccessGrant, DataCubeAccessToken
 
 
 def data_cube_requires_access_grant(data_cube, datetime_now=None):
-    """Tests if access to the provided DataLocation needs to be explicitly granted to any user."""
+    """Tests if access to the provided DataCube needs to be explicitly granted to any user."""
     if not datetime_now:
         datetime_now = django.utils.timezone.now()
 
@@ -19,33 +19,33 @@ def data_cube_requires_access_grant(data_cube, datetime_now=None):
 
 
 def has_access_to_data_cube(user, data_cube, datetime_now=None):
-    """Tests if a user has access to a certain DataLocation."""
+    """Tests if a user has access to a certain DataCube."""
     if not datetime_now:
         datetime_now = django.utils.timezone.now()
 
     if data_cube_requires_access_grant(data_cube, datetime_now):
         try:
-            DataLocationAccessGrant.objects.get(user_email=user.email, data_cube=data_cube)
+            DataCubeAccessGrant.objects.get(user_email=user.email, data_cube=data_cube)
             return True
-        except DataLocationAccessGrant.DoesNotExist:
+        except DataCubeAccessGrant.DoesNotExist:
             return False
 
     return True
 
 
 def has_valid_token_for_data_cube(data_cube, token_string, datetime_now=None):
-    """Tests if a token grants access to a certain DataLocation."""
+    """Tests if a token grants access to a certain DataCube."""
     if not datetime_now:
         datetime_now = django.utils.timezone.now()
 
     if data_cube_requires_access_grant(data_cube, datetime_now):
         try:
-            token = DataLocationAccessToken.objects.get(token_string=token_string, data_cube=data_cube)
+            token = DataCubeAccessToken.objects.get(token_string=token_string, data_cube=data_cube)
             # FIXME(daniel): We should take the grant date into account and only allow downloads after that date,
             #                but due to apparent time skew we can't always assume that datetime_now will be after
             #                grant date if the token was added very recently.
             return datetime_now < token.expiration_date
-        except DataLocationAccessToken.DoesNotExist:
+        except DataCubeAccessToken.DoesNotExist:
             return False
 
     return True

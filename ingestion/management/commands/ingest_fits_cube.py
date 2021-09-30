@@ -7,13 +7,12 @@ from pathlib import Path
 from django.conf import settings
 from django.utils.timezone import make_aware
 
-from dataset.models import DataLocation, Instrument
-from data_access.models import DataLocationAccessControl
+from data_access.models import DataCubeAccessControl
 from previews.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from ingestion.utils.generate_image_preview import generate_image_preview
 from metadata.models import Metadata, FITSHeader
-from observations.models import DataCube
+from observations.models import DataCube, Instrument
 
 
 def _generate_observation_id(fits_header):
@@ -36,33 +35,27 @@ def _generate_access_control_entities(data_cube, fits_header):
     release_date = datetime.strptime(release_date_str, "%Y-%m-%d").date()
 
     release_comment = fits_header['RELEASEC']
-    try:
-        access_control = DataLocationAccessControl.objects.get(data_cube=data_cube)
-        access_control.release_date = release_date
-        access_control.release_comment = release_comment
-    except DataLocationAccessControl.DoesNotExist:
-        access_control = DataLocationAccessControl(data_cube=data_cube,
-                                                   release_date=release_date,
-                                                   release_comment=release_comment)
-    access_control.save()
+
+    access_control, created = DataCubeAccessControl.objects.update_or_create(data_cube=data_cube, defaults={
+        'release_date': release_date,
+        'release_comment': release_comment,
+    })
 
 
 def _create_or_update_data_cube(fits_cube, instrument):
     (fits_cube_path, fits_cube_name) = os.path.split(fits_cube)
     cube_size = os.path.getsize(fits_cube)
 
-    try:
-        data_cube = DataCube.objects.get(instrument=instrument, path=fits_cube_path, filename=fits_cube_name)
-        data_cube.size = cube_size
-    except DataLocation.DoesNotExist:
-        data_cube = DataLocation(instrument=instrument, path=fits_cube_path, size=cube_size,
-                                     filename=fits_cube_name)
+    data_cube, created = DataCube.objects.update_or_create(filename=fits_cube_name, path=fits_cube_path, defaults={
+        'size': cube_size,
+        'instrument': instrument
+    })
 
-    data_cube.save()
     return data_cube
 
 
 def _create_gif_preview(hdus, data_cube):
+    # TODO(daniel): This needs to be cleaned up. Must happen when image previews are implemented for real.
     try:
         preview = AnimatedGifPreview.objects.get(data_cube=data_cube)
         gif_uri = preview.animated_gif
@@ -134,6 +127,9 @@ def _create_or_update_metadata(fits_header, data_cube, oid=None):
             try:
                 import zoneinfo
             except ImportError:
+                # FIXME(daniel): This is a temporary fix for running on Python 3.7. Upgrading to 3.9 should remove the
+                #                need for this special case. Note that for now backports.zoneinfo needs to be pip
+                #                installed in order to run the service on Python < 3.9.
                 from backports import zoneinfo
 
             timezone = zoneinfo.ZoneInfo(settings.OBSERVATION_TIMEZONE)
@@ -146,9 +142,9 @@ def _create_or_update_metadata(fits_header, data_cube, oid=None):
 
 
 def _create_or_update_fits_header(fits_header, data_cube):
-    header, created = FITSHeader.objects.get_or_create(data_cube=data_cube)
-    header.fits_header = fits_header.tostring()
-    header.save()
+    header, created = FITSHeader.objects.update_or_create(data_cube=data_cube, defaults={
+        'fits_header': fits_header.tostring()
+    })
 
 
 class Command(BaseCommand):

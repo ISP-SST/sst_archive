@@ -1,20 +1,20 @@
 from django.contrib import admin
 
-from .models import DataLocationAccessControl, DataLocationAccessGrant, DataLocationAccessToken
+from .models import DataCubeAccessControl, DataCubeAccessGrant, DataCubeAccessToken
 
 
-@admin.register(DataLocationAccessControl)
-class DataLocationAccessControlAdmin(admin.ModelAdmin):
+@admin.register(DataCubeAccessControl)
+class DataCubeAccessControlAdmin(admin.ModelAdmin):
     search_fields = ['data_cube__filename', 'release_date']
 
 
-@admin.register(DataLocationAccessGrant)
-class DataLocationAccessGrantAdmin(admin.ModelAdmin):
+@admin.register(DataCubeAccessGrant)
+class DataCubeAccessGrantAdmin(admin.ModelAdmin):
     search_fields = ['data_cube__filename', 'user__email']
     autocomplete_fields = ['data_cube']
 
 
-@admin.register(DataLocationAccessToken)
-class DataLocationAccessTokenAdmin(admin.ModelAdmin):
+@admin.register(DataCubeAccessToken)
+class DataCubeAccessTokenAdmin(admin.ModelAdmin):
     search_fields =  ['data_cube__filename', 'token_string']
     autocomplete_fields = ['data_cube']

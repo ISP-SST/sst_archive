@@ -8,10 +8,9 @@ from api.utils import get_models_from_fields
 from observations.models import DataCube
 
 
-class DataLocationViewSet(viewsets.ReadOnlyModelViewSet):
+class DataCubeViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Read-only endpoint for entire DataLocation objects (including
-    nested fields via reverse relations.
+    Read-only endpoint for entire DataCube objects, including nested fields via reverse relations.
     """
     queryset = DataCube.objects.all().select_related('metadata')
     serializer_class = DataCubeSerializer
