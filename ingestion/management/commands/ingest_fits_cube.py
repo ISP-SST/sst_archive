@@ -12,7 +12,7 @@ from data_access.models import DataLocationAccessControl
 from extra_data.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from ingestion.utils.generate_image_preview import generate_image_preview
-from metadata.models import Metadata
+from metadata.models import Metadata, FITSHeader
 from observations.models import DataCube
 
 
@@ -106,7 +106,7 @@ def _create_or_update_metadata(fits_header, data_cube, oid=None):
 
     fields = [field.name for field in model_type._meta.get_fields()]
 
-    properties = {'fits_header': fits_header.tostring()}
+    properties = {}
 
     if not oid:
         oid = _generate_observation_id(fits_header)
@@ -145,6 +145,12 @@ def _create_or_update_metadata(fits_header, data_cube, oid=None):
     model.save()
 
 
+def _create_or_update_fits_header(fits_header, data_cube):
+    header, created = FITSHeader.objects.get_or_create(data_cube=data_cube)
+    header.fits_header = fits_header.tostring()
+    header.save()
+
+
 class Command(BaseCommand):
     help = 'Ingests the specified FITS cube into the database.'
 
@@ -178,6 +184,9 @@ class Command(BaseCommand):
         oid = options.get('observation_id', None)
         print('Extracting metadata from FITS cube...')
         _create_or_update_metadata(fits_header, data_cube, oid)
+
+        print('Ingesting raw FITS header...')
+        _create_or_update_fits_header(fits_header, data_cube)
 
         if options['generate_image_previews']:
             # Generate static image preview.

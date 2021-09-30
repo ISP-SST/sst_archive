@@ -78,7 +78,7 @@ class InstrumentSerializer(DynamicFieldsModelSerializer):
 class MetadataSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Metadata
-        exclude = ['id', 'fits_header', 'data_cube']
+        exclude = ['id', 'data_cube']
 
 
 class DataCubeSerializer(DynamicFieldsModelSerializer):
