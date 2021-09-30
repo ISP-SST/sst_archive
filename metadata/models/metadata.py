@@ -18,10 +18,6 @@ class Metadata(models.Model):
         verbose_name_plural = 'Metadata'
         ordering = ['date_beg']
 
-    oid = models.CharField('Observation ID',
-                           help_text='Unique identification string for the observation metadata, usually in the form '
-                                     'YYYYMMDDHHMMSS; cannot be modified once it is set',
-                           unique=True, db_index=True, max_length=191)
     data_cube = models.OneToOneField('observations.DataCube', related_name='metadata', null=True, blank=True,
                                      on_delete=models.SET_NULL)
     date_beg = models.DateTimeField('DATE-BEG', help_text='Start time of the observation [UTC]', blank=True, null=True,
