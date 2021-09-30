@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'metadata',
     'data_access',
     'ingestion',
-    'extra_data',
+    'previews',
     'api',
     'frontend',
 ]

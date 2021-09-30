@@ -9,7 +9,7 @@ from django.utils.timezone import make_aware
 
 from dataset.models import DataLocation, Instrument
 from data_access.models import DataLocationAccessControl
-from extra_data.models import AnimatedGifPreview, ImagePreview
+from previews.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from ingestion.utils.generate_image_preview import generate_image_preview
 from metadata.models import Metadata, FITSHeader
