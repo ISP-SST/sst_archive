@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 
 from frontend.utils import get_memory_cache
+from observations.models import Tag
 
 
 def initial_start_date():
@@ -46,7 +47,6 @@ def get_spectral_line_choices():
     return choices
 
 
-"""
 def get_features_choices():
     cache = get_memory_cache()
     FEATURES_CACHE_KEY = 'known_features'
@@ -55,12 +55,12 @@ def get_features_choices():
 
     if not choices:
         # Repopulate cache.
-        tags = Tag.objects.filter(category__name__iexact='Features')
+        tags = Tag.objects.all()
         choices = [(tag.name, tag.name) for tag in tags]
         cache.set(FEATURES_CACHE_KEY, choices)
 
     return choices
-"""
+
 
 class SearchForm(forms.Form):
     start_date = forms.DateField(label='Start Date',
@@ -87,11 +87,9 @@ class SearchForm(forms.Form):
                                        'full_field_name': 'Spectral Lines'
                                    }
                                ))
-    """
     features = forms.MultipleChoiceField(label='Features', choices=get_features_choices, widget=DropdownCheckboxSelectMultiple(attrs={
         'full_field_name': 'Features'
     }))
-    """
     polarimetry = forms.ChoiceField(label='Polarimetry',
                                     choices=(('any', 'Any'),
                                              ('polarimetric', 'Polarimetric'),

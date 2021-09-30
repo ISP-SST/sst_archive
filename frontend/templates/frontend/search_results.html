@@ -2,6 +2,7 @@
 
 {% load selection_tags %}
 {% load pagination_controls %}
+{% load format_column_value %}
 {% load static %}
 
 {% block title %}- Datasets{% endblock %}
@@ -14,7 +15,7 @@
         <tr>
             <th scope="col" style="width: 12em">Preview</th>
             <th scope="col" style="width: 7em">Instrument</th>
-            <th scope="col" style="width: 12em">Observation Date (Began)</th>
+            <th scope="col" style="width: 12em">Time of Observation</th>
             {% for column_name in additional_column_names %}
                 <th scope="col" class="text-center" style="width: 4em">{{ column_name }}</th>
             {% endfor %}
@@ -38,7 +39,9 @@
             <td scope="row">{{ metadata.instrument }}</td>
             <td scope="row">{{ metadata.date }}</td>
             {% for value in metadata.additional_values %}
-            <td scope="row" class="text-center">{{ value }}</td>
+            <td scope="row" class="text-center">
+                {% format_column_value value %}
+            </td>
             {% endfor %}
             <td scope="row" class="text-center">{{ metadata.file_size|filesizeformat }}</td>
             <td scope="row" class="text-center"><a class="download-symbol bi bi-download" href="{% url 'download_data_cube' metadata.filename %}"></a></td>

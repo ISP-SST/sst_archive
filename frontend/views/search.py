@@ -36,45 +36,60 @@ def _create_search_result_from_metadata(request, cube, additional_columns):
     else:
         thumbnail = None
 
-    attributes = [('metadata__', cube.metadata), ('', cube)]
-    additional_values = []
-
-    for prefix, target_obj in attributes:
-        additional_fields = [removeprefix(field_spec, prefix) for field_spec in
-                             additional_columns.get_field_specs()
-                             if field_spec.startswith(prefix)]
-        additional_values += [getattr(target_obj, field) for field in additional_fields if
-                              hasattr(target_obj, field)]
+    additional_values = [col.get_value(cube) for col in additional_columns]
 
     return SearchResult(cube.oid, cube.filename, cube.instrument.name,
                         cube.metadata.date_beg, cube.size, thumbnail, additional_values,
                         is_selected_in_session(request, cube.filename))
 
 
-class AdditionalColumns:
-    class Column():
-        def __init__(self, column_name, column_field_spec, column_only_spec=''):
-            self.column_name = column_name
-            self.column_field_spec = column_field_spec
-            if column_only_spec == '':
-                self.column_only_spec = column_field_spec
-            else:
-                self.column_only_spec = column_only_spec
+class Column:
+    def __init__(self, name, only_spec):
+        self.name = name
+        self.only_spec = only_spec
 
+    def get_name(self):
+        return self.name
+
+    def get_value(self, data_cube):
+        raise NotImplementedError()
+
+    def get_only_spec(self):
+        return self.only_spec
+
+
+class MetadataColumn(Column):
+    def __init__(self, name, value_key):
+        super().__init__(name, 'metadata')
+        self.value_key = value_key
+
+    def get_value(self, data_cube):
+        return getattr(data_cube.metadata, self.value_key)
+
+
+class TagColumn(Column):
+    def __init__(self, name):
+        super().__init__(name, 'tags')
+
+    def get_value(self, data_cube):
+        return list(data_cube.tags.values_list('name', flat=True))
+
+
+class AdditionalColumns:
     def __init__(self):
         self.additional_columns = []
 
-    def add(self, column_name, column_field_spec, column_only_spec):
-        self.additional_columns.append(self.Column(column_name, column_field_spec, column_only_spec))
+    def __iter__(self):
+        return self.additional_columns.__iter__()
 
-    def get_names(self):
-        return [col.column_name for col in self.additional_columns if col.column_name != None]
+    def add(self, column):
+        self.additional_columns.append(column)
 
-    def get_field_specs(self):
-        return [col.column_field_spec for col in self.additional_columns if col.column_field_spec != None]
+    def get_all_names(self):
+        return [col.get_name() for col in self.additional_columns if col.get_name() != None]
 
-    def get_only_specs(self):
-        return [col.column_only_spec for col in self.additional_columns if col.column_only_spec != None]
+    def get_all_only_specs(self):
+        return [col.get_only_spec() for col in self.additional_columns if col.get_only_spec() != None]
 
 
 def search_view(request):
@@ -125,12 +140,11 @@ def search_view(request):
 
     if spectral_line_ids:
         complete_query['metadata__filter1__in'] = spectral_line_ids
-        additional_columns.add('Spectral Line', 'metadata__filter1', 'metadata__filter1')
+        additional_columns.add(MetadataColumn('Spectral Line', 'filter1'))
 
     if features:
-        complete_query['tags__tag__category__name__iexact'] = 'Features'
-        complete_query['tags__tag__name__in'] = features
-        additional_columns.add('Features', 'feature_tags', None)
+        complete_query['tags__name__in'] = features
+        additional_columns.add(TagColumn('Features'))
 
     if instrument and instrument != 'all':
         complete_query['instrument__name__iexact'] = instrument
@@ -138,22 +152,19 @@ def search_view(request):
     data_cubes = DataCube.objects.all()
 
     data_cubes = data_cubes.filter(freeform_query_q).filter(
-        **complete_query).select_related('metadata', 'instrument', 'thumbnail') .only(
+        **complete_query).select_related('metadata', 'instrument', 'thumbnail').only(
         'oid', 'filename',
         'instrument__name',
         'metadata__date_beg',
         'size', 'thumbnail',
-        *additional_columns.get_only_specs())
+        *additional_columns.get_all_only_specs())
 
-    """
     if features:
         # FIXME(daniel): This subquery does not leave us with one row per file. If a file has multiple tags we
         #                now also get multiple rows for that file, but the "feature_tags" property is also not
         #                correctly set to represent the correct names of each of the tags.
-        tags = DataLocationTag.objects.filter(tag__category__name__iexact='Features',
-                                              data_location=OuterRef('pk')).values('tag__name')
-        data_locations = data_cubes.annotate(feature_tags=Subquery(tags))
-    """
+        # data_locations = data_cubes.annotate(feature_tags=Subquery(tags))
+        pass
 
     results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
 
@@ -167,7 +178,7 @@ def search_view(request):
         'search_results': results,
         'paginator': paginator,
         'page_obj': page_obj,
-        'additional_column_names': additional_columns.get_names(),
+        'additional_column_names': additional_columns.get_all_names(),
     }
 
     return render(request, 'frontend/search_results.html', context)

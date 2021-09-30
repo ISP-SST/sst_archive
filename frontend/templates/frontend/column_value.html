@@ -1,0 +1,11 @@
+{% if array_value %}
+<ul style="list-style-type: none; padding-left: 0">
+    {% for value in array_value %}
+    <li>{{ value }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if value %}
+{{ value }}
+{% endif %}

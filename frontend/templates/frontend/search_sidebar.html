@@ -1,4 +1,4 @@
-<div class="search-sidebar row mb-5">
+<div class="search-sidebar row">
     <h4>Search</h4>
 
     <form action="{% url 'search' %}" method="GET">
@@ -7,7 +7,7 @@
             {{ search_form.as_table }}
         </table>
         <div class="text-right">
-            <button type="submit" class="btn btn-primary mt-3"><i class="bi bi-search "></i> Search</button>
+            <button type="submit" class="btn btn-secondary mt-3"><i class="bi bi-search "></i> Search</button>
         </div>
     </form>
 </div>
