@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Add debug toolbar
     'django_q',
     'rest_framework',
     'django_filters',
