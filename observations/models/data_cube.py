@@ -20,4 +20,4 @@ class DataCube(models.Model):
     objects = DataCubeManager()
 
     def __str__(self):
-        return self.file_name
+        return self.filename

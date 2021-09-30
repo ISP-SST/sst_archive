@@ -11,7 +11,7 @@ from observations.models import DataCube
 
 def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
     """View that lets the user download a datacube if they have the right access token or user permissions."""
-    data_cube = DataCube.objects.get(file_name__iexact=filename)
+    data_cube = DataCube.objects.get(filename__iexact=filename)
 
     form = TokenForm()
 
@@ -44,4 +44,4 @@ def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
     if not os.path.exists(data_cube.path):
         return render(request, 'data_access/file_not_found.html', {'filename': data_cube.filename}, status=404)
 
-    return FileResponse(open(data_cube.path, 'rb'), filename=data_cube.file_name)
+    return FileResponse(open(data_cube.path, 'rb'), filename=data_cube.filename)

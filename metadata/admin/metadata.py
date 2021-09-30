@@ -9,4 +9,4 @@ class MetadataAdmin(admin.ModelAdmin):
     list_display = ['oid', 'date_beg']
     list_filter = []
     readonly_fields = []
-    search_fields = ['data_location__file_name']
+    search_fields = ['data_cube__filename']

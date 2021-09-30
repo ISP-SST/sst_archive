@@ -52,11 +52,11 @@ def _create_or_update_data_cube(fits_cube, instrument):
     cube_size = os.path.getsize(fits_cube)
 
     try:
-        data_cube = DataCube.objects.get(instrument=instrument, file_path=fits_cube_path, file_name=fits_cube_name)
+        data_cube = DataCube.objects.get(instrument=instrument, path=fits_cube_path, filename=fits_cube_name)
         data_cube.size = cube_size
     except DataLocation.DoesNotExist:
-        data_cube = DataLocation(instrument=instrument, file_path=fits_cube_path, file_size=cube_size,
-                                     file_name=fits_cube_name)
+        data_cube = DataLocation(instrument=instrument, path=fits_cube_path, size=cube_size,
+                                     filename=fits_cube_name)
 
     data_cube.save()
     return data_cube

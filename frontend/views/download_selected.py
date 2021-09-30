@@ -15,7 +15,7 @@ def download_selected_data(request):
 
     file_list = list(map(lambda selection: selection.filename, selection_list))
 
-    file_info_query = DataCube.objects.filter(file_name__in=file_list).values_list(
+    file_info_query = DataCube.objects.filter(filename__in=file_list).values_list(
         'data_cube__path', 'data_cube__size').iterator()
     files += [os.path.relpath(file_info[0], ROOT_DIR) for file_info in file_info_query]
 
