@@ -30,6 +30,8 @@
                     <td>
                         {% for tag in data_cube.tags.all %}
                         <span class="badge bg-info">{{ tag }}</span>
+                        {% empty %}
+                        -
                         {% endfor %}
                     </td>
                 </tr>

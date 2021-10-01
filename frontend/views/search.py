@@ -60,7 +60,7 @@ class Column:
 
 class MetadataColumn(Column):
     def __init__(self, name, value_key):
-        super().__init__(name, 'metadata')
+        super().__init__(name, 'metadata__%s' % value_key)
         self.value_key = value_key
 
     def get_value(self, data_cube):
@@ -151,13 +151,10 @@ def search_view(request):
 
     data_cubes = DataCube.objects.all()
 
+    only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'thumbnail', *additional_columns.get_all_only_specs()]
+
     data_cubes = data_cubes.filter(freeform_query_q).filter(
-        **complete_query).select_related('metadata', 'instrument', 'thumbnail').only(
-        'oid', 'filename',
-        'instrument__name',
-        'metadata__date_beg',
-        'size', 'thumbnail',
-        *additional_columns.get_all_only_specs())
+        **complete_query).select_related('metadata', 'instrument', 'thumbnail').only(*only_fields)
 
     results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
 
