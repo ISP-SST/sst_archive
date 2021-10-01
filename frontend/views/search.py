@@ -72,7 +72,7 @@ class TagColumn(Column):
         super().__init__(name, 'tags')
 
     def get_value(self, data_cube):
-        return list(data_cube.tags.values_list('name', flat=True))
+        return [tag.name for tag in data_cube.tags.all()]
 
 
 class AdditionalColumns:
@@ -154,7 +154,7 @@ def search_view(request):
     only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'thumbnail', *additional_columns.get_all_only_specs()]
 
     data_cubes = data_cubes.filter(freeform_query_q).filter(
-        **complete_query).select_related('metadata', 'instrument', 'thumbnail').only(*only_fields)
+        **complete_query).select_related('metadata', 'instrument', 'thumbnail').only(*only_fields).distinct()
 
     results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
 
