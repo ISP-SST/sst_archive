@@ -159,13 +159,6 @@ def search_view(request):
         'size', 'thumbnail',
         *additional_columns.get_all_only_specs())
 
-    if features:
-        # FIXME(daniel): This subquery does not leave us with one row per file. If a file has multiple tags we
-        #                now also get multiple rows for that file, but the "feature_tags" property is also not
-        #                correctly set to represent the correct names of each of the tags.
-        # data_locations = data_cubes.annotate(feature_tags=Subquery(tags))
-        pass
-
     results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
 
     results = list(filter(None, results))
