@@ -8,6 +8,8 @@
 {% block title %}- Datasets{% endblock %}
 
 {% block content %}
+
+<div class="container">
     <h3>
         Showing
         {% if page_obj.start_index != page_obj.end_index %}
@@ -65,4 +67,5 @@
 
     {% pagination_controls paginator page_obj %}
 
+</div>
 {% endblock %}

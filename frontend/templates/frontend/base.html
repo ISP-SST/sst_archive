@@ -10,9 +10,9 @@
 
     <style>
     html {
+        /* A default font size of 14 px gives us more screen real-estate for content without feeling too cramped. */
         font-size: 14px;
     }
-
     </style>
 
     <title>Stockholm SST Archive Prototype {% block title %}{% endblock %}</title>
@@ -21,22 +21,22 @@
 <body>
 <div id="main-container" class="container">
 
-    <header class="row mb-5">
-        <div class="row">
+    <header class="row mb-3">
+        <div class="row justify-content-between py-3">
             <h1 class="col-8 mt-3 display-4"><a style="color: #000000; text-decoration: none" href="{% url 'search' %}">Stockholm SST
                 Archive <span class="text-muted"><sup>Prototype</sup></span></a></h1>
 
             {% if user.is_authenticated %}
-            <div class="col text-right float-right">
-                <small>
-                    Logged in as <i>{{ user.email }}</i>
-                    <p>
+            <div class="col-2 text-end">
+                <!-- <small> -->
+                    <strong>{{ user.email }}</strong>
                         {% if user.is_staff %}
-                        <a href="{% url 'admin:index' %}">Admin</a>
+                    <p>
+                        <a class="btn btn-light btn-sm" href="{% url 'admin:index' %}"><i class="bi bi-pen-fill"></i> Admin</a>
                         {% endif %}
-                        <a href="{% url 'logout' %}">Log out</a>
+                        <a class="btn btn-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-person-fill"></i> Log out</a>
                     </p>
-                </small>
+                <!-- </small> -->
             </div>
             {% else %}
             <div class="col-4 text-right">
@@ -44,8 +44,8 @@
                 // Disable the login stuff for now. Once we know more about how access control should work we can
                 // create a proper solution.
                 <small>
-                    <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
-                    <a href="{% url 'register' %}">Register</a>
+                    <a class="btn btn-dark btn-sm" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
+                    <a class="btn btn-dark btn-sm" href="{% url 'register' %}">Register</a>
                 </small>
                 -->
             </div>
