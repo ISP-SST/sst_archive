@@ -8,7 +8,15 @@
 {% block title %}- Datasets{% endblock %}
 
 {% block content %}
-    <h3>Showing {{ paginator.count }} search results</h3>
+    <h3>
+        Showing
+        {% if page_obj.start_index != page_obj.end_index %}
+        results {{ page_obj.start_index }} to {{ page_obj.end_index }}
+        {% else %}
+        result {{ page_obj.start_index }}
+        {% endif %}
+        of {{ paginator.count }}
+    </h3>
 
     <table class="table" style="table-layout: fixed">
         <thead class=".thead-light">

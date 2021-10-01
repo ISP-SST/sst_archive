@@ -3,11 +3,14 @@
 
     <form action="{% url 'search' %}" method="GET">
 
-        <table>
+        <table class="table table-borderless">
             {{ search_form.as_table }}
+            <tr>
+                <td></td>
+                <td class="text-end">
+                <button type="submit" class="btn btn-secondary mt-3"><i class="bi bi-search "></i> Search</button>
+                </td>
+            </tr>
         </table>
-        <div class="text-end">
-            <button type="submit" class="btn btn-secondary mt-3"><i class="bi bi-search "></i> Search</button>
-        </div>
     </form>
 </div>

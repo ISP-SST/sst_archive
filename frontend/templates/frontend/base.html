@@ -8,6 +8,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <style>
+    html {
+        font-size: 14px;
+    }
+
+    </style>
+
     <title>Stockholm SST Archive Prototype {% block title %}{% endblock %}</title>
 </head>
 
@@ -16,32 +23,38 @@
 
     <header class="row mb-5">
         <div class="row">
-            <h1 class="col-8 mt-3"><a style="color: #000000; text-decoration: none" href="{% url 'search' %}">Stockholm SST
-                Archive Prototype</a></h1>
+            <h1 class="col-8 mt-3 display-4"><a style="color: #000000; text-decoration: none" href="{% url 'search' %}">Stockholm SST
+                Archive <span class="text-muted"><sup>Prototype</sup></span></a></h1>
 
             {% if user.is_authenticated %}
-            <div class="col-4 text-right">
+            <div class="col text-right float-right">
                 <small>
                     Logged in as <i>{{ user.email }}</i>
-                    <a href="{% url 'logout' %}">Log out</a>
-                    {% if user.is_staff %}
-                    <p><a href="{% url 'admin:index' %}">Admin</a></p>
-                    {% endif %}
+                    <p>
+                        {% if user.is_staff %}
+                        <a href="{% url 'admin:index' %}">Admin</a>
+                        {% endif %}
+                        <a href="{% url 'logout' %}">Log out</a>
+                    </p>
                 </small>
             </div>
             {% else %}
             <div class="col-4 text-right">
+                <!--
+                // Disable the login stuff for now. Once we know more about how access control should work we can
+                // create a proper solution.
                 <small>
                     <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
                     <a href="{% url 'register' %}">Register</a>
                 </small>
+                -->
             </div>
             {% endif %}
         </div>
     </header>
 
     <div class="row">
-        <div id="sidebar" class="col-3 bg-light p-3">
+        <div id="sidebar" class="col-3 bg-light p-3 border">
             {% block sidebar %}
             {% include "frontend/search_sidebar.html" %}
             {% include "frontend/feedback_sidebar.html" %}
