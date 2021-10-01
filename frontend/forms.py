@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 
 from frontend.utils import get_memory_cache
-from observations.models import Tag
+from observations.models import Tag, Instrument
 
 
 def initial_start_date():
@@ -62,6 +62,21 @@ def get_features_choices():
     return choices
 
 
+def get_instruments_choices():
+    cache = get_memory_cache()
+    INSTRUMENTS_CACHE_KEY = 'known_instruments'
+
+    choices = cache.get(INSTRUMENTS_CACHE_KEY)
+
+    if not choices:
+        # Repopulate cache.
+        instruments = Instrument.objects.all()
+        choices = [('all', 'All')] + [(instrument.name.lower(), instrument.name) for instrument in instruments]
+        cache.set(INSTRUMENTS_CACHE_KEY, choices)
+
+    return choices
+
+
 class SearchForm(forms.Form):
     start_date = forms.DateField(label='Start Date',
                                  initial=initial_start_date,
@@ -78,7 +93,7 @@ class SearchForm(forms.Form):
                                                           'placeholder': 'Select a date',
                                                           'type': 'date'}))
     instrument = forms.ChoiceField(label='Instrument',
-                                   choices=(('all', 'All'), ('chromis', 'CHROMIS'), ('crisp', 'CRISP')),
+                                   choices=get_instruments_choices,
                                    widget=forms.Select(attrs={'class': 'form-select'}))
     spectral_lines = forms.MultipleChoiceField(label='Spectral Lines',
                                choices=get_spectral_line_choices,
