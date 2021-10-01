@@ -61,6 +61,12 @@ TBD
 
 #### Features (tags)
 
+While tags can be assigned arbitrarily in the database model and admin site, the source for what tags should be applied
+to a data cube should ideally come from data within that same cube, or data stored within close proximity to the cube.
+
+Having the tags present in the material ingested into the database would make it easy to re-ingest data in the case of
+data being re-reduced, or database corruption that cannot be easily solved by restoring from backups.
+
 A list of valid features likely needs to be available before the ingestion process is started so that the user can
 choose from this list (or create a new tag) rather than opening things up for users to inventing their own terminology
 and variations on spelling.
