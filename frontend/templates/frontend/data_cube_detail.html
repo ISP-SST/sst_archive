@@ -13,13 +13,6 @@
     <div class="row">
         <h3>Observation Details</h3>
 
-        <div>
-            Features:
-            {% for tag in data_cube.tags.all %}
-            <span class="badge bg-info">{{ tag }}</span>
-            {% endfor %}
-        </div>
-
         <div class="mb-5 col-6" style="position: relative; overflow: hidden">
             <figure class="figure">
             {% if data_cube.animated_preview %}
@@ -32,6 +25,14 @@
 
         <div class="mb-5 col-6 ">
             <table class="table" style="table-layout: fixed">
+                <tr>
+                    <td>Features:</td>
+                    <td>
+                        {% for tag in data_cube.tags.all %}
+                        <span class="badge bg-info">{{ tag }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
                 <tr>
                     <td>Observation began:</td>
                     <td>{{ metadata.date_beg }}</td>
@@ -52,20 +53,11 @@
                 </tr>
 
                 <tr>
-                    <td>File name:</td>
-                    <td>{{ data_cube.filename }}</td>
-                </tr>
-
-                <tr>
                     <td>Download:</td>
                     <td>
-                    <a class="btn btn-primary" href="{% url 'download_data_cube' data_cube.filename %}"><i class="bi bi-download"></i> Download FITS data cube</a>
+                    <a class="btn btn-primary" href="{% url 'download_data_cube' data_cube.filename %}"><i class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
+                        <small class="text-muted">{{ data_cube.filename }}</small>
                     </td>
-                </tr>
-
-                <tr>
-                    <td>File size:</td>
-                    <td><span class="text-center">{{ data_cube.size|filesizeformat }}</span></td>
                 </tr>
             </table>
         </div>
@@ -77,36 +69,36 @@
     </div>
 
     <div class="container">
-        <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion" id="metadata-accordion">
           <div class="accordion-item">
             <h2 class="accordion-header" id="flush-headingOne">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                   All FITS Metadata
               </button>
             </h2>
-            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#metadata-accordion">
               <div class="accordion-body">
-              <table class="table table-hover col-lg-8" style="table-layout: fixed">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col">Keyword</th>
-            <th scope="col">Value</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for key, value in metadata_fields.items %}
-        {% if value is not None %}
-        <tr>
-            <th scope="row">{{ key }}</th>
-            <td class="overflow-auto">{{ value }}</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-        <p>Specified metadata not found.</p>
-    {% endif %}
+                <table class="table table-hover col-lg-8" style="table-layout: fixed">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Keyword</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in metadata_fields.items %}
+                    {% if value is not None %}
+                    <tr>
+                        <th scope="row">{{ key }}</th>
+                        <td class="overflow-auto">{{ value }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p>Specified metadata not found.</p>
+                {% endif %}
               </div>
             </div>
           </div>
