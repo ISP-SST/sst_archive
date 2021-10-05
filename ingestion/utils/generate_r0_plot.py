@@ -18,38 +18,34 @@ def generate_r0_plot(data_cube, plot_file):
     hfont = {'fontname': 'Helvetica'}
     matplotlib.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 
-    #matplotlib.rc('font', **hfont)
+    primary_hdu = data_cube[0]
 
-    plt.style.use(astropy_mpl_style)
-
-    phdu = data_cube[0]
-
-    ref_datetime = datetime.datetime.fromisoformat(phdu.header['DATEREF'])
+    ref_datetime = datetime.datetime.fromisoformat(primary_hdu.header['DATEREF'])
 
     fig, ax = plt.subplots()
 
     ax.grid(color='#d0d0d0', linestyle='-.', linewidth=0.7)
+    ax.set_ylim(bottom=0.0, top=0.25)
 
     r0_hdu_index = data_cube.index_of('VAR-EXT-ATMOS_R0')
     r0_hdu = data_cube[r0_hdu_index]
 
-    r0_values_0 = [v[0] for v in r0_hdu.data.field('ATMOS_R0')[0]]
-    r0_values_1 = [v[1] for v in r0_hdu.data.field('ATMOS_R0')[0]]
-    r0_values_both = [(v[0], v[1]) for v in r0_hdu.data.field('ATMOS_R0')[0]]
+    r0_values_all = r0_hdu.data.field('ATMOS_R0')[0]
+
+    r0_values_0 = [v[0] for v in r0_values_all]
+    r0_values_1 = [v[1] for v in r0_values_all]
     r0_datetimes = [_get_datetime(ref_datetime, t[0]) for t in r0_hdu.data.field('TIME-ATMOS_R0')[0]]
 
-    #plt.plot(r0_datetimes, r0_values_0, label='0', lw=2)
-    #plt.plot(r0_datetimes, r0_values_1, label='1', lw=2)
+    plt.plot(r0_datetimes, r0_values_0, label='First', lw=2, color='#33cc33')
+    plt.plot(r0_datetimes, r0_values_1, label='Second', lw=2, color='black')
     plt.title('Atmos $r_{0}$', **hfont)
-
-    plt.boxplot(r0_values_both)
 
     plt.xlabel('Time', **hfont)
     plt.ylabel('$r_{0}$ (m)', **hfont)
 
-    plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+    ax.legend()
 
-    plt.savefig(plot_file, dpi=600)
+    plt.savefig(plot_file)
     plt.close()
 
 
