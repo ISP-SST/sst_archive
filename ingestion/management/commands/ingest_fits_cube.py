@@ -8,6 +8,7 @@ from django.conf import settings
 from django.utils.timezone import make_aware
 
 from data_access.models import DataCubeAccessControl
+from ingestion.utils.ingest_metadata import create_or_update_metadata
 from previews.models import AnimatedGifPreview, ImagePreview
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from ingestion.utils.generate_image_preview import generate_image_preview
@@ -42,9 +43,12 @@ def _generate_access_control_entities(data_cube, fits_header):
     })
 
 
-def _create_or_update_data_cube(fits_cube, instrument):
-    (fits_cube_path, fits_cube_name) = os.path.split(fits_cube)
-    cube_size = os.path.getsize(fits_cube)
+def _create_or_update_data_cube(fits_file, instrument, fits_header):
+
+    oid = _generate_observation_id(fits_header)
+
+    (fits_cube_path, fits_cube_name) = os.path.split(fits_file)
+    cube_size = os.path.getsize(fits_file)
 
     data_cube, created = DataCube.objects.update_or_create(filename=fits_cube_name, path=fits_cube_path, defaults={
         'size': cube_size,
@@ -94,53 +98,6 @@ def _create_image_preview(hdus, data_cube):
     preview.save()
 
 
-def _create_or_update_metadata(fits_header, data_cube, oid=None):
-    model_type = Metadata
-
-    fields = [field.name for field in model_type._meta.get_fields()]
-
-    properties = {}
-
-    if not oid:
-        oid = _generate_observation_id(fits_header)
-
-    for key in fits_header:
-        model_keyword = str(key).lower().replace('-', '_').replace(' ', '_')
-        if model_keyword in fields:
-            properties[model_keyword] = fits_header.get(key)
-
-    properties['oid'] = oid
-
-    try:
-        model = model_type.objects.get(oid=oid)
-    except model_type.DoesNotExist:
-        model = model_type(**properties)
-
-    for (key, value) in properties.items():
-        attr = getattr(model, key)
-        if isinstance(attr, datetime):
-            try:
-                value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
-            except ValueError:
-                value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
-
-            try:
-                import zoneinfo
-            except ImportError:
-                # FIXME(daniel): This is a temporary fix for running on Python 3.7. Upgrading to 3.9 should remove the
-                #                need for this special case. Note that for now backports.zoneinfo needs to be pip
-                #                installed in order to run the service on Python < 3.9.
-                from backports import zoneinfo
-
-            timezone = zoneinfo.ZoneInfo(settings.OBSERVATION_TIMEZONE)
-            value = make_aware(value, timezone=timezone)
-
-        setattr(model, key, value)
-
-    model.data_cube = data_cube
-    model.save()
-
-
 def _create_or_update_fits_header(fits_header, data_cube):
     header, created = FITSHeader.objects.update_or_create(data_cube=data_cube, defaults={
         'fits_header': fits_header.tostring()
@@ -157,29 +114,30 @@ class Command(BaseCommand):
         parser.add_argument('--generate-animated-previews', action='store_true')
 
     def handle(self, *args, **options):
-        fits_cube = options['fits_cube']
+        fits_file = options['fits_cube']
 
-        if not os.path.exists(fits_cube):
-            raise CommandError('Provided FITS cube does not exist: %s' % fits_cube)
+        if not os.path.exists(fits_file):
+            raise CommandError('Provided FITS cube does not exist: %s' % fits_file)
 
         try:
-            hdus = fits.open(fits_cube)
+            hdus = fits.open(fits_file)
             fits_header = hdus[0].header
         except:
-            raise CommandError('Cannot open provided FITS cube: %s' % fits_cube)
+            raise CommandError('Cannot open provided FITS cube: %s' % fits_file)
 
         # TODO(daniel): Check that 'INSTRUME' key exists in header.
         instrument = str(fits_header['INSTRUME']).strip().lower()
 
         instrument, created = Instrument.objects.get_or_create(name=instrument.upper())
 
-        data_cube = _create_or_update_data_cube(fits_cube, instrument)
+        oid = options.get('observation_id', None)
+
+        data_cube = _create_or_update_data_cube(fits_file, instrument, fits_header)
 
         _generate_access_control_entities(data_cube, fits_header)
 
-        oid = options.get('observation_id', None)
         print('Extracting metadata from FITS cube...')
-        _create_or_update_metadata(fits_header, data_cube, oid)
+        create_or_update_metadata(fits_header, data_cube)
 
         print('Ingesting raw FITS header...')
         _create_or_update_fits_header(fits_header, data_cube)

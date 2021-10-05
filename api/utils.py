@@ -16,7 +16,7 @@ def get_models_from_fields(fields):
     """
     models = ['__'.join(f.split('__')[:-1]) for f in fields]
     # TODO(daniel): This can likely be simplified.
-    return filter(lambda model: model != '', models)
+    return list(set(filter(lambda model: model != '', models)))
 
 
 def get_immediate_fields(fields):

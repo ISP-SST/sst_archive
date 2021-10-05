@@ -1,9 +1,12 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.utils.field_mapping import get_nested_relation_kwargs
 
 from metadata.models import Metadata
 from api.utils import get_only_nested_fields, get_immediate_fields
-from observations.models import DataCube, Instrument
+from observations.models import DataCube, Instrument, Tag
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -72,20 +75,48 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class InstrumentSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Instrument
-        exclude = ['id', 'metadata_content_type']
+        exclude = []
 
 
 class MetadataSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Metadata
         exclude = ['id', 'data_cube']
+        depth = 0
 
 
-class DataCubeSerializer(DynamicFieldsModelSerializer):
+class TagSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Tag
+        exclude = []
+
+
+class SearchableDataCubeSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = DataCube
         # Note that any field based on a reverse relation MUST be explicitly
         # specified in this list of fields. If not, the serializer
         # will not serialize that field..
-        fields = ['id', 'filename', 'path', 'size', 'metadata', 'instrument']
+        fields = ['id', 'oid', 'path', 'filename', 'size', 'metadata', 'instrument', 'tags']
+        depth = 1
+
+
+class InlineInstrumentSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Instrument
+        fields = ['name']
+
+
+class DataCubeSerializer(serializers.ModelSerializer):
+    metadata = MetadataSerializer(required=False)
+    instrument = InlineInstrumentSerializer()
+
+    tags = TagSerializer(many=True)
+
+    class Meta:
+        model = DataCube
+        # Note that any field based on a reverse relation MUST be explicitly
+        # specified in this list of fields. If not, the serializer
+        # will not serialize that field..
+        fields = ['id', 'oid', 'path', 'filename', 'size', 'metadata', 'instrument', 'tags']
         depth = 1
