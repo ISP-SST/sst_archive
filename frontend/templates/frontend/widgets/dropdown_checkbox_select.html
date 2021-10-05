@@ -17,6 +17,10 @@
       {% if group %}
         </div></div>
       {% endif %}
+    {% empty %}
+    <div class="dropdown-item">
+      <em>No items to choose from</em>
+    </div>
     {% endfor %}
   </div>
 </div>
