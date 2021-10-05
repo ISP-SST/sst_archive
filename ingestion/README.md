@@ -4,7 +4,7 @@ This Django app is responsible for bringing the data in the FITS cubes into the 
 
 It also does some processing of the data, such as generating static and animated image previews.
 
-## Plans
+## Decisions
 
 ### Ingestion endpoint
 
@@ -40,11 +40,69 @@ Cons:
 
 Go with HTTP endpoint in the long run, but use the script during prototype phase. 
 
+### Monolithic Ingestion vs. Partials
+
+#### Monolithic Ingestion
+
+Pros: 
+
+* Simple to enforce integrity of the provided data. If the data submitted is somehow 
+  faulty it can be rejected as a whole.
+
+Cons:
+
+* Data needs to be replaced as a whole. No patching allowed. Patching could perhaps be
+ simulated if the caller can first retrieve the existing data.
+
+#### Partial Ingestion
+
+Pros:
+
+* New data can easily be added to existing observation.
+
+Cons:
+
+* Care needs to be taken when updating existing data.
+
+#### Decision
+
+Go with monolithic ingestion until we know of a reason not to.
+
+### Asynchronous vs Synchronous Ingestion
+
+#### Async Ingestion
+
+Pros:
+
+* Can be called very quickly, agnostic to the amount of processing done as part of the ingestion steps
+* Allows for efficient batch ingestion/processing
+ 
+Cons:
+
+* Gives no immediate feedback if the ingestion failed
+* More complex
+
+#### Synchronous Ingestion
+
+Pros:
+
+* Simple and predictable.
+
+Cons:
+
+* Scales poorly. May become an issue going forward if we start doing many operations as part of the ingestion step.
+
+#### Decision
+
+Start with synchronous ingestion first, but prepare for introducing async ingestion later if needed. Outline the changes
+that need to be made in order to transition to asynchronous ingestion and ensure that we are prepared to take that step
+if the need arises.
+
 ### Ingestion Architecture
 
 The implementation should be modular in a fashion where it's easy to introduce additional content. 
 
-Some of the known items we need to ingest:
+Some known items we need to ingest:
 
 #### Metadata
 
@@ -56,6 +114,10 @@ member names. Every transformed keyword is checked to see if it exists in the Me
 assigned to the metadata. Dates are handled as a special case, since they need to be explicitly interpreted as UTC. 
 
 #### Preview images/animations
+
+TBD
+
+#### Plots and Diagrams
 
 TBD
 
