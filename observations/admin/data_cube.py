@@ -9,7 +9,6 @@ class DataCubeAdminForm(forms.ModelForm):
         model = DataCube
         fields = '__all__'
         widgets = {
-            'path': forms.Textarea,
             'tags': forms.CheckboxSelectMultiple
         }
 
