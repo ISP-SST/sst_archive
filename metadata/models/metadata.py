@@ -368,4 +368,4 @@ class Metadata(models.Model):
     objects = MetadataManager()
 
     def __str__(self):
-        return self.oid
+        return self.data_cube.oid
