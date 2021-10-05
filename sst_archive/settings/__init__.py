@@ -174,19 +174,12 @@ GENERATED_ROOT = BASE_DIR / 'assets' / 'generated'
 GIF_URL_ROOT = 'generated/gifs'
 GIF_ROOT = BASE_DIR / 'assets' / 'generated' / 'gifs'
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
 # This information is available in the FITS cubes, but it may not be safe
 # to use it directly from there. At least we shouldn't assume that the
 # timezone string will be compatible with Python's set of timezones.
 OBSERVATION_TIMEZONE = 'UTC'
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# The maximum size of a file inside a ZIP archives generated for a data selection (in bytes)
-ZIP_ARCHIVE_MAX_FILE_SIZE = 20*1024*1024*1024 # 20 GB
-ZIP_ARCHIVE_MISSING_FILE_NAME = 'missing_files.txt'
-ZIP_ARCHIVE_MAX_SIZE = 20*1024*1024*1024 # 20 GB
