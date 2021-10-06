@@ -7,7 +7,6 @@ import datetime
 import matplotlib
 import matplotlib.pyplot as plt
 from astropy.io import fits
-from astropy.visualization import astropy_mpl_style
 
 
 def _get_datetime(ref_datetime, elapsed_seconds):
