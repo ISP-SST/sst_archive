@@ -38,21 +38,21 @@ Cons:
 
 #### Decision
 
-Go with HTTP endpoint in the long run, but use the script during prototype phase. 
+Go with HTTP endpoint in the long run, but use the script during prototype phase.
 
 ### Monolithic Ingestion vs. Partials
 
 #### Monolithic Ingestion
 
-Pros: 
+Pros:
 
-* Simple to enforce integrity of the provided data. If the data submitted is somehow 
-  faulty it can be rejected as a whole.
+* Simple to enforce integrity of the provided data. If the data submitted is somehow faulty it can be rejected as a
+  whole.
 
 Cons:
 
-* Data needs to be replaced as a whole. No patching allowed. Patching could perhaps be
- simulated if the caller can first retrieve the existing data.
+* Data needs to be replaced as a whole. No patching allowed. Patching could perhaps be simulated if the caller can first
+  retrieve the existing data.
 
 #### Partial Ingestion
 
@@ -76,7 +76,7 @@ Pros:
 
 * Can be called very quickly, agnostic to the amount of processing done as part of the ingestion steps
 * Allows for efficient batch ingestion/processing
- 
+
 Cons:
 
 * Gives no immediate feedback if the ingestion failed
@@ -98,30 +98,30 @@ Start with synchronous ingestion first, but prepare for introducing async ingest
 that need to be made in order to transition to asynchronous ingestion and ensure that we are prepared to take that step
 if the need arises.
 
-### Ingestion Architecture
+## Ingestion Architecture
 
-The implementation should be modular in a fashion where it's easy to introduce additional content. 
+The implementation should be modular in a fashion where it's easy to introduce additional content.
 
 Some known items we need to ingest:
 
-#### Metadata
+### Metadata
 
-Metadata is ingested in full in order to allow for complex searches or scenarios where we haven't found a need to
-create dedicated database tables for the attributes in question.
+Metadata is ingested in full in order to allow for complex searches or scenarios where we haven't found a need to create
+dedicated database tables for the attributes in question.
 
 Metadata can be ingested by transforming the name of each keyword in the FITS header to a format compatible Python
 member names. Every transformed keyword is checked to see if it exists in the Metadata model class. If it does it is
-assigned to the metadata. Dates are handled as a special case, since they need to be explicitly interpreted as UTC. 
+assigned to the metadata. Dates are handled as a special case, since they need to be explicitly interpreted as UTC.
 
-#### Preview images/animations
-
-TBD
-
-#### Plots and Diagrams
+### Preview images/animations
 
 TBD
 
-#### Features (tags)
+### Plots and Diagrams
+
+TBD
+
+### Features (tags)
 
 While tags can be assigned arbitrarily in the database model and admin site, the source for what tags should be applied
 to a data cube should ideally come from data within that same cube, or data stored within close proximity to the cube.
@@ -133,7 +133,48 @@ A list of valid features likely needs to be available before the ingestion proce
 choose from this list (or create a new tag) rather than opening things up for users to inventing their own terminology
 and variations on spelling.
 
-#### FITS header
+### FITS header
 
 The FITS header is ingested as text in order to easily extract even more information from the metadata in the future
-without needing to reprocess the FITS cubes. 
+without needing to reprocess the FITS cubes.
+
+## Suggested Flow for Asynchronous Ingestion
+
+Assumptions: CHECKSUM is sufficiently unlikely to create collisions that it can be used to detect changes in the file.
+This may also be unnecessary if files are always renamed when they are reprocessed. If that's the case, simply checking
+the file name for the DataCube with the same OID should be sufficient for gathering finding out if the data has changed.
+
+1. Add ingestion work order to database. Must include all information needed to perform the ingestion asynchronously:
+    * DateTime when the order was added
+    * Path to FITS file
+        * Work order should probably be unique per path. If a new work order comes in for the same file, update the
+          existing work order with any new information. (Keep the date though?)
+    * Tags (NOTE(daniel): Not needed if the tags can be included in the FITS cube)
+    * Locations of image/video previews
+    * Work order will also automaticall be assigned a status (Queued, Started, Completed, Failed)
+
+2. Asynchronously execute the ingestion:
+    1. Fetch the oldest non-completed ingestion work order
+    2. Fetch the last completed ingestion work order for this DataCube
+        1. If flag "force-re-ingest" has been specified this item will be ignored. This will force any future checksum
+           comparisons to fail and trigger re-ingestion
+    3. First, create or update the basic DataCube in a single transaction (WHY?):
+        2. Create/update DataCube
+        3. If data access model instances exist:
+            1. Check if the CHECKSUM of the primary HDU has changed compared to last completed work order
+            2. If yes, update the data access model instances
+            3. Update CHECKSUM in current work order
+        4. Else:
+            1. Create new data access model instances
+    4. Ingest FITS header string:
+        1. If last completed work order CHECKSUM for primary HDU is equal to ingested current CHECKSUM, skip ingestion
+        2. Update the header string
+    5. Ingest metadata:
+        1. If last completed work order CHECKSUM for primary HDU is equal to ingested current CHECKSUM, skip ingestion
+        2. Update the metadata
+    6. Ingest image/video previews:
+        1. TODO: We can probably use the DATASUM FITS keyword to detect if changes have been made to the source data. We
+           can then use "force-re-ingest" to a re-ingestion if the code to generate the image previews changes.
+        2. Update the preview
+            1. Process source images and generate thumbnails and previews in suitable sizes.
+    7. Update checksums in work order
