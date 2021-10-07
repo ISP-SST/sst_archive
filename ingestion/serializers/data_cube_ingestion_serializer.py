@@ -1,32 +1,23 @@
-from django.core.exceptions import ObjectDoesNotExist
 from pathlib import Path
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.relations import PrimaryKeyRelatedField
 
-from ingestion.utils.ingest_metadata import ingest_metadata, InvalidFITSHeader
-from metadata.models import FITSHeader
-from observations.models import Instrument, DataCube, Tag
+from ingestion.utils.ingest_data_cube import ingest_data_cube
+from observations.models import Instrument
 
 
-class DataCubeIngestionSerializer(serializers.ModelSerializer):
+class DataCubeIngestionSerializer(serializers.Serializer):
     """
     This serializer is responsible for the mechanics of taking a description of a new data cube and
     ingesting it into the database.
     """
-
-    fits_header = serializers.CharField()
+    oid = serializers.CharField()
     path = serializers.CharField()
 
-    instrument = PrimaryKeyRelatedField(queryset=Instrument.objects.all())
-
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    instrument = serializers.PrimaryKeyRelatedField(queryset=Instrument.objects.all())
 
     class Meta:
-        model = DataCube
-        # Note that any field based on a reverse relation MUST be explicitly specified in this list of fields.
-        # If not, the serializer will not serialize that field.
-        fields = ['id', 'oid', 'path', 'filename', 'size', 'instrument', 'fits_header', 'tags']
         depth = 1
 
     def validate_path(self, value):
@@ -34,7 +25,8 @@ class DataCubeIngestionSerializer(serializers.ModelSerializer):
 
         if not path.is_file():
             raise ValidationError(
-                'File pointed to by path does not exist, is not a file, or is not accessible from the host of this service')
+                'File pointed to by path does not exist, is not a file, or is not accessible from the host of' 
+                'this service')
 
         if path.suffix != '.fits':
             raise ValidationError('File does not carry the expected .fits extension')
@@ -45,20 +37,13 @@ class DataCubeIngestionSerializer(serializers.ModelSerializer):
         """
         Create a new DataCube for ingestion.
         """
-        fits_header_data = validated_data.pop('fits_header')
+        data_cube_data = validated_data
 
-        tags_data = validated_data.pop('tags', None)
+        oid = data_cube_data['oid']
+        fits_path = data_cube_data['path']
+        instrument = data_cube_data['instrument']
 
-        data_cube = DataCube.objects.create(**validated_data)
-
-        FITSHeader.objects.create(data_cube=data_cube, fits_header=fits_header_data)
-
-        try:
-            ingest_metadata(fits_header_data, data_cube)
-        except InvalidFITSHeader as e:
-            raise ValidationError(e)
-
-        data_cube.tags.set(tags_data)
+        data_cube = ingest_data_cube(oid, fits_path, instrument=instrument)
 
         return data_cube
 
@@ -66,19 +51,12 @@ class DataCubeIngestionSerializer(serializers.ModelSerializer):
         """
         Update an already ingested DataCube.
         """
-        fits_header_data = validated_data.pop('fits_header')
+        data_cube_data = validated_data
 
-        tags = validated_data.pop('tags') or data_cube.tags
+        oid = data_cube_data['oid']
+        fits_path = data_cube_data['path']
+        instrument = data_cube_data['instrument']
 
-        DataCube.objects.filter(id=data_cube.id).update(**validated_data)
-
-        FITSHeader.objects.filter(data_cube=data_cube).update(fits_header=fits_header_data)
-
-        try:
-            ingest_metadata(fits_header_data, data_cube)
-        except InvalidFITSHeader as e:
-            raise ValidationError(e)
-
-        data_cube.tags.set(tags)
+        ingest_data_cube(oid, fits_path, instrument=instrument)
 
         return data_cube

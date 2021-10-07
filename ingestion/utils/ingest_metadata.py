@@ -1,11 +1,12 @@
 from datetime import datetime
 import re
 
+import django.db.models.fields
 from astropy.io import fits
-
 from django.utils.timezone import make_aware
 
 from metadata.models import Metadata
+from observations.models import DataCube
 from sst_archive import settings
 
 try:
@@ -17,57 +18,11 @@ except ImportError:
     from backports import zoneinfo
 
 
-def _modelify_fits_keyword(keyword):
-    """
-    Transforms a FITS keyword to a valid variable name.
-    """
-    lower_keyword = str(keyword).lower()
-    return re.sub(r'[\-\ \.]', '_', lower_keyword)
-
-
-def create_or_update_metadata(fits_header_hdu, data_cube):
-    model_type = Metadata
-
-    fields = [field.name for field in model_type._meta.get_fields()]
-
-    properties = {}
-
-    for key in fits_header_hdu:
-        model_keyword = _modelify_fits_keyword(key)
-        if model_keyword in fields:
-            properties[model_keyword] = fits_header_hdu.get(key)
-
-    model, created = Metadata.objects.get_or_create(data_cube=data_cube, defaults=properties)
-
-    # TODO(daniel): This update code ensures that dates are proplery timezoned before assigning
-    #               to the Django model instance. However, since we use get_or_create() above,
-    #               any brand new Metadata instances will first assign the dates without proper
-    #               timezone attached to them. We could fix this by first iterating over the
-    #               properties and determining which fields need to be converted, and then send
-    #               all the processed properties into the get_or_create(). Or even better, use the
-    #               create_or_update() helper.
-    for (key, value) in properties.items():
-        attr = getattr(model, key)
-        if isinstance(attr, datetime):
-            try:
-                value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
-            except ValueError:
-                value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
-
-            timezone = zoneinfo.ZoneInfo(settings.OBSERVATION_TIMEZONE)
-            value = make_aware(value, timezone=timezone)
-
-        setattr(model, key, value)
-
-    model.data_cube = data_cube
-    model.save()
-
-
 class InvalidFITSHeader(Exception):
-   pass
+    pass
 
 
-def ingest_metadata(fits_header_data, data_cube):
+def get_fits_hdu(fits_header_data):
     fits_header_hdu = fits.Header.fromstring(fits_header_data)
 
     # Apparently fromstring() never trows an exception, it just does
@@ -76,4 +31,55 @@ def ingest_metadata(fits_header_data, data_cube):
     if not fits_header_hdu:
         raise InvalidFITSHeader('FITS header data is empty, damaged or otherwise invalid')
 
-    return create_or_update_metadata(fits_header_hdu, data_cube)
+    return fits_header_hdu
+
+
+def _modelify_fits_keyword(keyword: str) -> str:
+    """
+    Transforms a FITS keyword to a valid variable name.
+    """
+    lower_keyword = str(keyword).lower()
+    return re.sub(r'[\-\ \.]', '_', lower_keyword)
+
+
+def _translate_field(field_value: str, field_type):
+    """
+    Translate the value to a type that can be safely converted into the target model field.
+    This is especially important for DateTimeFields where the input string does not include
+    timezone information.
+
+    :param field_value:
+    :param field_type:
+    :return:
+    """
+    if field_type == django.db.models.fields.DateTimeField:
+        try:
+            field_value = datetime.strptime(field_value, '%Y-%m-%dT%H:%M:%S.%f')
+        except ValueError:
+            field_value = datetime.strptime(field_value, '%Y-%m-%dT%H:%M:%S')
+
+        timezone = zoneinfo.ZoneInfo(settings.OBSERVATION_TIMEZONE)
+        return make_aware(field_value, timezone=timezone)
+
+    return field_value
+
+
+def ingest_metadata(fits_header_hdu: fits.header.Header, data_cube: DataCube):
+    fields = {field.name: type(field) for field in Metadata._meta.get_fields()}
+
+    properties = {}
+
+    for key in fits_header_hdu:
+        model_keyword = _modelify_fits_keyword(key)
+        if model_keyword in fields:
+            translated_value = _translate_field(fits_header_hdu.get(key), fields[model_keyword])
+            properties[model_keyword] = translated_value
+
+    model, created = Metadata.objects.get_or_create(data_cube=data_cube, defaults=properties)
+
+    if not created:
+        for (key, value) in properties.items():
+            setattr(model, key, value)
+
+    model.data_cube = data_cube
+    model.save()
