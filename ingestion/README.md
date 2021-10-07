@@ -151,7 +151,7 @@ the file name for the DataCube with the same OID should be sufficient for gather
           existing work order with any new information. (Keep the date though?)
     * Tags (NOTE(daniel): Not needed if the tags can be included in the FITS cube)
     * Locations of image/video previews
-    * Work order will also automaticall be assigned a status (Queued, Started, Completed, Failed)
+    * Work order will also automatically be assigned a status (Queued, Started, Completed, Failed)
 
 2. Asynchronously execute the ingestion:
     1. Fetch the oldest non-completed ingestion work order
