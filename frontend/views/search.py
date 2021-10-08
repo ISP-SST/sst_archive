@@ -1,10 +1,12 @@
+import datetime
+
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
-from observations.models import DataCube
 from frontend.complex_filters import get_complex_filter
 from frontend.file_selection import is_selected_in_session
 from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
+from observations.models import DataCube
 
 
 # Compatibility function. Was introduced in Python 3.9, but we're currently only on 3.7.
@@ -13,6 +15,10 @@ def removeprefix(self, prefix):
         return self[len(prefix):]
     else:
         return self[:]
+
+
+def _utc_datetime_from_date(date):
+    return datetime.datetime(year=date.year, month=date.month, day=date.day, tzinfo=datetime.timezone.utc)
 
 
 class SearchResult:
@@ -134,9 +140,9 @@ def search_view(request):
             complete_query['metadata__naxis4__exact'] = 1
 
     if start_date:
-        complete_query['metadata__date_beg__gte'] = start_date
+        complete_query['metadata__date_beg__gte'] = _utc_datetime_from_date(start_date)
     if end_date:
-        complete_query['metadata__date_end__lte'] = end_date
+        complete_query['metadata__date_end__lte'] = _utc_datetime_from_date(end_date)
 
     if spectral_line_ids:
         complete_query['metadata__filter1__in'] = spectral_line_ids
@@ -151,7 +157,8 @@ def search_view(request):
 
     data_cubes = DataCube.objects.all()
 
-    only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'thumbnail', *additional_columns.get_all_only_specs()]
+    only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'thumbnail',
+                   *additional_columns.get_all_only_specs()]
 
     data_cubes = data_cubes.filter(freeform_query_q).filter(
         **complete_query).select_related('metadata', 'instrument', 'thumbnail').only(*only_fields).distinct()
