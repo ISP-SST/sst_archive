@@ -6,10 +6,6 @@ from observations.models import DataCube
 from .serializers.data_cube_ingestion_serializer import DataCubeIngestionSerializer
 
 
-class BearerTokenAuthentication(TokenAuthentication):
-    keyword = 'Bearer'
-
-
 class DataCubeIngestionViewSet(mixins.CreateModelMixin,
                                mixins.UpdateModelMixin,
                                viewsets.GenericViewSet):
@@ -21,4 +17,4 @@ class DataCubeIngestionViewSet(mixins.CreateModelMixin,
         'tags').order_by('id')
     serializer_class = DataCubeIngestionSerializer
     permission_classes = [IsAdminUser]
-    authentication_classes = [BearerTokenAuthentication]
+    authentication_classes = [TokenAuthentication]
