@@ -10,7 +10,7 @@ from ingestion.utils.ingest_fits_header import ingest_fits_header
 from ingestion.utils.ingest_image_preview import update_or_create_image_preview
 from ingestion.utils.ingest_metadata import InvalidFITSHeader
 from ingestion.utils.ingest_metadata import ingest_metadata
-from ingestion.utils.sync_with_svo import sync_with_svo
+from ingestion.svo.sync_with_svo import sync_with_svo
 from observations.models import DataCube, Instrument
 
 

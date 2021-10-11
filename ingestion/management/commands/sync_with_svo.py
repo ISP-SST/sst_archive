@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from ingestion.utils.ingest_metadata import get_fits_hdu
-from ingestion.utils.sync_with_svo import sync_with_svo
+from ingestion.svo.sync_with_svo import sync_with_svo
 from observations.models import DataCube
 
 
