@@ -10,6 +10,7 @@ from ingestion.utils.ingest_fits_header import ingest_fits_header
 from ingestion.utils.ingest_image_preview import update_or_create_image_preview
 from ingestion.utils.ingest_metadata import InvalidFITSHeader
 from ingestion.utils.ingest_metadata import ingest_metadata
+from ingestion.utils.sync_with_svo import sync_with_svo
 from observations.models import DataCube, Instrument
 
 
@@ -59,8 +60,6 @@ def update_or_create_data_cube(fits_cube: str, instrument: Instrument, fits_head
 
     _generate_access_control_entities(data_cube, fits_header)
 
-    data_cube.save()
-
     return data_cube
 
 
@@ -76,6 +75,7 @@ def ingest_data_cube(oid: str, path: str, tags_data=[], **kwargs):
     generate_image_previews = kwargs.get('generate_image_previews', False)
     generate_animated_previews = kwargs.get('generate_animated_previews', False)
     regenerate_preview = False
+    should_sync_with_svo = kwargs.get('sync_with_svo', False)
 
     instrument = kwargs['instrument'] if 'instrument' in kwargs else None
 
@@ -105,5 +105,8 @@ def ingest_data_cube(oid: str, path: str, tags_data=[], **kwargs):
 
         if generate_animated_previews:
             update_or_create_gif_preview(fits_hdus, data_cube)
+
+        if should_sync_with_svo:
+            sync_with_svo(data_cube.oid, data_cube.filename, instrument.name, primary_hdu_header)
 
     return data_cube

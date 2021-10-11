@@ -184,3 +184,9 @@ OBSERVATION_TIMEZONE = 'UTC'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Settings for the synchronization of observation data with the SOLARNET
+# virtual observatory.
+
+SVO_USERNAME = get_secret('SVO_USERNAME')
+SVO_API_KEY = get_secret('SVO_API_KEY')
