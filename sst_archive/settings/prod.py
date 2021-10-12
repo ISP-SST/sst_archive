@@ -27,3 +27,23 @@ SECRET_KEY = get_secret('SECRET_KEY')
 SCIENCE_DATA_ROOT = '/srv/www/dubshen/sst_archive/science_data/'
 
 STATIC_URL = '/sst_archive/static/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/sst_archive/sst_archive.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
