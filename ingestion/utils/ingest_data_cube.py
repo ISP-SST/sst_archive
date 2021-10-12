@@ -107,6 +107,6 @@ def ingest_data_cube(oid: str, path: str, tags_data=[], **kwargs):
             update_or_create_gif_preview(fits_hdus, data_cube)
 
         if should_sync_with_svo:
-            sync_with_svo(data_cube.oid, data_cube.filename, instrument.name, primary_hdu_header)
+            sync_with_svo(data_cube, primary_hdu_header)
 
     return data_cube
