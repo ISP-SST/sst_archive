@@ -10,6 +10,8 @@ DATABASES = {
     }
 }
 
+HOSTNAME = 'http://localhost:8000/'
+
 SCIENCE_DATA_ROOT = '/Users/dani2978/science_data/'
 
 SECRET_KEY = 'django-insecure-b0ddy$h-j+*9$emw*!92l4tip7&8q)vj%7-m$hr_ksj1xwf7ih'

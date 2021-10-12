@@ -3,7 +3,7 @@ from pathlib import Path
 
 from ingestion.utils.generate_image_preview import generate_image_preview
 from previews.models import ImagePreview
-from sst_archive import settings
+from django.conf import settings
 
 
 def update_or_create_image_preview(hdus, data_cube, regenerate_preview=False):

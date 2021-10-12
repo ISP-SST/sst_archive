@@ -7,7 +7,7 @@ from django.utils.timezone import make_aware
 
 from metadata.models import Metadata
 from observations.models import DataCube
-from sst_archive import settings
+from django.conf import settings
 
 try:
     import zoneinfo

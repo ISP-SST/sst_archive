@@ -21,4 +21,4 @@ class Command(BaseCommand):
 
         primary_fits_hdu = get_fits_hdu(data_cube.fits_header.fits_header)
 
-        sync_with_svo(oid, data_cube.filename, data_cube.instrument.name, primary_fits_hdu)
+        sync_with_svo(data_cube, primary_fits_hdu)

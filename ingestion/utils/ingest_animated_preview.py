@@ -3,7 +3,7 @@ from pathlib import Path
 
 from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
 from previews.models import AnimatedGifPreview
-from sst_archive import settings
+from django.conf import settings
 
 
 def update_or_create_gif_preview(hdus, data_cube):

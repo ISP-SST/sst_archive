@@ -14,6 +14,8 @@ DATABASES = {
 	}
 }
 
+HOSTNAME = 'https://dubshen.astro.su.se/'
+
 # TODO(daniel): This should be updated with the proper hostname of the service.
 ALLOWED_HOSTS = ['*']
 

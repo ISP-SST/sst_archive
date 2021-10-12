@@ -188,5 +188,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Settings for the synchronization of observation data with the SOLARNET
 # virtual observatory.
 
+SVO_API_URL = 'https://solarnet.oma.be/service/api/svo'
 SVO_USERNAME = get_secret('SVO_USERNAME')
 SVO_API_KEY = get_secret('SVO_API_KEY')
