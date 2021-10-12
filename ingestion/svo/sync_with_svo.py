@@ -15,9 +15,9 @@ def filter_file_path(path):
 
 def get_file_path(data_cube):
     """
-    Returns the SVO specific path based on instrument and observation date.
+    Returns the SVO specific path based on instrument and observation date and filename.
     SVO will use this relative path when creating a compressed archive of a selection of files.
-    Each file will be placed in its corresponding file_path directory inside the compressed archive.
+    Each file will be placed in its corresponding file_path inside the compressed archive.
     """
     date_beg = data_cube.metadata.date_beg.date()
     return os.path.join(str(date_beg), data_cube.instrument.name, filter_file_path(data_cube.filename))
