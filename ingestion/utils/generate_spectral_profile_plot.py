@@ -26,9 +26,9 @@ def generate_spectral_profile_plot(data_cube, plot_file):
     datamean_hdu_index = data_cube.index_of('VAR-EXT-DATAMEDN')
     datamean_hdu = data_cube[datamean_hdu_index]
 
-    # TODO(daniel): Use TTYPE1 to get the proper field name?
+    data_median_ttype = datamean_hdu.header['TTYPE1']
 
-    data_median_values = datamean_hdu.data.field('DATAMEDN')
+    data_median_values = datamean_hdu.data.field(data_median_ttype)
     data_median_values = data_median_values[0]
 
     scan_index = 0

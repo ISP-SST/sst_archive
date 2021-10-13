@@ -29,7 +29,9 @@ def generate_r0_plot(data_cube, plot_file):
     r0_hdu_index = data_cube.index_of('VAR-EXT-ATMOS_R0')
     r0_hdu = data_cube[r0_hdu_index]
 
-    r0_values_all = r0_hdu.data.field('ATMOS_R0')[0]
+    r0_field_name = r0_hdu.header['TTYPE1']
+
+    r0_values_all = r0_hdu.data.field(r0_field_name)[0]
 
     r0_values_0 = [v[0] for v in r0_values_all]
     r0_values_1 = [v[1] for v in r0_values_all]
