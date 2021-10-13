@@ -6,7 +6,7 @@ from observations.models import DataCube
 
 
 class Command(BaseCommand):
-    help = 'Synchronizes the selected data cube with the SOLARNET virtual observatory.'
+    help = 'Synchronizes the selected data cube with the SOLARNET Virtual Observatory.'
 
     def add_arguments(self, parser):
         parser.add_argument('-o', '--observation-id', required=True)

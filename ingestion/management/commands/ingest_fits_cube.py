@@ -21,18 +21,14 @@ class Command(BaseCommand):
         if not os.path.exists(fits_file):
             raise CommandError('Provided FITS cube does not exist: %s' % fits_file)
 
-        try:
-            hdus = fits.open(fits_file)
-            fits_header = hdus[0].header
-        except:
-            raise CommandError('Cannot open provided FITS cube: %s' % fits_file)
-
         oid = options.get('observation_id', None)
 
         if not oid:
-            oid = generate_observation_id(fits_header)
+            try:
+                with fits.open(fits_file) as hdus:
+                    oid = generate_observation_id(hdus)
+            except:
+                raise CommandError('Cannot open provided FITS cube: %s' % fits_file)
 
-        try:
-            ingest_data_cube(oid, fits_file)
-        except FileNotFoundError:
-            raise CommandError('Provided FITS cube does not exist: %s' % fits_file)
+        ingest_data_cube(oid, fits_file)
+
