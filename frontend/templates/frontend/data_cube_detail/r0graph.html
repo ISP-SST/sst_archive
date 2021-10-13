@@ -1,0 +1,76 @@
+<div id="r0-chart"></div>
+
+{% autoescape off %}
+<script>
+    const jsonData = {{ r0_json_data }};
+
+    const data0 = [];
+    const data1 = [];
+
+    for (let i = 0; i < jsonData['r0_timestamps'].length; i++) {
+        data0.push([ jsonData['r0_timestamps'][i], jsonData['r0_0'][i] ]);
+        data1.push([ jsonData['r0_timestamps'][i], jsonData['r0_1'][i] ]);
+    }
+
+    var options = {
+      colors: ['#000000', '#00aa00'],
+      chart: {
+        type: 'line',
+        width: '100%',
+        height: '300px'
+      },
+      series: [{
+          name: 'Black',
+          data: data1
+        }, {
+          name: 'Green',
+          data: data0
+      }],
+      xaxis: {
+        type: 'datetime',
+        title: {
+          text: 'Time',
+          style: {
+              fontSize: '12px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 600,
+              cssClass: 'apexcharts-yaxis-title',
+          },
+        },
+      },
+      yaxis: {
+        tickAmount: 3,
+        min: 0.05,
+        max: 0.20,
+        forceNiceScale: true,
+        decimalsInFloat: 2,
+        title: {
+          text: 'r0 (m)',
+          style: {
+              color: undefined,
+              fontSize: '12px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 600,
+              cssClass: 'apexcharts-yaxis-title',
+          },
+        },
+      },
+      grid: {
+        show: true,
+        strokeDashArray: [4, 4],
+        position: 'back',
+        xaxis: {
+            lines: {
+                show: true
+            }
+        },
+      },
+      stroke: {
+        width: [2, 2],
+      }
+    }
+
+    var chart = new ApexCharts(document.querySelector("#r0-chart"), options);
+    chart.render();
+</script>
+{% endautoescape %}

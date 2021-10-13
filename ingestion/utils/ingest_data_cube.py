@@ -2,16 +2,15 @@ from datetime import datetime
 from pathlib import Path
 
 from astropy.io import fits
-from rest_framework.exceptions import ValidationError
 
 from data_access.models import DataCubeAccessControl
 from ingestion.utils.generate_sparse_list_string import generate_sparse_list_string
 from ingestion.utils.ingest_animated_preview import update_or_create_gif_preview
 from ingestion.utils.ingest_fits_header import ingest_fits_header
 from ingestion.utils.ingest_image_preview import update_or_create_image_preview
-from ingestion.utils.ingest_metadata import InvalidFITSHeader
 from ingestion.utils.ingest_metadata import ingest_metadata
 from ingestion.svo.sync_with_svo import sync_with_svo
+from ingestion.utils.ingest_r0_data import ingest_r0_data
 from observations.models import DataCube, Instrument
 
 
@@ -114,12 +113,12 @@ def ingest_data_cube(oid: str, path: str, tags_data=[], **kwargs):
 
         ingest_fits_header(primary_hdu_header, data_cube)
 
-        try:
-            ingest_metadata(primary_hdu_header, data_cube)
-        except InvalidFITSHeader as e:
-            raise ValidationError(e)
+        ingest_metadata(primary_hdu_header, data_cube)
 
+        # TODO(daniel): Tags need to be read from the FITS file headers in the future.
         data_cube.tags.set(tags_data)
+
+        ingest_r0_data(fits_hdus, data_cube)
 
         if generate_image_previews:
             update_or_create_image_preview(fits_hdus, data_cube, regenerate_preview)

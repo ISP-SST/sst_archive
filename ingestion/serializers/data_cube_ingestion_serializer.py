@@ -43,7 +43,10 @@ class DataCubeIngestionSerializer(serializers.Serializer):
         fits_path = data_cube_data['path']
         instrument = data_cube_data['instrument']
 
-        data_cube = ingest_data_cube(oid, fits_path, instrument=instrument, generate_image_previews=True)
+        try:
+            data_cube = ingest_data_cube(oid, fits_path, instrument=instrument, generate_image_previews=True)
+        except Exception as e:
+            raise ValidationError(e)
 
         return data_cube
 
@@ -57,6 +60,9 @@ class DataCubeIngestionSerializer(serializers.Serializer):
         fits_path = data_cube_data['path']
         instrument = data_cube_data['instrument']
 
-        ingest_data_cube(oid, fits_path, instrument=instrument, generate_image_previews=True)
+        try:
+            ingest_data_cube(oid, fits_path, instrument=instrument, generate_image_previews=True)
+        except Exception as e:
+            raise ValidationError(e)
 
         return data_cube
