@@ -11,6 +11,7 @@ from ingestion.utils.ingest_image_preview import update_or_create_image_preview
 from ingestion.utils.ingest_metadata import ingest_metadata
 from ingestion.svo.sync_with_svo import sync_with_svo
 from ingestion.utils.ingest_r0_data import ingest_r0_data
+from ingestion.utils.ingest_tags import ingest_tags
 from observations.models import DataCube, Instrument
 
 
@@ -83,31 +84,30 @@ def update_or_create_data_cube(fits_cube: str, instrument: Instrument, fits_head
     return data_cube
 
 
-def ingest_data_cube(oid: str, path: str, tags_data=[], **kwargs):
-    """
+def _get_instrument_for_fits_file(primary_hdu_header: fits.Header):
+    if 'INSTRUME' not in primary_hdu_header:
+        raise IngestionError('INSTRUME not found in FITS primary HDU')
 
-    :param oid:
-    :param path:
-    :param instrument: an instance of the Instrument model class, or a string containing the name of the instrument
-    :param tags_data:
-    :return:
+    instrument_name = str(primary_hdu_header['INSTRUME']).strip()
+    instrument = Instrument.objects.get(name__iexact=instrument_name)
+
+    return instrument
+
+
+def ingest_data_cube(oid: str, path: str, **kwargs):
+    """
+    Main entry point for ingesting a data cube into the database. To do this, we right now only need
+    two things: the observation ID (generated at the call site) and the
     """
     generate_image_previews = kwargs.get('generate_image_previews', False)
     generate_animated_previews = kwargs.get('generate_animated_previews', False)
     regenerate_preview = False
     should_sync_with_svo = kwargs.get('sync_with_svo', False)
 
-    instrument = kwargs['instrument'] if 'instrument' in kwargs else None
-
     with fits.open(path) as fits_hdus:
         primary_hdu_header = fits_hdus[0].header
 
-        if not instrument:
-            if 'INSTRUME' not in primary_hdu_header:
-                raise IngestionError('INSTRUME not found in FITS primary HDU')
-
-            instrument_name = str(primary_hdu_header['INSTRUME']).strip()
-            instrument = Instrument.objects.get(name__iexact=instrument_name)
+        instrument = _get_instrument_for_fits_file(primary_hdu_header)
 
         data_cube = update_or_create_data_cube(path, instrument, primary_hdu_header, oid)
 
@@ -115,8 +115,7 @@ def ingest_data_cube(oid: str, path: str, tags_data=[], **kwargs):
 
         ingest_metadata(primary_hdu_header, data_cube)
 
-        # TODO(daniel): Tags need to be read from the FITS file headers in the future.
-        data_cube.tags.set(tags_data)
+        ingest_tags(primary_hdu_header, data_cube)
 
         ingest_r0_data(fits_hdus, data_cube)
 
