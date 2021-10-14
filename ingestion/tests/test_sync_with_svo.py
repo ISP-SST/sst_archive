@@ -44,8 +44,8 @@ class TestSyncWithSvo(TestCase):
         unfortunately there's quite a few endpoints that need to be mocked (data_location, keywords,
         dataset, *_metadata), and it also leaves us in a place where we have to worry about updating
         this mock whenever the SVO changes.
-     3. Spin up a new instance of the SVO whenever the test is run. This would also be an overly
-        complicated thing to orchestrate.
+     3. Spin up a new instance of the SVO whenever the test is run. This is something that might
+        become more feasible using Docker, but it's still going to require some effort.
     """
 
     def setUp(self):
