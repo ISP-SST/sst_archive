@@ -1,10 +1,15 @@
+import os
 from pathlib import Path
 
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from ingestion.utils.ingest_data_cube import ingest_data_cube
-from observations.models import Instrument
+
+
+def _generate_absolute_path_to_data_cube(relative_path):
+    return os.path.join(settings.SCIENCE_DATA_ROOT, relative_path)
 
 
 class DataCubeIngestionSerializer(serializers.Serializer):
@@ -13,15 +18,10 @@ class DataCubeIngestionSerializer(serializers.Serializer):
     ingesting it into the database.
     """
     oid = serializers.CharField()
-    path = serializers.CharField()
+    relative_path = serializers.CharField()
 
-    instrument = serializers.PrimaryKeyRelatedField(queryset=Instrument.objects.all())
-
-    class Meta:
-        depth = 1
-
-    def validate_path(self, value):
-        path = Path(value)
+    def validate_relative_path(self, value):
+        path = Path(_generate_absolute_path_to_data_cube(value))
 
         if not path.is_file():
             raise ValidationError(
@@ -40,11 +40,10 @@ class DataCubeIngestionSerializer(serializers.Serializer):
         data_cube_data = validated_data
 
         oid = data_cube_data['oid']
-        fits_path = data_cube_data['path']
-        instrument = data_cube_data['instrument']
+        fits_path = _generate_absolute_path_to_data_cube(data_cube_data['relative_path'])
 
         try:
-            data_cube = ingest_data_cube(oid, fits_path, instrument=instrument, generate_image_previews=True)
+            data_cube = ingest_data_cube(oid, fits_path, generate_image_previews=True)
         except Exception as e:
             raise ValidationError(e)
 
@@ -57,11 +56,10 @@ class DataCubeIngestionSerializer(serializers.Serializer):
         data_cube_data = validated_data
 
         oid = data_cube_data['oid']
-        fits_path = data_cube_data['path']
-        instrument = data_cube_data['instrument']
+        fits_path = _generate_absolute_path_to_data_cube(data_cube_data['relative_path'])
 
         try:
-            ingest_data_cube(oid, fits_path, instrument=instrument, generate_image_previews=True)
+            ingest_data_cube(oid, fits_path, generate_image_previews=True)
         except Exception as e:
             raise ValidationError(e)
 
