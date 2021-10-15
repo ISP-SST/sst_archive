@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='datacube',
             name='path',
-            field=models.TextField(help_text='Full path to the file', unique=True),
+            field=models.TextField(help_text='Full path to the file'),
         ),
     ]
