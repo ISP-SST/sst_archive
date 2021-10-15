@@ -19,8 +19,8 @@
             <figure class="figure">
             {% if data_cube.animated_preview %}
             <img src="{% static data_cube.animated_preview.animated_gif %}" style="position: absolute; margin: auto; top: -9999px; bottom: -9999px; left: -9999px; right: -9999px;" />
-            {% elif data_cube.thumbnail %}
-            <img src="{% static data_cube.thumbnail.image_url %}" style="position: absolute; margin: auto; top: -9999px; bottom: -9999px; left: -9999px; right: -9999px;" />
+            {% elif data_cube.previews %}
+            <img src="{{data_cube.previews.full_size.url}}" style="position: absolute; margin: auto; top: -9999px; bottom: -9999px; left: -9999px; right: -9999px;" />
             {% endif %}
             </figure>
         </div>

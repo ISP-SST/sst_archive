@@ -175,6 +175,9 @@ GENERATED_ROOT = BASE_DIR / 'assets' / 'generated'
 GIF_URL_ROOT = 'generated/gifs'
 GIF_ROOT = BASE_DIR / 'assets' / 'generated' / 'gifs'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # This information is available in the FITS cubes, but it may not be safe
 # to use it directly from there. At least we shouldn't assume that the
 # timezone string will be compatible with Python's set of timezones.

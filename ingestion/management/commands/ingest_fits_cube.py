@@ -14,6 +14,7 @@ class Command(BaseCommand):
         parser.add_argument('-o', '--observation-id', required=False, default=None)
         parser.add_argument('--generate-image-previews', action='store_true')
         parser.add_argument('--generate-animated-previews', action='store_true')
+        parser.add_argument('--force-regenerate-images', action='store_true')
 
     def handle(self, *args, **options):
         fits_file = options['fits_cube']

@@ -11,6 +11,8 @@ class AnimatedGifPreviewAdmin(admin.ModelAdmin):
 @admin.register(ImagePreview)
 class ImagePreviewAdmin(admin.ModelAdmin):
 	search_fields = ['data_cube__filename']
+	fields = ['full_size_tag', 'full_size', 'thumbnail_tag', 'thumbnail']
+	readonly_fields = ['full_size_tag', 'thumbnail_tag']
 
 
 @admin.register(R0Data)

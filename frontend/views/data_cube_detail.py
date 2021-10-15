@@ -5,7 +5,7 @@ from observations.models import DataCube
 
 
 def data_cube_detail(request, filename):
-    data_cube = DataCube.objects.select_related('animated_preview', 'thumbnail', 'metadata', 'r0data').get(
+    data_cube = DataCube.objects.select_related('animated_preview', 'previews', 'metadata', 'r0data').get(
         filename__iexact=filename)
     metadata = data_cube.metadata
 

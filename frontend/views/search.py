@@ -37,8 +37,8 @@ def _create_search_result_from_metadata(request, cube, additional_columns):
     if not hasattr(cube, 'metadata') or not cube.metadata:
         return None
 
-    if hasattr(cube, 'thumbnail'):
-        thumbnail = cube.thumbnail.image_url if cube.thumbnail else None
+    if hasattr(cube, 'previews'):
+        thumbnail = cube.previews.thumbnail if cube.previews else None
     else:
         thumbnail = None
 
@@ -157,11 +157,11 @@ def search_view(request):
 
     data_cubes = DataCube.objects.all()
 
-    only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'thumbnail',
+    only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'previews',
                    *additional_columns.get_all_only_specs()]
 
     data_cubes = data_cubes.filter(freeform_query_q).filter(
-        **complete_query).select_related('metadata', 'instrument', 'thumbnail').only(*only_fields).distinct()
+        **complete_query).select_related('metadata', 'instrument', 'previews').only(*only_fields).distinct()
 
     results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
 
