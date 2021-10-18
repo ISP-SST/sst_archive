@@ -7,43 +7,43 @@
     const data0 = [];
     const data1 = [];
 
+    let logged = false;
+
     for (let i = 0; i < jsonData['r0_timestamps'].length; i++) {
         data0.push([ jsonData['r0_timestamps'][i], jsonData['r0_0'][i] ]);
         data1.push([ jsonData['r0_timestamps'][i], jsonData['r0_1'][i] ]);
     }
 
-    /*
     const scatterTestData = [
-        [data0[Math.round(data0.length / 4)][0], 0.00, 'Scan'],
-        [data0[Math.round(data0.length / 2)][0], 0.00, 'Scan'],
-        [data0[Math.round(3 * data0.length / 4)][0], 0.00, 'Scan']
+        [data0[Math.round(data0.length / 4)][0], 0.01],
+        [data0[Math.round(data0.length / 2)][0], 0.01],
+        [data0[Math.round(3 * data0.length / 4)][0], 0.01]
     ];
-    */
+
+    const scatterTestNames = ['Scan', 'Scan', 'Scan']
 
     var options = {
-      colors: ['#000000', '#00aa00'/*, '#4477ff' */],
+      colors: ['#00aa00', '#000000', '#4477ff'],
       chart: {
         width: '100%',
         height: '300px'
       },
       series: [{
-          name: 'Black',
-          type: 'line',
-          data: data1
-        }, {
           name: 'Green',
           type: 'line',
           data: data0
-      },/* {
+        },{
+          name: 'Black',
+          type: 'line',
+          data: data1
+        }/*,{
           name: 'Events',
           type: 'scatter',
           data: scatterTestData
-      } */],
-      /*
+      }*/],
       markers: {
-        size: [0, 0, 6]
+        size: [0, 0/*, 6*/]
       },
-      */
       xaxis: {
         type: 'datetime',
         title: {
@@ -56,7 +56,7 @@
           },
         },
       },
-      yaxis: {
+      yaxis: [{
         tickAmount: 5,
         min: 0.00,
         max: 0.25,
@@ -72,7 +72,7 @@
               cssClass: 'apexcharts-yaxis-title',
           },
         },
-      },
+      }],
       grid: {
         show: true,
         strokeDashArray: [4, 4],
@@ -85,10 +85,38 @@
       },
       stroke: {
         width: [2, 2],
+      },
+      tooltip: {
+        x: {
+          format: "HH:mm:ss.fff",
+        },
+        custom: function({ series, seriesIndex, dataPointIndex, w }) {
+          if (!logged) {
+            console.log(w.globals);
+            logged = true;
+          }
+
+          if (w.globals.seriesNames[seriesIndex] === 'Events') {
+            return (
+              '<div style="background: rgba(0, 0, 0, 0.6); color: #f0f0f0; padding: 0.3em 0.5em;" class="">' +
+              scatterTestNames[dataPointIndex] +
+              '</div>');
+          }
+
+          return (
+            '<div style="background: rgba(0, 0, 0, 0.6); color: #f0f0f0; padding: 0.3em 0.5em; ">' +
+            '<span style="display: inline-block; margin-right: 0.3em; background: ' + w.globals.colors[seriesIndex] + '; border: 1px solid #fff; border-radius: 5px; width: 10px; height: 10px"></span>' +
+            w.globals.seriesNames[seriesIndex] +
+            ": " +
+            series[seriesIndex][dataPointIndex].toFixed(5) +
+            "</div>"
+          );
+        }
       }
     }
 
     var chart = new ApexCharts(document.querySelector("#r0-chart"), options);
     chart.render();
+
 </script>
 {% endautoescape %}
