@@ -6,6 +6,7 @@ from pathlib import Path
 
 import ffmpeg
 import matplotlib.pyplot as plt
+from astropy.io import fits
 from astropy.visualization import astropy_mpl_style
 
 
@@ -14,16 +15,23 @@ def _get_frame_data(image_data, index, wavelength_index=0):
     return frame_data
 
 
-def generate_image_preview(fits_hdus, preview_file, wavelength_pos=0.0):
-    plt.style.use(astropy_mpl_style)
-
-    image_data = fits_hdus[0].data
-
+def generate_image_preview(preview_file, wavelength_pos=0.0, data_cube_path=None, data_cube=None, fits_hdus=None):
     # FIXME(daniel): This plot does not take into consideration the WCS coordinates
     #                included in the FITS cube. Rotation and scaling is likely off.
     #                Perhaps these kinds of previews should rather be created in IDL
     #                since crispex, for example, already knows how to display the data
     #                properly.
+
+    plt.style.use(astropy_mpl_style)
+
+    if not fits_hdus:
+        if not data_cube_path and data_cube:
+            data_cube_path = data_cube.path
+
+        with fits.open(data_cube_path) as fits_hdus:
+            image_data = fits_hdus[0].data
+    else:
+        image_data = fits_hdus[0].data
 
     max_wavelength_index = len(image_data[0][0]) - 1
     wavelength_index = round(max_wavelength_index * wavelength_pos)
@@ -36,14 +44,18 @@ def generate_image_preview(fits_hdus, preview_file, wavelength_pos=0.0):
     plt.close()
 
 
-def create_image_preview(fits_hdus, data_cube, preview_file, generate_if_missing=False, scale_x=-1,
-                                               scale_y=-1):
-    data_cube_path = Path(data_cube.path)
+def create_image_preview(preview_file, generate_if_missing=False, scale_x=-1,
+                         scale_y=-1, fits_hdus=None, data_cube_path=None, data_cube=None):
+
+    if not data_cube_path and data_cube:
+        data_cube_path = data_cube.path
+
+    data_cube_path = Path(data_cube_path)
 
     prospective_png = data_cube_path.with_suffix('.png')
 
     if prospective_png.exists() and prospective_png.is_file():
-        ffmpeg_stream = ffmpeg.input(prospective_png)\
+        ffmpeg_stream = ffmpeg.input(prospective_png)
 
         if scale_x > 0 or scale_y > 0:
             ffmpeg_stream = ffmpeg_stream.filter('scale', scale_x, scale_y)
@@ -52,7 +64,7 @@ def create_image_preview(fits_hdus, data_cube, preview_file, generate_if_missing
 
         ffmpeg_stream.run(capture_stdout=True, capture_stderr=True)
     elif generate_if_missing:
-        generate_image_preview(fits_hdus, preview_file)
+        generate_image_preview(preview_file, data_cube_path=data_cube_path, fits_hdus=fits_hdus)
 
 
 def main():
@@ -69,7 +81,7 @@ def main():
     else:
         output_file = args.output
 
-    create_image_preview(args.image_file, output_file, generate_if_missing=args.generate_if_missing)
+    create_image_preview(output_file, generate_if_missing=args.generate_if_missing, data_cube_path=args.image_file)
 
 
 if __name__ == '__main__':

@@ -6,6 +6,8 @@ from previews.models import AnimatedGifPreview, ImagePreview, R0Data
 @admin.register(AnimatedGifPreview)
 class AnimatedGifPreviewAdmin(admin.ModelAdmin):
 	search_fields = ['data_cube__filename']
+	fields = ['full_size_tag', 'full_size']
+	readonly_fields = ['full_size_tag']
 
 
 @admin.register(ImagePreview)

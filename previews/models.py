@@ -11,13 +11,22 @@ class AnimatedGifPreview(models.Model):
                                      null=False, on_delete=models.CASCADE)
     animated_gif = models.TextField('URL to animated GIF')
 
+    full_size = models.ImageField('Preview animation stored in the managed upload folder', upload_to='gifs/full-size/',
+                                  null=True)
+
+    def full_size_tag(self):
+        return mark_safe('<img src="%s/%s" />' % (settings.MEDIA_URL, self.full_size))
+
+    full_size_tag.short_description = 'Full size image'
+
+    def __str__(self):
+        return self.full_size.name
+
 
 class ImagePreview(models.Model):
     """Represents a static image preview of the DataCube."""
     data_cube = models.OneToOneField('observations.DataCube', related_name='previews', null=False,
                                      on_delete=models.CASCADE)
-    image_url = models.TextField('Relative URL to image preview')
-    image_path = models.TextField('Absolute path to image on disk')
     full_size = models.ImageField('Preview image stored in the managed upload folder', upload_to='previews/', null=True)
     thumbnail = models.ImageField('Small preview image stored in managed upload folder', upload_to='thumbnails/',
                                   null=True)

@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+from pathlib import Path
+
+import ffmpeg
 import matplotlib
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -14,7 +17,10 @@ def _get_frame_data(image_data, index, wavelength_index=0):
     return frame_data
 
 
-def generate_animated_gif_preview(data_cube, gif_file, wavelength_pos=0.0):
+def generate_animated_gif_preview(gif_file, wavelength_pos=0.0, data_cube_path=None, data_cube=None, fits_hdus=None):
+    # FIXME(daniel): The animated preview has the same issue with scaling/rotation as the
+    #                static preview. See generate_image_preview.py.
+
     matplotlib.rc('font', family='sans-serif')
     matplotlib.rc('font', serif='Helvetica Neue')
     matplotlib.rc('text', usetex='false')
@@ -22,17 +28,18 @@ def generate_animated_gif_preview(data_cube, gif_file, wavelength_pos=0.0):
 
     plt.style.use(astropy_mpl_style)
 
-    image_data = data_cube[0].data
-
-    # FIXME(daniel): The animated preview has the same issue with scaling/rotation as the
-    #                static preview. See generate_image_preview.py.
-
-    print('Image data shape: ')
-    print(image_data.shape)
-
     index = 0
 
     fig, ax = plt.subplots()
+
+    if not fits_hdus:
+        if not data_cube_path and data_cube:
+            data_cube_path = data_cube.path
+
+        with fits.open(data_cube_path) as fits_hdus:
+            image_data = fits_hdus[0].data
+    else:
+        image_data = fits_hdus[0].data
 
     max_wavelength_index = len(image_data[0][0]) - 1
     wavelength_index = round(max_wavelength_index * wavelength_pos)
@@ -53,6 +60,29 @@ def generate_animated_gif_preview(data_cube, gif_file, wavelength_pos=0.0):
     plt.close()
 
 
+def create_animated_preview(preview_file, generate_if_missing=False, scale_x=-1,
+                                               scale_y=-1, data_cube_path=None, data_cube=None, fits_hdus=None):
+    if not data_cube_path and data_cube:
+        data_cube_path = data_cube.path
+
+    data_cube_path = Path(data_cube_path)
+
+    prospective_mov = data_cube_path.with_suffix('.mov')
+
+    if prospective_mov.exists() and prospective_mov.is_file():
+        ffmpeg_stream = ffmpeg.input(prospective_mov)
+
+        if scale_x > 0 or scale_y > 0:
+            ffmpeg_stream = ffmpeg_stream.filter('scale', scale_x, scale_y)
+
+        ffmpeg_stream = ffmpeg_stream.output(str(preview_file)).overwrite_output()
+
+        ffmpeg_stream.run(capture_stdout=True, capture_stderr=True)
+
+    elif generate_if_missing:
+        generate_animated_gif_preview(preview_file, data_cube_path=data_cube_path, fits_hdus=fits_hdus)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Export primary FITS cube data to video.')
     parser.add_argument('image_file', help='file to export data from')
@@ -67,9 +97,7 @@ def main():
         image_file_path, ext = os.path.splitext(args.image_file)
         gif_file = os.path.join(image_file_path, 'gif')
 
-    data_cube = fits.open(args.image_file)
-
-    generate_animated_gif_preview(data_cube, gif_file, args.wavelength_pos)
+    create_animated_preview(gif_file, args.wavelength_pos, data_cube_path=args.image_file)
 
 
 if __name__ == '__main__':

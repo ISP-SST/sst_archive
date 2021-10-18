@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Example script for a dataset provider to submit metadata and data location records to the SOLARNET Virtual Observatory (SVO) RESTful API"""
+"""
+Example script for a dataset provider to submit metadata and data location records to the
+SOLARNET Virtual Observatory (SVO) RESTful API
+"""
 import argparse
 import logging
 import os
@@ -9,10 +12,10 @@ from urllib.parse import urljoin
 from astropy.io import fits
 from dateutil.parser import parse, ParserError
 from slumber import API
-# Set with proper base URL of data, or set file URL explicitly through script argument
 from slumber.exceptions import HttpNotFoundError
 
-BASE_FILE_URL = 'https://dubshen.astro.su.se/data/'
+# Set with proper base URL of data, or set file URL explicitly through script argument
+BASE_FILE_URL = None # Used to be 'https://dubshen.astro.su.se/data/'
 
 # The default hdu name or index to use for extracting the metadata from the FITS file (can be specified here to avoid
 # passing it by parameter to the script)
@@ -257,7 +260,9 @@ class SvoRecord:
         return result
 
     def update(self):
-        """Update the metadata and data_location records in the API"""
+        """
+        Update the metadata and data_location records in the API.
+        """
 
         dataset = self.api.dataset(self.dataset).get()
         metadata_root_uri = dataset['metadata']['resource_uri']
@@ -285,15 +290,6 @@ class SvoRecord:
         # We update the existing record by adding the 'oid' to the root URI for
         # the metadata and executing a PATCH request.
         result = self.api(metadata_root_uri)(oid).patch(metadata)
-        return result
-
-    def delete(self):
-        """Remove this metadata record from in the API."""
-
-        dataset = self.api.dataset(self.dataset).get()
-        metadata_root_uri = dataset['metadata']['resource_uri']
-        oid = self.get_oid()
-        result = self.api(metadata_root_uri)(oid).delete()
         return result
 
 

@@ -1,29 +1,20 @@
 import os
+import tempfile
 from pathlib import Path
 
-from ingestion.utils.generate_animated_preview import generate_animated_gif_preview
+from django.core.files import File
+
+from ingestion.utils.create_animated_preview import create_animated_preview
 from previews.models import AnimatedGifPreview
-from django.conf import settings
 
 
-def update_or_create_gif_preview(hdus, data_cube):
-    # TODO(daniel): This needs to be cleaned up. Must happen when image previews are implemented for real.
-    try:
-        preview = AnimatedGifPreview.objects.get(data_cube=data_cube)
-        gif_uri = preview.animated_gif
-        filename = os.path.basename(gif_uri)
-        expected_gif_uri = os.path.join(settings.GIF_URL_ROOT, filename)
-        gif_path = os.path.join(settings.GIF_ROOT, filename)
+def update_or_create_gif_preview(hdus, data_cube, regenerate_preview=False):
+    preview, created = AnimatedGifPreview.objects.update_or_create(data_cube=data_cube)
 
-        if gif_uri != expected_gif_uri:
-            preview.animated_gif = expected_gif_uri
-            preview.save()
-    except AnimatedGifPreview.DoesNotExist:
-        gif_filename = Path(data_cube.filename).with_suffix('.gif')
-        gif_path = os.path.join(settings.GIF_ROOT, gif_filename)
-        gif_uri = os.path.join(settings.GIF_URL_ROOT, gif_filename)
-        preview = AnimatedGifPreview(data_cube=data_cube, animated_gif=gif_uri)
-        preview.save()
+    if regenerate_preview or not preview.full_size:
+        tmp_file = Path(tempfile.gettempdir()).joinpath(Path(data_cube.filename).with_suffix('.gif'))
+        create_animated_preview(tmp_file, generate_if_missing=True, data_cube=preview.data_cube, fits_hdus=hdus)
+        preview.full_size.save(os.path.basename(tmp_file),
+                           File(open(tmp_file, 'rb')))
 
-    if not os.path.isfile(gif_path):
-        generate_animated_gif_preview(hdus, gif_path)
+    preview.save()

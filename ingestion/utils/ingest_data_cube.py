@@ -123,7 +123,7 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
             update_or_create_image_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_images)
 
         if generate_animated_previews:
-            update_or_create_gif_preview(fits_hdus, data_cube)
+            update_or_create_gif_preview(fits_hdus, data_cube, regenerate_preview=force_regenerate_images)
 
         if should_sync_with_svo:
             sync_with_svo(data_cube, primary_hdu_header)
