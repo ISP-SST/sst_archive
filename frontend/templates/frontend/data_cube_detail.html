@@ -68,11 +68,18 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container row">
         {% if r0_json_data %}
-        <div class="mb-5">
-            <h4>r<sub>0</sub></h4>
+        <div class="mb-5 col-6">
+            <h5>r<sub>0</sub></h5>
             {% include "frontend/data_cube_detail/r0graph.html" %}
+        </div>
+        {% endif %}
+
+        {% if spectral_line_data %}
+        <div class="mb-5 col-6">
+            <h5>Spectral Line Profile</h5>
+            {% include "frontend/data_cube_detail/spectral_line_profile_graph.html" %}
         </div>
         {% endif %}
     </div>

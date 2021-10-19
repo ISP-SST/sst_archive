@@ -64,7 +64,6 @@ def generate_spectral_line_profile_data(fits_hdus):
     factor = 10e7
 
     amplitude_values = [[v[0][0] * factor for v in data_median_values[scan_index][0]] for scan_index in range(N_time)]
-    amplitude_values = [[amplitude_values[j][i] for j in range(N_time)] for i in range(N_wave)]
 
     wcs_values = wcs_tab_hdu.data.field(ttype)[0]
 

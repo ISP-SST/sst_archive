@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from previews.models import AnimatedGifPreview, ImagePreview, R0Data
+from previews.models import AnimatedGifPreview, ImagePreview, R0Data, SpectralLineData
 
 
 @admin.register(AnimatedGifPreview)
@@ -19,4 +19,9 @@ class ImagePreviewAdmin(admin.ModelAdmin):
 
 @admin.register(R0Data)
 class R0DataAdmin(admin.ModelAdmin):
+	search_fields = ['data_cube__filename']
+
+
+@admin.register(SpectralLineData)
+class SpectralLineDataAdmin(admin.ModelAdmin):
 	search_fields = ['data_cube__filename']

@@ -5,7 +5,7 @@ from observations.models import DataCube
 
 
 def data_cube_detail(request, filename):
-    data_cube = DataCube.objects.select_related('animated_preview', 'previews', 'metadata', 'r0data').get(
+    data_cube = DataCube.objects.select_related('animated_preview', 'previews', 'metadata', 'r0data', 'spectral_line_data').get(
         filename__iexact=filename)
     metadata = data_cube.metadata
 
@@ -19,6 +19,7 @@ def data_cube_detail(request, filename):
     metadata_fields.pop('Observation ID', None)
 
     r0_json_data = data_cube.r0data.data_json if hasattr(data_cube, 'r0data') else None
+    spectral_line_data = data_cube.spectral_line_data.data_json if hasattr(data_cube, 'spectral_line_data') else None
 
     context = {
         'data_cube': data_cube,
@@ -26,6 +27,7 @@ def data_cube_detail(request, filename):
         'metadata_dict': model_to_dict(metadata),
         'metadata_fields': metadata_fields,
         'r0_json_data': r0_json_data,
+        'spectral_line_data': spectral_line_data,
     }
 
     return render(request, 'frontend/data_cube_detail.html', context)

@@ -11,6 +11,7 @@ from ingestion.utils.ingest_image_previews import update_or_create_image_preview
 from ingestion.utils.ingest_metadata import ingest_metadata
 from ingestion.svo.sync_with_svo import sync_with_svo
 from ingestion.utils.ingest_r0_data import ingest_r0_data
+from ingestion.utils.ingest_spectral_line_profile_data import ingest_spectral_line_profile_data
 from ingestion.utils.ingest_tags import ingest_tags
 from observations.models import DataCube, Instrument
 
@@ -118,6 +119,7 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
         ingest_tags(primary_hdu_header, data_cube)
 
         ingest_r0_data(fits_hdus, data_cube)
+        ingest_spectral_line_profile_data(fits_hdus, data_cube)
 
         if generate_image_previews:
             update_or_create_image_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_images)
