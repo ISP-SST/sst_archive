@@ -2,10 +2,9 @@
 
 import argparse
 import datetime
+import json
 import os
 
-import matplotlib
-import matplotlib.pyplot as plt
 from astropy.io import fits
 
 
@@ -13,18 +12,12 @@ def _get_datetime(ref_datetime, elapsed_seconds):
     return ref_datetime + datetime.timedelta(seconds=elapsed_seconds)
 
 
-def generate_spectral_profile_plot(data_cube, plot_file):
-    hfont = {'fontname': 'Helvetica'}
-    matplotlib.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
+def generate_spectral_line_profile_data(fits_hdus):
 
-    primary_hdu = data_cube[0]
+    primary_hdu = fits_hdus[0]
 
-    fig, ax = plt.subplots()
-
-    ax.grid(color='#d0d0d0', linestyle='-.', linewidth=0.7)
-
-    datamean_hdu_index = data_cube.index_of('VAR-EXT-DATAMEDN')
-    datamean_hdu = data_cube[datamean_hdu_index]
+    datamean_hdu_index = fits_hdus.index_of('VAR-EXT-DATAMEDN')
+    datamean_hdu = fits_hdus[datamean_hdu_index]
 
     data_median_ttype = datamean_hdu.header['TTYPE1']
 
@@ -33,8 +26,8 @@ def generate_spectral_profile_plot(data_cube, plot_file):
 
     scan_index = 0
 
-    wcs_tab_hdu_index = data_cube.index_of('WCS-TAB')
-    wcs_tab_hdu = data_cube[wcs_tab_hdu_index]
+    wcs_tab_hdu_index = fits_hdus.index_of('WCS-TAB')
+    wcs_tab_hdu = fits_hdus[wcs_tab_hdu_index]
 
     # This part has been borrowed from the red_fitscube_getwcs.pro.
     tdim = wcs_tab_hdu.header['TDIM1']
@@ -77,32 +70,30 @@ def generate_spectral_profile_plot(data_cube, plot_file):
 
     wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
 
-    plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=2, markerfacecolor="None", markeredgecolor='red')
-    plt.title('Spectral Line Profile', **hfont)
+    json_struct = {
+        'wavelengths': wavelength_values,
+        'amplitude_values': amplitude_values
+    }
 
-    plt.xlabel('Wavelength', **hfont)
-    plt.ylabel('median(Intensity) / 1 n', **hfont)
-
-    plt.savefig(plot_file)
-    plt.close()
+    return json_struct
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Create Spectral Line Profile plot from FITS file.')
+    parser = argparse.ArgumentParser(description='Create Spectral Line Profile JSON description from FITS file.')
     parser.add_argument('fits_file', help='file to export data from')
-    parser.add_argument('output', default=None, help='output image file')
+    parser.add_argument('output', default=None, help='output JSON file')
 
     args = parser.parse_args()
 
     if not args.output:
-        image_file_path, ext = os.path.splitext(args.image_file)
-        output_file = os.path.join(image_file_path, 'png')
+        fits_file_path, ext = os.path.splitext(args.fits_file)
+        output_file = os.path.join(fits_file_path, 'json')
     else:
         output_file = args.output
 
-    data_cube = fits.open(args.fits_file)
-
-    generate_spectral_profile_plot(data_cube, output_file)
+    with fits.open(args.fits_file) as fits_hdus, open(output_file, 'w') as outfile:
+        data = generate_spectral_line_profile_data(fits_hdus)
+        json.dump(data, outfile)
 
 
 if __name__ == '__main__':
