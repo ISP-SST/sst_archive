@@ -73,6 +73,8 @@ class SpectralLineData(models.Model):
     data_json = models.TextField('JSON blob with data for the plot')
     data_version = models.IntegerField('Version number that indicates the format of the JSON blob. If the JSON blob '
                                        'data format changes this field should be bumped as well')
+    data_preview = models.ImageField('Small preview image stored in managed upload folder',
+                                     upload_to='spectral-line/thumbnails/', null=True)
 
     def __str__(self):
         if self.data_cube:

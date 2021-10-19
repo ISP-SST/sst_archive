@@ -58,9 +58,9 @@
 
                 <tr>
                     <td>Download:
-                        <p><small class="text-muted">{{ data_cube.filename }}</small></p>
+                        <p><small class="text-muted" style="overflow-wrap: break-word">{{ data_cube.filename }}</small></p>
                     </td>
-                    <td>
+                    <td style="vertical-align: middle">
                     <a class="btn btn-primary" href="{% url 'download_data_cube' data_cube.filename %}"><i class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
                     </td>
                 </tr>
@@ -72,7 +72,7 @@
         {% if r0_json_data %}
         <div class="mb-5 col-6">
             <h5>r<sub>0</sub></h5>
-            {% include "frontend/data_cube_detail/r0graph.html" %}
+            {% include "frontend/data_cube_detail/r0_graph.html" %}
         </div>
         {% endif %}
 

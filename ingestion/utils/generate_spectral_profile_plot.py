@@ -13,18 +13,27 @@ def _get_datetime(ref_datetime, elapsed_seconds):
     return ref_datetime + datetime.timedelta(seconds=elapsed_seconds)
 
 
-def generate_spectral_profile_plot(data_cube, plot_file):
+def generate_spectral_profile_plot(fits_hdus, plot_file, size=(4, 1)):
     hfont = {'fontname': 'Helvetica'}
     matplotlib.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 
-    primary_hdu = data_cube[0]
+    primary_hdu = fits_hdus[0]
 
-    fig, ax = plt.subplots()
+    fig = plt.figure(figsize=size, tight_layout=True)
 
-    ax.grid(color='#d0d0d0', linestyle='-.', linewidth=0.7)
+    plt.tight_layout(pad=0.2)
 
-    datamean_hdu_index = data_cube.index_of('VAR-EXT-DATAMEDN')
-    datamean_hdu = data_cube[datamean_hdu_index]
+    border_color = '#f0f0f0'
+    marker_color = '#909090'
+
+    ax = plt.axes(xticks=[], yticks=[])
+    ax.spines.left.set_color(border_color)
+    ax.spines.top.set_color(border_color)
+    ax.spines.right.set_color(border_color)
+    ax.spines.bottom.set_color(border_color)
+
+    datamean_hdu_index = fits_hdus.index_of('VAR-EXT-DATAMEDN')
+    datamean_hdu = fits_hdus[datamean_hdu_index]
 
     data_median_ttype = datamean_hdu.header['TTYPE1']
 
@@ -33,8 +42,8 @@ def generate_spectral_profile_plot(data_cube, plot_file):
 
     scan_index = 0
 
-    wcs_tab_hdu_index = data_cube.index_of('WCS-TAB')
-    wcs_tab_hdu = data_cube[wcs_tab_hdu_index]
+    wcs_tab_hdu_index = fits_hdus.index_of('WCS-TAB')
+    wcs_tab_hdu = fits_hdus[wcs_tab_hdu_index]
 
     # This part has been borrowed from the red_fitscube_getwcs.pro.
     tdim = wcs_tab_hdu.header['TDIM1']
@@ -77,11 +86,11 @@ def generate_spectral_profile_plot(data_cube, plot_file):
 
     wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
 
-    plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=2, markerfacecolor="None", markeredgecolor='red')
-    plt.title('Spectral Line Profile', **hfont)
+    plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=2, markerfacecolor="None", markeredgecolor=marker_color)
+    # plt.title('Spectral Line Profile', **hfont)
 
-    plt.xlabel('Wavelength', **hfont)
-    plt.ylabel('median(Intensity) / 1 n', **hfont)
+    # plt.xlabel('Wavelength', **hfont)
+    # plt.ylabel('median(Intensity) / 1 n', **hfont)
 
     plt.savefig(plot_file)
     plt.close()

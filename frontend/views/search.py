@@ -22,13 +22,15 @@ def _utc_datetime_from_date(date):
 
 
 class SearchResult:
-    def __init__(self, oid, filename, instrument, date, file_size, thumbnail, additional_values, selected=False):
+    def __init__(self, oid, filename, instrument, date, file_size, thumbnail, r0preview, additional_values,
+                 selected=False):
         self.oid = oid
         self.filename = filename
         self.instrument = instrument
         self.date = date
         self.file_size = file_size
         self.thumbnail = thumbnail
+        self.r0preview = r0preview
         self.selected = selected
         self.additional_values = additional_values
 
@@ -42,10 +44,15 @@ def _create_search_result_from_metadata(request, cube, additional_columns):
     else:
         thumbnail = None
 
+    if hasattr(cube, 'spectral_line_data'):
+        r0preview = cube.spectral_line_data.data_preview if cube.spectral_line_data else None
+    else:
+        r0preview = None
+
     additional_values = [col.get_value(cube) for col in additional_columns]
 
     return SearchResult(cube.oid, cube.filename, cube.instrument.name,
-                        cube.metadata.date_beg, cube.size, thumbnail, additional_values,
+                        cube.metadata.date_beg, cube.size, thumbnail, r0preview, additional_values,
                         is_selected_in_session(request, cube.filename))
 
 
@@ -158,10 +165,11 @@ def search_view(request):
     data_cubes = DataCube.objects.all()
 
     only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'previews',
-                   *additional_columns.get_all_only_specs()]
+                   'spectral_line_data', *additional_columns.get_all_only_specs()]
 
     data_cubes = data_cubes.filter(freeform_query_q).filter(
-        **complete_query).select_related('metadata', 'instrument', 'previews').only(*only_fields).distinct()
+        **complete_query).select_related('metadata', 'instrument', 'previews', 'spectral_line_data').only(
+        *only_fields).distinct()
 
     results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
 

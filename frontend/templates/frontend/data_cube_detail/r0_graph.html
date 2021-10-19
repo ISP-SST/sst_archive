@@ -3,21 +3,27 @@
 {% autoescape off %}
 <script>
     const jsonData = {{ r0_json_data }};
+    const jsonVersion = {{ r0_json_version }};
 
-    const data0 = [];
-    const data1 = [];
+    let dataLow = [];
+    let dataLowHigh = [];
 
     let logged = false;
 
-    for (let i = 0; i < jsonData['r0_timestamps'].length; i++) {
-        data0.push([ jsonData['r0_timestamps'][i], jsonData['r0_0'][i] ]);
-        data1.push([ jsonData['r0_timestamps'][i], jsonData['r0_1'][i] ]);
+    if (jsonVersion === 1) {
+        for (let i = 0; i < jsonData['r0_timestamps'].length; i++) {
+            dataLow.push([ jsonData['r0_timestamps'][i], jsonData['r0_0'][i] ]);
+            dataLowHigh.push([ jsonData['r0_timestamps'][i], jsonData['r0_1'][i] ]);
+        }
+    } else if (jsonVersion === 2) {
+        dataLow = jsonData['r0_low'];
+        dataLowHigh = jsonData['r0_low_high'];
     }
 
     const scatterTestData = [
-        [data0[Math.round(data0.length / 4)][0], 0.01],
-        [data0[Math.round(data0.length / 2)][0], 0.01],
-        [data0[Math.round(3 * data0.length / 4)][0], 0.01]
+        [dataLow[Math.round(dataLow.length / 4)][0], 0.01],
+        [dataLow[Math.round(dataLow.length / 2)][0], 0.01],
+        [dataLow[Math.round(3 * dataLow.length / 4)][0], 0.01]
     ];
 
     const scatterTestNames = ['Scan', 'Scan', 'Scan']
@@ -32,13 +38,13 @@
         }
       },
       series: [{
-          name: 'Green',
+          name: 'Low Altitude Seeing',
           type: 'line',
-          data: data0
+          data: dataLow
         },{
-          name: 'Black',
+          name: 'Low + High Altitude Seeing',
           type: 'line',
-          data: data1
+          data: dataLowHigh
         }/*,{
           name: 'Events',
           type: 'scatter',

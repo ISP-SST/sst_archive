@@ -18,7 +18,12 @@ def data_cube_detail(request, filename):
     metadata_fields.pop('data cube', None)
     metadata_fields.pop('Observation ID', None)
 
-    r0_json_data = data_cube.r0data.data_json if hasattr(data_cube, 'r0data') else None
+    r0_json_data = None
+    r0_json_version = None
+    if hasattr(data_cube, 'r0data'):
+        r0_json_data = data_cube.r0data.data_json
+        r0_json_version = data_cube.r0data.data_version
+
     spectral_line_data = data_cube.spectral_line_data.data_json if hasattr(data_cube, 'spectral_line_data') else None
 
     context = {
@@ -27,6 +32,7 @@ def data_cube_detail(request, filename):
         'metadata_dict': model_to_dict(metadata),
         'metadata_fields': metadata_fields,
         'r0_json_data': r0_json_data,
+        'r0_json_version': r0_json_version,
         'spectral_line_data': spectral_line_data,
     }
 
