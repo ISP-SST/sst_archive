@@ -41,7 +41,7 @@
             <td scope="row">
                 <a href="{% url 'data_cube_detail' metadata.filename %}">
                 {% if metadata.thumbnail %}
-                <img src="{{metadata.thumbnail.url}}"/>
+                <img style="background: #000; width: 78px; min-height: 78px;" data-src="{{metadata.thumbnail.url}}"/>
                 {% else %}
                 {{ metadata.oid }}
                 {% endif %}
@@ -50,7 +50,7 @@
             <td>
                 {% if metadata.r0preview %}
                 <a href="{% url 'data_cube_detail' metadata.filename %}">
-                    <img style="width: 12em" src="{{metadata.r0preview.url}}" />
+                    <img style="width: 12em" data-src="{{metadata.r0preview.url}}" />
                 </a>
                 {% endif %}
             </td>
