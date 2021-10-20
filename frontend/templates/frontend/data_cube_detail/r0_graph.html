@@ -15,21 +15,27 @@
             dataLow.push([ jsonData['r0_timestamps'][i], jsonData['r0_0'][i] ]);
             dataLowHigh.push([ jsonData['r0_timestamps'][i], jsonData['r0_1'][i] ]);
         }
-    } else if (jsonVersion === 2) {
+    } else if (jsonVersion >= 2) {
         dataLow = jsonData['r0_low'];
         dataLowHigh = jsonData['r0_low_high'];
     }
 
-    const scatterTestData = [
-        [dataLow[Math.round(dataLow.length / 4)][0], 0.01],
-        [dataLow[Math.round(dataLow.length / 2)][0], 0.01],
-        [dataLow[Math.round(3 * dataLow.length / 4)][0], 0.01]
-    ];
+    dateBeg = [];
+    dateEnd = [];
+    scans = jsonData['scannum'];
 
-    const scatterTestNames = ['Scan', 'Scan', 'Scan']
+    if (jsonVersion === 3) {
+        for (let date of jsonData['date_beg']) {
+            dateBeg.push([date, 0.01]);
+        }
+
+        for (let date of jsonData['date_end']) {
+            dateEnd.push([date, 0.01]);
+        }
+    }
 
     var options = {
-      colors: ['#00aa00', '#000000', '#4477ff'],
+      colors: ['#00aa00', '#000000', '#4477ff', '#ff4477'],
       chart: {
         width: '100%',
         height: '300px',
@@ -45,13 +51,17 @@
           name: 'Low + High Altitude Seeing',
           type: 'line',
           data: dataLowHigh
-        }/*,{
-          name: 'Events',
+        },{
+          name: 'Scan Began',
           type: 'scatter',
-          data: scatterTestData
-      }*/],
+          data: dateBeg
+      }, {
+          name: 'Scan Ended',
+          type: 'scatter',
+          data: dateEnd
+      }],
       markers: {
-        size: [0, 0/*, 6*/]
+        size: [0, 0, 4, 4]
       },
       xaxis: {
         type: 'datetime',
@@ -105,10 +115,10 @@
             logged = true;
           }
 
-          if (w.globals.seriesNames[seriesIndex] === 'Events') {
+          if (w.globals.seriesNames[seriesIndex] === 'Scan Began' || w.globals.seriesNames[seriesIndex] === 'Scan Ended') {
             return (
               '<div style="background: rgba(0, 0, 0, 0.6); color: #f0f0f0; padding: 0.3em 0.5em;" class="">' +
-              scatterTestNames[dataPointIndex] +
+              w.globals.seriesNames[seriesIndex] + ': ' + scans[dataPointIndex] +
               '</div>');
           }
 

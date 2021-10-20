@@ -6,39 +6,15 @@ import os
 import datetime
 from astropy.io import fits
 
+from ingestion.utils.generate_date_data import generate_date_data
+
 
 def _get_timestamp(ref_datetime, elapsed_seconds):
     dt = ref_datetime + datetime.timedelta(seconds=elapsed_seconds)
     return round(dt.timestamp() * 1000)
 
 
-def generate_r0_plot_data_v1(fits_hdus: fits.header.Header):
-    primary_hdu = fits_hdus[0]
-
-    ref_datetime = datetime.datetime.fromisoformat(primary_hdu.header['DATEREF'])
-    ref_datetime.replace(tzinfo=datetime.timezone.utc)
-
-    r0_hdu_index = fits_hdus.index_of('VAR-EXT-ATMOS_R0')
-    r0_hdu = fits_hdus[r0_hdu_index]
-
-    r0_field_name = r0_hdu.header['TTYPE1']
-
-    r0_values_all = r0_hdu.data.field(r0_field_name)[0]
-
-    r0_values_0 = [float(v[0]) for v in r0_values_all]
-    r0_values_1 = [float(v[1]) for v in r0_values_all]
-    r0_timestamps = [_get_timestamp(ref_datetime, t[0]) for t in r0_hdu.data.field('TIME-ATMOS_R0')[0]]
-
-    json_struct = {
-        'r0_0': r0_values_0,
-        'r0_1': r0_values_1,
-        'r0_timestamps': r0_timestamps
-    }
-
-    return json_struct
-
-
-def generate_r0_plot_data_v2(fits_hdus: fits.header.Header):
+def generate_r0_plot_data_v3(fits_hdus: fits.header.Header):
     primary_hdu = fits_hdus[0]
 
     ref_datetime = datetime.datetime.fromisoformat(primary_hdu.header['DATEREF'])
@@ -56,12 +32,14 @@ def generate_r0_plot_data_v2(fits_hdus: fits.header.Header):
     r0_values_low = [[ r0_timestamps[i], float(r0_values_all[i][0])] for i in range(len(r0_values_all))]
     r0_values_low_high = [[ r0_timestamps[i], float(r0_values_all[i][1])] for i in range(len(r0_values_all))]
 
+    date_beg_end_struct = generate_date_data(fits_hdus)
+
     json_struct = {
         'r0_low': r0_values_low,
         'r0_low_high': r0_values_low_high
     }
 
-    return json_struct
+    return {**json_struct, **date_beg_end_struct}
 
 
 def main():
@@ -76,11 +54,8 @@ def main():
     else:
         output_file = args.output
 
-    data_cube = fits.open(args.fits_file)
-
-    json_data = generate_r0_plot_data_v1(data_cube)
-
-    with open(output_file, 'w') as outfile:
+    with fits.open(args.fits_file) as data_cube, open(output_file, 'w') as outfile:
+        json_data = generate_r0_plot_data_v3(data_cube)
         outfile.write(json_data)
 
 
