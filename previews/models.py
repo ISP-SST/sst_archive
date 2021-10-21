@@ -9,8 +9,6 @@ class AnimatedGifPreview(models.Model):
     """Contains a relative link to an animated GIF preview of a DataCube."""
     data_cube = models.OneToOneField('observations.DataCube', related_name='animated_preview',
                                      null=False, on_delete=models.CASCADE)
-    animated_gif = models.TextField('URL to animated GIF')
-
     full_size = models.ImageField('Preview animation stored in the managed upload folder', upload_to='gifs/full-size/',
                                   null=True)
 
