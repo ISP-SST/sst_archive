@@ -27,6 +27,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 SCIENCE_DATA_ROOT = '/srv/www/dubshen/sst_archive/science_data/'
 
 STATIC_URL = '/sst_archive/static/'
+MEDIA_URL = '/sst_archive/media/'
 
 LOGGING = {
     'version': 1,
