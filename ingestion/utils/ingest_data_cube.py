@@ -12,7 +12,7 @@ from ingestion.utils.ingest_metadata import ingest_metadata
 from ingestion.svo.sync_with_svo import sync_with_svo
 from ingestion.utils.ingest_r0_data import ingest_r0_data
 from ingestion.utils.ingest_spectral_line_profile_data import ingest_spectral_line_profile_data
-from ingestion.utils.ingest_tags import ingest_tags
+from ingestion.utils.ingest_tags import ingest_tags, get_features_vocabulary, get_events_vocabulary
 from observations.models import DataCube, Instrument
 
 
@@ -116,7 +116,10 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
 
         ingest_metadata(primary_hdu_header, data_cube)
 
-        ingest_tags(primary_hdu_header, data_cube)
+        # TODO(daniel): Vocabulary is fetched from server. To speed this up we can cache it between runs.
+        features_vocabulary = get_features_vocabulary()
+        events_vocabulary = get_events_vocabulary()
+        ingest_tags(primary_hdu_header, data_cube, features_vocabulary, events_vocabulary)
 
         ingest_r0_data(fits_hdus, data_cube)
         ingest_spectral_line_profile_data(fits_hdus, data_cube)
