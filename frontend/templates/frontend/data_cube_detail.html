@@ -66,10 +66,9 @@
 
                 <tr>
                     <td>Download:
-                        <p><small class="text-muted" style="overflow-wrap: break-word">{{ data_cube.filename }}</small></p>
                     </td>
                     <td style="vertical-align: middle">
-                    <a class="btn btn-primary" href="{% url 'download_data_cube' data_cube.filename %}"><i class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
+                    <a class="btn btn-primary" data-bs-toggle="tooltip" href="{% url 'download_data_cube' data_cube.filename %}" title="{{ data_cube.filename }}"><i class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
                     </td>
                 </tr>
             </table>
