@@ -1,3 +1,5 @@
+"""
+
 import os
 import tempfile
 from pathlib import Path
@@ -18,3 +20,5 @@ def update_or_create_gif_preview(hdus, data_cube, regenerate_preview=False):
                            File(open(tmp_file, 'rb')))
 
     preview.save()
+
+"""
