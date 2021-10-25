@@ -41,7 +41,7 @@
             <td scope="row">
                 <a href="{% url 'data_cube_detail' metadata.filename %}">
                 {% if metadata.thumbnail %}
-                <img style="background: #000; width: 78px; min-height: 78px;" data-src="{{metadata.thumbnail.url}}"/>
+                <img style="border-radius: 4px; background: #000; width: 78px; min-height: 78px;" data-src="{{metadata.thumbnail.url}}"/>
                 {% else %}
                 {{ metadata.oid }}
                 {% endif %}

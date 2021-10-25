@@ -20,7 +20,7 @@
                 {% if data_cube.video_preview and data_cube.video_preview.video_wings %}
                 <div class="video-container">
                     <div class="video-inlay" style="position: relative">
-                        <video id="video-wings" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" style="border-radius: 5px" loop muted playsinline></video>
+                        <video id="video-wings" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" style="border-radius: 5px; max-width: 100%" loop muted playsinline></video>
                         <div id="video-wings-play-button">
                             <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px" onclick="const video = document.getElementById('video-wings'); video.play(); video.controls = true; const playButton = document.getElementById('video-wings-play-button'); playButton.style.display = 'None';"
                                  class="bi bi-play-circle-fill"></div>
