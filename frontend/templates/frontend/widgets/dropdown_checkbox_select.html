@@ -45,9 +45,9 @@
     }
 
     if (selected.length > 0) {
-      dropdownButton.innerText = `${selected.length} Selected`;
+      dropdownButton.innerHTML = `<i class="bi bi-check"></i> ${selected.length} Selected`;
     } else {
-      dropdownButton.innerText = 'None Selected';
+      dropdownButton.innerHTML = 'None Selected';
     }
   }
 
