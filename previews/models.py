@@ -1,24 +1,23 @@
 from django.conf import settings
 from django.db import models
 
-# TODO(daniel): These models that link to a file should probably be using the Django FilePathField instead.
 from django.utils.safestring import mark_safe
 
 
-class AnimatedGifPreview(models.Model):
-    """Contains a relative link to an animated GIF preview of a DataCube."""
-    data_cube = models.OneToOneField('observations.DataCube', related_name='animated_preview',
+class VideoPreview(models.Model):
+    data_cube = models.OneToOneField('observations.DataCube', related_name='video_preview',
                                      null=False, on_delete=models.CASCADE)
-    full_size = models.ImageField('Preview animation stored in the managed upload folder', upload_to='gifs/full-size/',
+    video_wings = models.ImageField('Temporal video from wings stored in upload folder', upload_to='videos/temporal/wings/',
                                   null=True)
 
-    def full_size_tag(self):
-        return mark_safe('<img src="%s/%s" />' % (settings.MEDIA_URL, self.full_size))
+    def video_wings_tag(self):
+        return mark_safe('<video src="%s/%s" controls>Videos are not supported</video>' %
+                         (settings.MEDIA_URL, self.video_wings))
 
-    full_size_tag.short_description = 'Full size image'
+    video_wings_tag.short_description = 'Temporal video preview'
 
     def __str__(self):
-        return self.full_size.name
+        return self.video_wings.name
 
 
 class ImagePreview(models.Model):

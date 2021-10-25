@@ -1,13 +1,13 @@
 from django.contrib import admin
 
-from previews.models import AnimatedGifPreview, ImagePreview, R0Data, SpectralLineData
+from previews.models import ImagePreview, R0Data, SpectralLineData, VideoPreview
 
 
-@admin.register(AnimatedGifPreview)
-class AnimatedGifPreviewAdmin(admin.ModelAdmin):
+@admin.register(VideoPreview)
+class VideoPreviewAdmin(admin.ModelAdmin):
 	search_fields = ['data_cube__filename']
-	fields = ['full_size_tag', 'full_size']
-	readonly_fields = ['full_size_tag']
+	fields = ['video_wings_tag', 'video_wings']
+	readonly_fields = ['video_wings_tag']
 
 
 @admin.register(ImagePreview)

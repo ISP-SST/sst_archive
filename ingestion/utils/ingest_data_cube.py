@@ -5,7 +5,6 @@ from astropy.io import fits
 
 from data_access.models import DataCubeAccessControl
 from ingestion.utils.generate_sparse_list_string import generate_sparse_list_string
-from ingestion.utils.ingest_animated_preview import update_or_create_gif_preview
 from ingestion.utils.ingest_fits_header import ingest_fits_header
 from ingestion.utils.ingest_image_previews import update_or_create_image_previews
 from ingestion.utils.ingest_metadata import ingest_metadata
@@ -13,6 +12,7 @@ from ingestion.svo.sync_with_svo import sync_with_svo
 from ingestion.utils.ingest_r0_data import ingest_r0_data
 from ingestion.utils.ingest_spectral_line_profile_data import ingest_spectral_line_profile_data
 from ingestion.utils.ingest_tags import ingest_tags, get_features_vocabulary, get_events_vocabulary
+from ingestion.utils.ingest_video_previews import update_or_create_video_previews
 from observations.models import DataCube, Instrument
 
 
@@ -101,8 +101,9 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
     two things: the observation ID (generated at the call site) and the
     """
     generate_image_previews = kwargs.get('generate_image_previews', False)
-    generate_animated_previews = kwargs.get('generate_animated_previews', False)
+    generate_video_previews = kwargs.get('generate_video_previews', False)
     force_regenerate_images = kwargs.get('force_regenerate_images', False)
+    force_regenerate_video = kwargs.get('force_regenerate_videos', False)
     should_sync_with_svo = kwargs.get('sync_with_svo', False)
 
     with fits.open(path) as fits_hdus:
@@ -127,8 +128,8 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
         if generate_image_previews:
             update_or_create_image_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_images)
 
-        if generate_animated_previews:
-            update_or_create_gif_preview(fits_hdus, data_cube, regenerate_preview=force_regenerate_images)
+        if generate_video_previews:
+            update_or_create_video_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_video)
 
         if should_sync_with_svo:
             sync_with_svo(data_cube, primary_hdu_header)

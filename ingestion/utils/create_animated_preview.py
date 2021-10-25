@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# NB: This code is no longer used and is scheduled for removal.
+
 import argparse
 from pathlib import Path
 
