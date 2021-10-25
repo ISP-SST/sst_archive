@@ -95,14 +95,14 @@ class AdditionalColumns:
     def __iter__(self):
         return self.additional_columns.__iter__()
 
-    def add(self, column):
+    def add(self, column: Column):
         self.additional_columns.append(column)
 
     def get_all_names(self):
-        return [col.get_name() for col in self.additional_columns if col.get_name() != None]
+        return [col.get_name() for col in self.additional_columns if col.get_name() is not None]
 
     def get_all_only_specs(self):
-        return [col.get_only_spec() for col in self.additional_columns if col.get_only_spec() != None]
+        return [col.get_only_spec() for col in self.additional_columns if col.get_only_spec() is not None]
 
 
 def search_view(request):
