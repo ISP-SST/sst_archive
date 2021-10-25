@@ -1,0 +1,16 @@
+ul.comma-separated-list {
+  display: inline;
+  list-style: none;
+}
+
+ul.comma-separated-list li {
+  display: inline;
+}
+
+ul.comma-separated-list li:after {
+  content: ", ";
+}
+
+ul.comma-separated-list li:last-child:after {
+  content: "";
+}
