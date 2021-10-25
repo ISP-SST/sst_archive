@@ -4,6 +4,7 @@ import json
 from django import forms
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
+from django.utils.safestring import mark_safe
 
 from frontend.utils import get_memory_cache
 from observations.models import Tag, Instrument
@@ -18,6 +19,12 @@ def initial_start_date():
 def initial_end_date():
     return datetime.datetime.now(tz=datetime.timezone.utc)
 
+
+def _get_query_label():
+    return 'Query <a class="bi bi-question-circle" ' + \
+            'data-bs-toggle="tooltip" data-bs-html="true" href="#" ' + \
+            'title="Allows for arbitrary queries into observation metadata: ' + \
+            '<code>metadata__xposure__lt=0.15</code>"></a> '
 
 class DropdownCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     template_name = 'frontend/widgets/dropdown_checkbox_select.html'
@@ -114,7 +121,7 @@ class SearchForm(forms.Form):
                                              ('polarimetric', 'Polarimetric'),
                                              ('nonpolarimetric', 'Non-Polarimetric')),
                                     widget=forms.Select(attrs={'class': 'form-select'}), required=False)
-    query = forms.CharField(label='Query', required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    query = forms.CharField(label=mark_safe(_get_query_label()), required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 class RegistrationForm(forms.Form):
