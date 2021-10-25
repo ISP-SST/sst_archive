@@ -24,7 +24,11 @@ def data_cube_detail(request, filename):
         r0_json_data = data_cube.r0data.data_json
         r0_json_version = data_cube.r0data.data_version
 
-    spectral_line_data = data_cube.spectral_line_data.data_json if hasattr(data_cube, 'spectral_line_data') else None
+    spectral_line_data = None
+    spectral_line_data_version = None
+    if hasattr(data_cube, 'spectral_line_data'):
+        spectral_line_data = data_cube.spectral_line_data.data_json
+        spectral_line_data_version = data_cube.spectral_line_data.data_version
 
     context = {
         'data_cube': data_cube,
@@ -34,6 +38,7 @@ def data_cube_detail(request, filename):
         'r0_json_data': r0_json_data,
         'r0_json_version': r0_json_version,
         'spectral_line_data': spectral_line_data,
+        'spectral_line_data_version': spectral_line_data_version
     }
 
     return render(request, 'frontend/data_cube_detail.html', context)

@@ -4,25 +4,50 @@
 <script>
 
 (function() {
-const jsonData = {{ spectral_line_data }};
+    const jsonData = {{ spectral_line_data }};
+    const jsonVersion = {{ spectral_line_data_version }};
+
+    if (!jsonData) {
+        return;
+    }
+
     const amplitudeData = [];
+    const wavelengths = jsonData['wavelengths'];
 
     let logged = false;
 
     const seriesData = [];
+    console.log('Spectral line profile data version: ' + jsonVersion);
 
-    for (let amplitudeValues of jsonData['amplitude_values']) {
+    if (jsonVersion === 1) {
+        for (let amplitudeValues of jsonData['amplitude_values']) {
+            const data = [];
 
+            for (let j = 0; j < amplitudeValues.length; j++) {
+                data.push([ wavelengths[j], amplitudeValues[j] ]);
+            }
+
+            const series = {
+              name: 'Scan',
+              type: 'line',
+              data: data
+            };
+
+            seriesData.push(series);
+        }
+    } else if (jsonVersion === 2) {
         const data = [];
 
-        for (let j = 0; j < amplitudeValues.length; j++) {
-            data.push([ jsonData['wavelengths'][j], amplitudeValues[j] ]);
+        const amplitudeValues = jsonData['amplitude_values'];
+
+        for (let i = 0; i < amplitudeValues.length; i++) {
+            data.push([ wavelengths[i], amplitudeValues[i] ]);
         }
 
         const series = {
-          name: 'Scan',
-          type: 'line',
-          data: data
+            name: 'Scan',
+            type: 'line',
+            data: data
         };
 
         seriesData.push(series);
@@ -42,7 +67,7 @@ const jsonData = {{ spectral_line_data }};
         size: [5],
         strokeColors: '#ff0000',
         fillOpacity: 0,
-        strokeWidth: 1,
+        strokeWidth: 2,
       },
       xaxis: {
         type: 'numeric',
@@ -82,7 +107,7 @@ const jsonData = {{ spectral_line_data }};
         },
       },
       stroke: {
-        width: [2],
+        width: [1],
       },
       legend: {
         show: false,

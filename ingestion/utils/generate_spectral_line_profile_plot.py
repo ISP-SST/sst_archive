@@ -3,6 +3,7 @@
 import argparse
 import datetime
 import os
+import statistics
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -13,7 +14,7 @@ def _get_datetime(ref_datetime, elapsed_seconds):
     return ref_datetime + datetime.timedelta(seconds=elapsed_seconds)
 
 
-def generate_spectral_profile_plot(fits_hdus, plot_file, size=(4, 1)):
+def generate_spectral_line_profile_plot(fits_hdus, plot_file, size=(4, 1)):
     hfont = {'fontname': 'Helvetica'}
     matplotlib.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 
@@ -23,14 +24,12 @@ def generate_spectral_profile_plot(fits_hdus, plot_file, size=(4, 1)):
 
     plt.tight_layout(pad=0.2)
 
-    border_color = '#f0f0f0'
     marker_color = '#909090'
 
     ax = plt.axes(xticks=[], yticks=[])
-    ax.spines.left.set_color(border_color)
-    ax.spines.top.set_color(border_color)
-    ax.spines.right.set_color(border_color)
-    ax.spines.bottom.set_color(border_color)
+
+    for spine_name in ['left', 'top', 'right', 'bottom']:
+        ax.spines[spine_name].set_visible(False)
 
     datamean_hdu_index = fits_hdus.index_of('VAR-EXT-DATAMEDN')
     datamean_hdu = fits_hdus[datamean_hdu_index]
@@ -70,27 +69,23 @@ def generate_spectral_profile_plot(fits_hdus, plot_file, size=(4, 1)):
         if i_time == 3 and len(coord_dims) == 3:
             coord_dims = coord_dims + [1]
 
-    N_hpln = coord_dims[i_hpln] if TabulateHPLN else 1
-    N_hplt = coord_dims[i_hplt] if TabulateHPLT else 1
-    N_wave = coord_dims[i_wave] if TabulateWAVE else 1
-    N_time = coord_dims[i_time] if TabulateTIME else 1
+    n_hpln = coord_dims[i_hpln] if TabulateHPLN else 1
+    n_hplt = coord_dims[i_hplt] if TabulateHPLT else 1
+    n_wave = coord_dims[i_wave] if TabulateWAVE else 1
+    n_time = coord_dims[i_time] if TabulateTIME else 1
 
-    coord_dims = [N_hpln, N_hplt, N_wave, N_time]
+    coord_dims = [n_hpln, n_hplt, n_wave, n_time]
 
     factor = 10e7
 
-    amplitude_values = [[v[0][0] * factor for v in data_median_values[scan_index][0]] for scan_index in range(N_time)]
-    amplitude_values = [[amplitude_values[j][i] for j in range(N_time)] for i in range(N_wave)]
+    amplitude_values = [[v[0][0] * factor for v in data_median_values[scan_index][0]] for scan_index in range(n_time)]
+    amplitude_values = [statistics.mean([ amplitude_values[scan_index][wl_index] for scan_index in range(n_time)]) for wl_index in range(n_wave)]
 
     wcs_values = wcs_tab_hdu.data.field(ttype)[0]
 
     wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
 
-    plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=2, markerfacecolor="None", markeredgecolor=marker_color)
-    # plt.title('Spectral Line Profile', **hfont)
-
-    # plt.xlabel('Wavelength', **hfont)
-    # plt.ylabel('median(Intensity) / 1 n', **hfont)
+    plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=4, markerfacecolor=marker_color, markeredgecolor="None")
 
     plt.savefig(plot_file)
     plt.close()
@@ -111,7 +106,7 @@ def main():
 
     data_cube = fits.open(args.fits_file)
 
-    generate_spectral_profile_plot(data_cube, output_file)
+    generate_spectral_line_profile_plot(data_cube, output_file)
 
 
 if __name__ == '__main__':

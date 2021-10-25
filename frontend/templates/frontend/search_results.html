@@ -50,7 +50,7 @@
             <td>
                 {% if metadata.r0preview %}
                 <a href="{% url 'data_cube_detail' metadata.filename %}">
-                    <img style="width: 12em" data-src="{{metadata.r0preview.url}}" />
+                    <img style="width: 12em; border: 2px solid #efefef" data-src="{{metadata.r0preview.url}}" />
                 </a>
                 {% endif %}
             </td>

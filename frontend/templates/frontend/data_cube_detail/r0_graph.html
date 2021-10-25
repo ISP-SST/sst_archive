@@ -2,8 +2,13 @@
 
 {% autoescape off %}
 <script>
+(function() {
     const jsonData = {{ r0_json_data }};
     const jsonVersion = {{ r0_json_version }};
+
+    if (!jsonData) {
+        return;
+    }
 
     let dataLow = [];
     let dataLowHigh = [];
@@ -103,7 +108,7 @@
         },
       },
       stroke: {
-        width: [2, 2],
+        width: [2, 2]
       },
       tooltip: {
         x: {
@@ -115,7 +120,8 @@
             logged = true;
           }
 
-          if (w.globals.seriesNames[seriesIndex] === 'Scan Began' || w.globals.seriesNames[seriesIndex] === 'Scan Ended') {
+          if (w.globals.seriesNames[seriesIndex] === 'Scan Began' ||
+              w.globals.seriesNames[seriesIndex] === 'Scan Ended') {
             return (
               '<div style="background: rgba(0, 0, 0, 0.6); color: #f0f0f0; padding: 0.3em 0.5em;" class="">' +
               w.globals.seriesNames[seriesIndex] + ': ' + scans[dataPointIndex] +
@@ -136,6 +142,7 @@
 
     var chart = new ApexCharts(document.querySelector("#r0-chart"), options);
     chart.render();
+})();
 
 </script>
 {% endautoescape %}
