@@ -157,7 +157,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
@@ -169,12 +169,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [BASE_DIR / 'assets']
 
-GENERATED_URL_ROOT = 'generated/'
-GENERATED_ROOT = BASE_DIR / 'assets' / 'generated'
-
-GIF_URL_ROOT = 'generated/gifs'
-GIF_ROOT = BASE_DIR / 'assets' / 'generated' / 'gifs'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -182,6 +176,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # to use it directly from there. At least we shouldn't assume that the
 # timezone string will be compatible with Python's set of timezones.
 OBSERVATION_TIMEZONE = 'UTC'
+DATETIME_FORMAT = 'Y-m-d H:i:s'
+DATE_FORMAT = 'Y-m-d'
+TIME_FORAT = ''
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
