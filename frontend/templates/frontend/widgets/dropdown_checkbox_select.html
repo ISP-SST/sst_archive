@@ -4,7 +4,7 @@
     None Selected
   </button>
 
-  <div {% if id %}id="{{ id }}"{% endif %} class="{% if widget.attrs.class %}{{ widget.attrs.class }}{% endif %} dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+  <div {% if id %}id="{{ id }}"{% endif %} class="{% if widget.attrs.class %}{{ widget.attrs.class }}{% endif %} dropdown-menu" aria-labelledby="dropdownMenuButton">
     {% for group, options, index in widget.optgroups %}
       {% if group %}
         <div class="form-group">{{ group }}<div {% if id %}id="{{ id }}_{{ index }}"{% endif %}>
