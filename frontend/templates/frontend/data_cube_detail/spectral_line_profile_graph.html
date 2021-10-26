@@ -3,11 +3,11 @@
 {% autoescape off %}
 <script>
 
-(function() {
+window.addEventListener('load', function() {
     const jsonData = {{ spectral_line_data }};
     const jsonVersion = {{ spectral_line_data_version }};
 
-    if (!jsonData) {
+    if (!jsonData || !jsonVersion) {
         return;
     }
 
@@ -17,7 +17,6 @@
     let logged = false;
 
     const seriesData = [];
-    console.log('Spectral line profile data version: ' + jsonVersion);
 
     if (jsonVersion === 1) {
         for (let amplitudeValues of jsonData['amplitude_values']) {
@@ -120,7 +119,7 @@
 
     var chart = new ApexCharts(document.querySelector("#spectral-line-profile-chart"), options);
     chart.render();
-})();
+});
 
 </script>
 {% endautoescape %}

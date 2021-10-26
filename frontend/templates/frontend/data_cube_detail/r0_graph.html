@@ -2,18 +2,16 @@
 
 {% autoescape off %}
 <script>
-(function() {
+window.addEventListener('load', function() {
     const jsonData = {{ r0_json_data }};
     const jsonVersion = {{ r0_json_version }};
 
-    if (!jsonData) {
+    if (!jsonData || !jsonVersion) {
         return;
     }
 
     let dataLow = [];
     let dataLowHigh = [];
-
-    let logged = false;
 
     if (jsonVersion === 1) {
         for (let i = 0; i < jsonData['r0_timestamps'].length; i++) {
@@ -115,11 +113,6 @@
           format: "HH:mm:ss.fff",
         },
         custom: function({ series, seriesIndex, dataPointIndex, w }) {
-          if (!logged) {
-            console.log(w.globals);
-            logged = true;
-          }
-
           if (w.globals.seriesNames[seriesIndex] === 'Scan Began' ||
               w.globals.seriesNames[seriesIndex] === 'Scan Ended') {
             return (
@@ -142,7 +135,7 @@
 
     var chart = new ApexCharts(document.querySelector("#r0-chart"), options);
     chart.render();
-})();
+});
 
 </script>
 {% endautoescape %}
