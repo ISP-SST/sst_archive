@@ -45,3 +45,8 @@ def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
         return render(request, 'data_access/file_not_found.html', {'filename': data_cube.filename}, status=404)
 
     return FileResponse(open(data_cube.path, 'rb'), filename=data_cube.filename)
+
+
+def download_multiple_data_cubes(request: HttpRequest) -> HttpResponse:
+    filename = request.GET.get('files')
+    return download_data_cube(request, filename)

@@ -1,0 +1,140 @@
+{% extends "frontend/base.html" %}
+
+{% load static %}
+
+{% block title %}- {{ data_cube.oid }}{% endblock %}
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<div class="container">
+
+    {% if metadata %}
+
+    <div class="container row">
+        <h3>Observation Details</h3>
+
+        <div class="mb-5 col-6" style="position: relative; overflow: hidden">
+            <h5>Spectral Video Preview (Wings)</h5>
+            <figure class="figure">
+                {% if data_cube.video_preview and data_cube.video_preview.video_wings %}
+                <div class="video-container">
+                    <div class="video-inlay" style="position: relative">
+                        <video id="video-wings" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" style="border-radius: 5px; max-width: 100%" loop muted playsinline></video>
+                        <div id="video-wings-play-button">
+                            <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px" onclick="const video = document.getElementById('video-wings'); video.play(); video.controls = true; const playButton = document.getElementById('video-wings-play-button'); playButton.style.display = 'None';"
+                                 class="bi bi-play-circle-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                {% elif data_cube.previews and data_cube.previews.full_size %}
+                <img src="{{data_cube.previews.full_size.url}}" />
+                {% endif %}
+            </figure>
+        </div>
+
+        <div class="mb-5 col-6 ">
+            <table class="table" style="table-layout: fixed">
+                <tr>
+                    <td>Features:</td>
+                    <td>
+                        {% for tag in data_cube.tags.all %}
+                        <span class="badge bg-info">{{ tag }}</span>
+                        {% empty %}
+                        -
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Observation began:</td>
+                    <td>{{ metadata.date_beg }}</td>
+                </tr>
+
+                <tr>
+                    <td>Observation ended:</td>
+                    <td>{{ metadata.date_end }}</td>
+                </tr>
+
+                <tr>
+                    <td>Instrument:</td>
+                    <td>{{ data_cube.instrument.name }}</td>
+                </tr>
+                <tr>
+                    <td>Spectral Line:</td>
+                    <td>{{ metadata.filter1 }} Å ({{ metadata.waveband }})</td>
+                </tr>
+
+                <tr>
+                    <td>FITS Cube(s):</td>
+                    <td style="vertical-align: middle">
+                        {% if data_cube_count > 1 %}
+                        <form action="{% url 'download_multiple_data_cubes' %}">
+                            {{ download_form.as_p }}
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-download"></i> Download selected</button>
+                        </form>
+                        {% else %}
+                        <a class="btn btn-primary" data-bs-toggle="tooltip" href="{% url 'download_data_cube' data_cube.filename %}" title="{{ data_cube.filename }}"><i class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="container row">
+        {% if r0_json_data %}
+        <figure class="mb-5 col-6">
+            <h5>Seeing (r<sub>0</sub>)</h5>
+            {% include "frontend/data_cube_detail/r0_graph.html" %}
+        </figure>
+        {% endif %}
+
+        {% if spectral_line_data %}
+        <figure class="mb-5 col-6">
+            <h5>Spectral Line Profile</h5>
+            {% include "frontend/data_cube_detail/spectral_line_profile_graph.html" %}
+        </figure>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <div class="accordion" id="metadata-accordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                  All FITS Metadata
+              </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#metadata-accordion">
+              <div class="accordion-body">
+                <table class="table table-hover col-lg-8" style="table-layout: fixed">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Keyword</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in metadata_fields.items %}
+                    {% if value is not None %}
+                    <tr>
+                        <th scope="row">{{ key }}</th>
+                        <td class="overflow-auto">{{ value }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p>Specified metadata not found.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

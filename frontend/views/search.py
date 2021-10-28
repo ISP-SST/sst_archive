@@ -1,12 +1,12 @@
 import datetime
 
 from django.core.paginator import Paginator
+from django.db.models import Count, Prefetch, Sum
 from django.shortcuts import render
 
 from frontend.complex_filters import get_complex_filter
-from frontend.file_selection import is_selected_in_session
 from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
-from observations.models import DataCube
+from observations.models import DataCube, Observation
 
 
 # Compatibility function. Was introduced in Python 3.9, but we're currently only on 3.7.
@@ -22,20 +22,24 @@ def _utc_datetime_from_date(date):
 
 
 class SearchResult:
-    def __init__(self, oid, filename, instrument, date, file_size, thumbnail, r0preview, additional_values,
-                 selected=False):
+    def __init__(self, observation_pk, oid, filename, instrument, date, size, thumbnail, r0preview, additional_values, cubes_in_observation):
+        self.observation_pk = observation_pk
         self.oid = oid
         self.filename = filename
         self.instrument = instrument
         self.date = date
-        self.file_size = file_size
+        self.size = size
         self.thumbnail = thumbnail
         self.r0preview = r0preview
-        self.selected = selected
         self.additional_values = additional_values
+        self.cubes_in_observation = cubes_in_observation
 
 
-def _create_search_result_from_metadata(request, cube, additional_columns):
+def _create_search_results_from_observation(request, observation, additional_columns):
+
+    cube_count = observation.cubes.count()
+    cube = observation.cubes.all()[0]
+
     if not hasattr(cube, 'metadata') or not cube.metadata:
         return None
 
@@ -49,11 +53,10 @@ def _create_search_result_from_metadata(request, cube, additional_columns):
     else:
         r0preview = None
 
-    additional_values = [col.get_value(cube) for col in additional_columns]
+    additional_values = [col.get_value(observation) for col in additional_columns]
 
-    return SearchResult(cube.oid, cube.filename, cube.instrument.name,
-                        cube.metadata.date_beg, cube.size, thumbnail, r0preview, additional_values,
-                        is_selected_in_session(request, cube.filename))
+    return SearchResult(observation.id, cube.oid, cube.filename, cube.instrument.name,
+                        cube.metadata.date_beg, observation.total_size, thumbnail, r0preview, additional_values, cube_count)
 
 
 class Column:
@@ -64,7 +67,7 @@ class Column:
     def get_name(self):
         return self.name
 
-    def get_value(self, data_cube):
+    def get_value(self, observation):
         raise NotImplementedError()
 
     def get_only_spec(self):
@@ -76,16 +79,16 @@ class MetadataColumn(Column):
         super().__init__(name, 'metadata__%s' % value_key)
         self.value_key = value_key
 
-    def get_value(self, data_cube):
-        return getattr(data_cube.metadata, self.value_key)
+    def get_value(self, observation):
+        return list(set([getattr(cube.metadata, self.value_key) for cube in observation.cubes.all()]))
 
 
 class TagColumn(Column):
     def __init__(self, name):
         super().__init__(name, 'tags')
 
-    def get_value(self, data_cube):
-        return [tag.name for tag in data_cube.tags.all()]
+    def get_value(self, observation):
+        return list(set([tag.name for cube in observation.cubes.all() for tag in cube.tags.all()]))
 
 
 class AdditionalColumns:
@@ -142,36 +145,39 @@ def search_view(request):
     if 'polarimetry' in form.cleaned_data:
         pol = form.cleaned_data['polarimetry']
         if pol == 'polarimetric':
-            complete_query['metadata__naxis4__exact'] = 4
+            complete_query['cubes__metadata__naxis4__exact'] = 4
         elif pol == 'nonpolarimetric':
-            complete_query['metadata__naxis4__exact'] = 1
+            complete_query['cubes__metadata__naxis4__exact'] = 1
 
     if start_date:
-        complete_query['metadata__date_beg__gte'] = _utc_datetime_from_date(start_date)
+        complete_query['cubes__metadata__date_beg__gte'] = _utc_datetime_from_date(start_date)
     if end_date:
-        complete_query['metadata__date_end__lte'] = _utc_datetime_from_date(end_date)
+        complete_query['cubes__metadata__date_end__lte'] = _utc_datetime_from_date(end_date)
 
     if spectral_line_ids:
-        complete_query['metadata__filter1__in'] = spectral_line_ids
+        complete_query['cubes__metadata__filter1__in'] = spectral_line_ids
         additional_columns.add(MetadataColumn('Spectral Line', 'filter1'))
 
     if features:
-        complete_query['tags__name__in'] = features
+        complete_query['cubes__tags__name__in'] = features
         additional_columns.add(TagColumn('Features'))
 
     if instrument and instrument != 'all':
-        complete_query['instrument__name__iexact'] = instrument
+        complete_query['cubes__instrument__name__iexact'] = instrument
 
-    data_cubes = DataCube.objects.all()
-
-    only_fields = ['oid', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'previews',
+    only_fields = ['oid', 'observation_id', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'previews',
                    'spectral_line_data', *additional_columns.get_all_only_specs()]
 
-    data_cubes = data_cubes.filter(freeform_query_q).filter(
-        **complete_query).select_related('metadata', 'instrument', 'previews', 'spectral_line_data').only(
-        *only_fields).distinct()
+    datacube_dataset = DataCube.objects.only(*only_fields).select_related('metadata', 'instrument', 'previews',
+                                                                          'spectral_line_data')
 
-    results = [_create_search_result_from_metadata(request, cube, additional_columns) for cube in data_cubes]
+    observations = Observation.objects.all()
+
+    observations = observations.filter(freeform_query_q).filter(**complete_query).\
+        prefetch_related(Prefetch('cubes', queryset=datacube_dataset)).annotate(total_size=Sum('cubes__size')).distinct()
+
+    results = [_create_search_results_from_observation(request, observation, additional_columns)
+               for observation in observations]
 
     results = list(filter(None, results))
 

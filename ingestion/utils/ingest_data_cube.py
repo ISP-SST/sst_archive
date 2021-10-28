@@ -13,10 +13,10 @@ from ingestion.utils.ingest_r0_data import ingest_r0_data
 from ingestion.utils.ingest_spectral_line_profile_data import ingest_spectral_line_profile_data
 from ingestion.utils.ingest_tags import ingest_tags, get_features_vocabulary, get_events_vocabulary
 from ingestion.utils.ingest_video_previews import update_or_create_video_previews
-from observations.models import DataCube, Instrument
+from observations.models import DataCube, Instrument, Observation
 
 
-def _generate_access_control_entities(data_cube: DataCube, fits_header: fits.header.Header):
+def _generate_access_control_entities(data_cube: DataCube, fits_header: fits.Header):
     # Create access control row for this observation.
     release_date_str = fits_header['RELEASE']
     release_date = datetime.strptime(release_date_str, "%Y-%m-%d").date()
@@ -27,6 +27,24 @@ def _generate_access_control_entities(data_cube: DataCube, fits_header: fits.hea
         'release_date': release_date,
         'release_comment': release_comment,
     })
+
+
+def _assign_to_observation(data_cube: DataCube, fits_header: fits.Header):
+
+    point_id = fits_header.get('POINT_ID', None)
+
+    if not point_id:
+        point_id = fits_header.get('DATE-BEG')
+
+    if point_id.endswith('_grouped'):
+        data_cube.grouping_tag = DataCube.GroupingTag.GROUPED
+    elif point_id.endswith('_mosaic'):
+        data_cube.grouping_tag = DataCube.GroupingTag.MOSAIC
+
+    observation, created = Observation.objects.get_or_create(point_id=point_id)
+
+    data_cube.observation = observation
+    data_cube.save()
 
 
 class IngestionError(Exception):
@@ -80,16 +98,21 @@ def update_or_create_data_cube(fits_cube: str, instrument: Instrument, fits_head
         'instrument': instrument
     })
 
+    # Determine if this data cube belongs to a new or existing observation.
+    _assign_to_observation(data_cube, fits_header)
+
     _generate_access_control_entities(data_cube, fits_header)
 
     return data_cube
 
 
 def _get_instrument_for_fits_file(primary_hdu_header: fits.Header):
-    if 'INSTRUME' not in primary_hdu_header:
+    instrument_name = primary_hdu_header.get('INSTRUME', None)
+
+    if not instrument_name:
         raise IngestionError('INSTRUME not found in FITS primary HDU')
 
-    instrument_name = str(primary_hdu_header['INSTRUME']).strip()
+    instrument_name = str(instrument_name).strip()
     instrument = Instrument.objects.get(name__iexact=instrument_name)
 
     return instrument

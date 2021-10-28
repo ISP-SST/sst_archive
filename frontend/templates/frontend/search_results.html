@@ -30,39 +30,45 @@
             {% for column_name in additional_column_names %}
                 <th scope="col" class="text-center" style="width: 4em">{{ column_name }}</th>
             {% endfor %}
-            <th scope="col" style="width: 6em">Data Size</th>
-            <th scope="col" style="width: 5em">Download</th>
+            <th scope="col" class="text-center" style="width: 6em">Data Size</th>
+            <th scope="col" class="text-center" style="width: 5em">Download</th>
         </tr>
         </thead>
         <tbody>
 {% if page_obj %}
-    {% for metadata in page_obj %}
+    {% for observation in page_obj %}
         <tr>
             <td scope="row">
-                <a href="{% url 'data_cube_detail' metadata.filename %}">
-                {% if metadata.thumbnail %}
-                <img style="border-radius: 4px; background: #000; width: 78px; min-height: 78px;" data-src="{{metadata.thumbnail.url}}"/>
+                <a href="{% url 'observation_detail' observation.observation_pk %}">
+                {% if observation.thumbnail %}
+                <img style="border-radius: 4px; background: #000; width: 78px; min-height: 78px;" data-src="{{ observation.thumbnail.url }}"/>
                 {% else %}
-                {{ metadata.oid }}
+                {{ observation.oid }}
                 {% endif %}
                 </a>
             </td>
             <td>
-                {% if metadata.r0preview %}
-                <a href="{% url 'data_cube_detail' metadata.filename %}">
-                    <img style="width: 12em; border: 2px solid #efefef" data-src="{{metadata.r0preview.url}}" />
+                {% if observation.r0preview %}
+                <a href="{% url 'observation_detail' observation.observation_pk %}">
+                    <img style="width: 12em; border: 2px solid #efefef" data-src="{{ observation.r0preview.url }}" />
                 </a>
                 {% endif %}
             </td>
-            <td scope="row">{{ metadata.instrument }}</td>
-            <td scope="row">{{ metadata.date }}</td>
-            {% for value in metadata.additional_values %}
+            <td scope="row">{{ observation.instrument }}</td>
+            <td scope="row">{{ observation.date }}</td>
+            {% for value in observation.additional_values %}
             <td scope="row" class="text-center">
                 {% format_column_value value %}
             </td>
             {% endfor %}
-            <td scope="row" class="text-center">{{ metadata.file_size|filesizeformat }}</td>
-            <td scope="row" class="text-center"><a class="download-symbol bi bi-download" href="{% url 'download_data_cube' metadata.filename %}"></a></td>
+            <td scope="row" class="text-center">{{ observation.size|filesizeformat }}</td>
+            <td scope="row" class="text-center">
+                {% if observation.cubes_in_observation > 1 %}
+                <a style="text-decoration: none" class="bi bi-box" href="{% url 'observation_detail' observation.observation_pk %}" data-bs-toggle="tooltip" title="Number of data cubes in this observation"> {{ observation.cubes_in_observation }}</a>
+                {% else %}
+                <a class="download-symbol bi bi-download" href="{% url 'download_data_cube' observation.filename %}"></a>
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
 {% else %}

@@ -22,9 +22,9 @@ def initial_end_date():
 
 def _get_query_label():
     return 'Query <a class="bi bi-question-circle" ' + \
-            'data-bs-toggle="tooltip" data-bs-html="true" href="#" ' + \
-            'title="Allows for arbitrary queries into observation metadata: ' + \
-            '<code>metadata__xposure__lt=0.15</code>"></a> '
+           'data-bs-toggle="tooltip" data-bs-html="true" href="#" ' + \
+           'title="Allows for arbitrary queries into observation metadata: ' + \
+           '<code>metadata__xposure__lt=0.15</code>"></a> '
 
 class DropdownCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     template_name = 'frontend/widgets/dropdown_checkbox_select.html'
@@ -52,7 +52,7 @@ def get_spectral_line_choices():
         # Repopulate cache.
         from metadata.models import Metadata
         choices = [('%s' % (metadata[0]), '%s Å (%s)' % (metadata[0], metadata[1])) for
-               metadata in Metadata.objects.order_by('filter1').values_list('filter1', 'waveband').distinct()]
+                   metadata in Metadata.objects.order_by('filter1').values_list('filter1', 'waveband').distinct()]
         cache.set(SPECTRAL_LINES_CACHE_KEY, choices)
 
     return choices
@@ -88,6 +88,24 @@ def get_instruments_choices():
     return choices
 
 
+class SelectWidgetWithTooltip(forms.Select):
+    option_template_name = 'frontend/widgets/select_option_with_tooltip.html'
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        return context
+
+
+def create_download_form(download_choices):
+    class DownloadCubesForm(forms.Form):
+        files = forms.MultipleChoiceField(label='', choices=download_choices,
+                                          widget=SelectWidgetWithTooltip(attrs={
+                                              'class': 'form-select',
+                                              'size': 5
+                                          }))
+    return DownloadCubesForm()
+
+
 class SearchForm(forms.Form):
     start_date = forms.DateField(label='Start Date',
                                  initial=initial_start_date,
@@ -107,21 +125,23 @@ class SearchForm(forms.Form):
                                    choices=get_instruments_choices,
                                    widget=forms.Select(attrs={'class': 'form-select'}))
     spectral_lines = forms.MultipleChoiceField(label='Spectral Lines',
-                               choices=get_spectral_line_choices,
-                               widget=DropdownCheckboxSelectMultiple(
-                                   attrs={
-                                       'full_field_name': 'Spectral Lines'
-                                   }
-                               ))
-    features = forms.MultipleChoiceField(label='Features', choices=get_features_choices, widget=DropdownCheckboxSelectMultiple(attrs={
-        'full_field_name': 'Features'
-    }))
+                                               choices=get_spectral_line_choices,
+                                               widget=DropdownCheckboxSelectMultiple(
+                                                   attrs={
+                                                       'full_field_name': 'Spectral Lines'
+                                                   }
+                                               ))
+    features = forms.MultipleChoiceField(label='Features', choices=get_features_choices,
+                                         widget=DropdownCheckboxSelectMultiple(attrs={
+                                             'full_field_name': 'Features'
+                                         }))
     polarimetry = forms.ChoiceField(label='Polarimetry',
                                     choices=(('any', 'Any'),
                                              ('polarimetric', 'Polarimetric'),
                                              ('nonpolarimetric', 'Non-Polarimetric')),
                                     widget=forms.Select(attrs={'class': 'form-select'}), required=False)
-    query = forms.CharField(label=mark_safe(_get_query_label()), required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    query = forms.CharField(label=mark_safe(_get_query_label()), required=False,
+                            widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 class RegistrationForm(forms.Form):
