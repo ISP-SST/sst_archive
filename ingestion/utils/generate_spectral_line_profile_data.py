@@ -17,7 +17,11 @@ def generate_spectral_line_profile_data_v2(fits_hdus):
 
     primary_hdu = fits_hdus[0]
 
-    datamean_hdu_index = fits_hdus.index_of('VAR-EXT-DATAMEDN')
+    try:
+        datamean_hdu_index = fits_hdus.index_of('VAR-EXT-DATAMEDN')
+    except KeyError:
+        return None
+
     datamean_hdu = fits_hdus[datamean_hdu_index]
 
     data_median_ttype = datamean_hdu.header['TTYPE1']

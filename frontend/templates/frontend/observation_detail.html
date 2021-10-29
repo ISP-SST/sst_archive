@@ -16,7 +16,8 @@
         <h3>Observation Details</h3>
 
         <div class="mb-5 col-6" style="position: relative; overflow: hidden">
-            <h5>Spectral Video Preview (Wings)</h5>
+            {% if data_cube.video_preview or data_cube.previews %}
+            <h5>Preview (Wings)</h5>
             <figure class="figure">
                 {% if data_cube.video_preview and data_cube.video_preview.video_wings %}
                 <div class="video-container">
@@ -32,6 +33,7 @@
                 <img src="{{data_cube.previews.full_size.url}}" />
                 {% endif %}
             </figure>
+            {% endif %}
         </div>
 
         <div class="mb-5 col-6 ">

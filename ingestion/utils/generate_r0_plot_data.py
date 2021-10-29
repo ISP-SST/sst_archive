@@ -20,7 +20,11 @@ def generate_r0_plot_data_v3(fits_hdus: fits.header.Header):
     ref_datetime = datetime.datetime.fromisoformat(primary_hdu.header['DATEREF'])
     ref_datetime.replace(tzinfo=datetime.timezone.utc)
 
-    r0_hdu_index = fits_hdus.index_of('VAR-EXT-ATMOS_R0')
+    try:
+        r0_hdu_index = fits_hdus.index_of('VAR-EXT-ATMOS_R0')
+    except KeyError as e:
+        return None
+
     r0_hdu = fits_hdus[r0_hdu_index]
 
     r0_field_name = r0_hdu.header['TTYPE1']

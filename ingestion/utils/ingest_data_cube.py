@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from pathlib import Path
 
 from astropy.io import fits
@@ -18,10 +18,14 @@ from observations.models import DataCube, Instrument, Observation
 
 def _generate_access_control_entities(data_cube: DataCube, fits_header: fits.Header):
     # Create access control row for this observation.
-    release_date_str = fits_header['RELEASE']
-    release_date = datetime.strptime(release_date_str, "%Y-%m-%d").date()
+    release_date_str = fits_header.get('RELEASE', None)
 
-    release_comment = fits_header['RELEASEC']
+    if release_date_str:
+        release_date = datetime.datetime.strptime(release_date_str, "%Y-%m-%d").date()
+        release_comment = fits_header.get('RELEASEC', None)
+    else:
+        release_date = datetime.datetime(datetime.MAXYEAR, 1, 1)
+        release_comment = 'No release information provided. Release information needs to be updated.'
 
     access_control, created = DataCubeAccessControl.objects.update_or_create(data_cube=data_cube, defaults={
         'release_date': release_date,
@@ -69,18 +73,22 @@ def generate_observation_id(hdus: fits.HDUList):
     date_beg = primary_fits_header['DATE-BEG']
     filter1 = primary_fits_header['FILTER1']
 
-    scannum_ext_index = hdus.index_of('VAR-EXT-SCANNUM')
-    scannum_ext = hdus[scannum_ext_index]
-    scannum_col_name = scannum_ext.header['TTYPE1']
-    scannum_dim = scannum_ext.header['TDIM1']
+    try:
+        scannum_ext_index = hdus.index_of('VAR-EXT-SCANNUM')
 
-    scannum_field = scannum_ext.data.field(scannum_col_name)[0]
+        scannum_ext = hdus[scannum_ext_index]
+        scannum_col_name = scannum_ext.header['TTYPE1']
+        scannum_dim = scannum_ext.header['TDIM1']
 
-    dimensions_to_ignore = len(scannum_dim[1:-1].split(',')) - 1
+        scannum_field = scannum_ext.data.field(scannum_col_name)[0]
 
-    scan_numbers = [_descend_into_multi_dim_array(scannum, dimensions_to_ignore) for scannum in scannum_field]
+        dimensions_to_ignore = len(scannum_dim[1:-1].split(',')) - 1
 
-    scannum_list = generate_sparse_list_string(scan_numbers)
+        scan_numbers = [_descend_into_multi_dim_array(scannum, dimensions_to_ignore) for scannum in scannum_field]
+
+        scannum_list = generate_sparse_list_string(scan_numbers)
+    except KeyError as e:
+        scannum_list = str(primary_fits_header['SCANNUM'])
 
     return '%s_%s_%s' % (date_beg.strip(), filter1.strip(), scannum_list)
 
