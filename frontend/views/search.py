@@ -9,6 +9,8 @@ from frontend.forms import SearchForm, get_initial_search_form, persist_search_f
 from observations.models import DataCube, Observation
 
 
+SPECTRAL_LINE_METADATA_KEY = 'filter1'
+
 # Compatibility function. Was introduced in Python 3.9, but we're currently only on 3.7.
 def removeprefix(self, prefix):
     if self.startswith(prefix):
@@ -22,7 +24,8 @@ def _utc_datetime_from_date(date):
 
 
 class SearchResult:
-    def __init__(self, observation_pk, oid, filename, instrument, date, size, thumbnail, r0preview, additional_values, cubes_in_observation):
+    def __init__(self, observation_pk, oid, filename, instrument, date, size, thumbnail, r0preview, spectral_lines,
+                 additional_values, cubes_in_observation):
         self.observation_pk = observation_pk
         self.oid = oid
         self.filename = filename
@@ -31,6 +34,7 @@ class SearchResult:
         self.size = size
         self.thumbnail = thumbnail
         self.r0preview = r0preview
+        self.spectral_lines = spectral_lines
         self.additional_values = additional_values
         self.cubes_in_observation = cubes_in_observation
 
@@ -53,10 +57,12 @@ def _create_search_results_from_observation(request, observation, additional_col
     else:
         r0preview = None
 
+    spectral_lines = list(set([getattr(cube.metadata, SPECTRAL_LINE_METADATA_KEY) for cube in observation.cubes.all()]))
+
     additional_values = [col.get_value(observation) for col in additional_columns]
 
     return SearchResult(observation.id, cube.oid, cube.filename, cube.instrument.name,
-                        cube.metadata.date_beg, observation.total_size, thumbnail, r0preview, additional_values, cube_count)
+                        cube.metadata.date_beg, observation.total_size, thumbnail, r0preview, spectral_lines, additional_values, cube_count)
 
 
 class Column:
@@ -155,8 +161,7 @@ def search_view(request):
         complete_query['cubes__metadata__date_end__lte'] = _utc_datetime_from_date(end_date)
 
     if spectral_line_ids:
-        complete_query['cubes__metadata__filter1__in'] = spectral_line_ids
-        additional_columns.add(MetadataColumn('Spectral Line', 'filter1'))
+        complete_query['cubes__metadata__%s__in' % SPECTRAL_LINE_METADATA_KEY] = spectral_line_ids
 
     if features:
         complete_query['cubes__tags__name__in'] = features

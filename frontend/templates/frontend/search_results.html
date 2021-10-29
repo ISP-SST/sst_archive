@@ -27,6 +27,7 @@
             <th scope="col" style="width: 9em">Spectral Line Profile</th>
             <th scope="col" style="width: 7em">Instrument</th>
             <th scope="col" style="width: 12em">Time of Observation</th>
+            <th scope="col" style="width: 3em">Spectral Line(s)</th>
             {% for column_name in additional_column_names %}
                 <th scope="col" class="text-center" style="width: 4em">{{ column_name }}</th>
             {% endfor %}
@@ -56,6 +57,7 @@
             </td>
             <td scope="row">{{ observation.instrument }}</td>
             <td scope="row">{{ observation.date }}</td>
+            <td scope="row">{% format_column_value observation.spectral_lines %}</td>
             {% for value in observation.additional_values %}
             <td scope="row" class="text-center">
                 {% format_column_value value %}
