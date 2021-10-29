@@ -23,11 +23,11 @@
     <table class="table" style="table-layout: fixed">
         <thead class=".thead-light">
         <tr>
-            <th scope="col" style="width: 5em">Preview</th>
-            <th scope="col" style="width: 9em">Spectral Line Profile</th>
-            <th scope="col" style="width: 7em">Instrument</th>
-            <th scope="col" style="width: 12em">Time of Observation</th>
-            <th scope="col" style="width: 3em">Spectral Line(s)</th>
+            <th scope="col" class="text-center" style="width: 5em">Preview</th>
+            <th scope="col" class="text-center" style="width: 4em">Spectral Line(s)</th>
+            <th scope="col" class="text-center" style="width: 9em">Spectral Line Profile</th>
+            <th scope="col" class="text-center" style="width: 7em">Instrument</th>
+            <th scope="col" class="text-center" style="width: 12em">Time of Observation</th>
             {% for column_name in additional_column_names %}
                 <th scope="col" class="text-center" style="width: 4em">{{ column_name }}</th>
             {% endfor %}
@@ -48,16 +48,16 @@
                 {% endif %}
                 </a>
             </td>
+            <td scope="row" class="text-center">{% format_column_value observation.spectral_lines %}</td>
             <td>
-                {% if observation.r0preview %}
+                {% if observation.spectral_line_profile %}
                 <a href="{% url 'observation_detail' observation.observation_pk %}">
-                    <img style="width: 12em; border: 2px solid #efefef" data-src="{{ observation.r0preview.url }}" />
+                    <img style="width: 12em; border: 2px solid #efefef" data-src="{{ observation.spectral_line_profile.url }}" />
                 </a>
                 {% endif %}
             </td>
-            <td scope="row">{{ observation.instrument }}</td>
-            <td scope="row">{{ observation.date }}</td>
-            <td scope="row">{% format_column_value observation.spectral_lines %}</td>
+            <td class="text-center" scope="row">{{ observation.instrument }}</td>
+            <td class="text-center" scope="row">{{ observation.date }}</td>
             {% for value in observation.additional_values %}
             <td scope="row" class="text-center">
                 {% format_column_value value %}

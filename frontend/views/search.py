@@ -24,8 +24,8 @@ def _utc_datetime_from_date(date):
 
 
 class SearchResult:
-    def __init__(self, observation_pk, oid, filename, instrument, date, size, thumbnail, r0preview, spectral_lines,
-                 additional_values, cubes_in_observation):
+    def __init__(self, observation_pk, oid, filename, instrument, date, size, thumbnail, spectral_line_profile,
+                 spectral_lines, additional_values, cubes_in_observation):
         self.observation_pk = observation_pk
         self.oid = oid
         self.filename = filename
@@ -33,7 +33,7 @@ class SearchResult:
         self.date = date
         self.size = size
         self.thumbnail = thumbnail
-        self.r0preview = r0preview
+        self.spectral_line_profile = spectral_line_profile
         self.spectral_lines = spectral_lines
         self.additional_values = additional_values
         self.cubes_in_observation = cubes_in_observation
@@ -53,16 +53,17 @@ def _create_search_results_from_observation(request, observation, additional_col
         thumbnail = None
 
     if hasattr(cube, 'spectral_line_data'):
-        r0preview = cube.spectral_line_data.data_preview if cube.spectral_line_data else None
+        spectral_line_profile = cube.spectral_line_data.data_preview if cube.spectral_line_data else None
     else:
-        r0preview = None
+        spectral_line_profile = None
 
     spectral_lines = list(set([getattr(cube.metadata, SPECTRAL_LINE_METADATA_KEY) for cube in observation.cubes.all()]))
 
     additional_values = [col.get_value(observation) for col in additional_columns]
 
     return SearchResult(observation.id, cube.oid, cube.filename, cube.instrument.name,
-                        cube.metadata.date_beg, observation.total_size, thumbnail, r0preview, spectral_lines, additional_values, cube_count)
+                        cube.metadata.date_beg, observation.total_size, thumbnail, spectral_line_profile,
+                        spectral_lines, additional_values, cube_count)
 
 
 class Column:
