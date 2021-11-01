@@ -78,7 +78,7 @@ def generate_scan_times_data(fits_hdus: fits.HDUList):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Create R0 plot from FITS file.')
+    parser = argparse.ArgumentParser(description='Create scan times JSON data from FITS cube.')
     parser.add_argument('fits_file', help='file to export data from')
     parser.add_argument('output', default=None, help='output JSON file')
 

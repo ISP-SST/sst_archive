@@ -29,7 +29,7 @@ def create_video_preview(preview_file, scale_x=-1, scale_y=-1, data_cube_path=No
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Export primary FITS cube data to video.')
+    parser = argparse.ArgumentParser(description='Creates SST Archive video preview from FITS cube video.')
     parser.add_argument('image_file', help='file to export data from')
     parser.add_argument('output', default=None, help='output image file')
 
