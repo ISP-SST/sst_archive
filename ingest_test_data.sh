@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-BASE_DIR="./science_data"
+ENVIRONMENT="$1"
+ENVIRONMENT_SETTINGS="sst_archive.settings.${ENVIRONMENT}"
+
+BASE_DIR="$2"
+
+ALL_ARGS=("$@")
+PASS_THROUGH_OPTIONS=("${ALL_ARGS[@]:2}")
 
 FITS_CUBES=(
 "2019-04-19/CRISP/nb_6173_2019-04-19T17:34:39_scans=0-4_stokes_corrected_export2021-05-28T15:08:12_im.fits"
@@ -100,7 +106,7 @@ FITS_CUBES=(
 
 MAX_COUNT=100
 
-INGESTION_OPTIONS="--settings sst_archive.settings.prod --generate-image-previews --generate-animated-previews --force-regenerate-images"
+INGESTION_OPTIONS="--settings ${ENVIRONMENT_SETTINGS} ${PASS_THROUGH_OPTIONS}"
 
 MPLCONFIGDIR=`mktemp -d -p "$DIR"`
 echo "Creating MPLCONFIGDIR $MPLCONFIGDIR"
