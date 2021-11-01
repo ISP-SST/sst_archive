@@ -10,4 +10,4 @@ class FITSHeader(models.Model):
         verbose_name = 'FITS Header'
 
     def __str__(self):
-        return self.fits_header
+        return self.data_cube.filename if self.data_cube else '-'

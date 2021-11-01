@@ -4,13 +4,14 @@ from django.http import HttpRequest, HttpResponse, FileResponse
 from django.shortcuts import render
 
 from data_access.forms import TokenForm
-from data_access.utils import data_cube_requires_access_grant, has_access_to_data_cube, \
-    has_valid_token_for_data_cube
+from data_access.utils import data_cube_requires_access_grant, has_valid_token_for_data_cube, has_access_to_data_cube
 from observations.models import DataCube
 
 
 def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
-    """View that lets the user download a datacube if they have the right access token or user permissions."""
+    """
+    View that lets the user download a DataCube if they have the right access token or user permissions.
+    """
     data_cube = DataCube.objects.get(filename__iexact=filename)
 
     form = TokenForm()
@@ -45,8 +46,3 @@ def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
         return render(request, 'data_access/file_not_found.html', {'filename': data_cube.filename}, status=404)
 
     return FileResponse(open(data_cube.path, 'rb'), filename=data_cube.filename)
-
-
-def download_multiple_data_cubes(request: HttpRequest) -> HttpResponse:
-    filename = request.GET.get('files')
-    return download_data_cube(request, filename)

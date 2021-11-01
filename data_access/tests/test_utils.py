@@ -1,8 +1,8 @@
+from django.conf import settings
 from django.test import TestCase
 
 from data_access.utils.get_file_url import get_file_url
 from observations.models import DataCube
-from django.conf import settings
 
 
 class TestUtils(TestCase):

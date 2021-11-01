@@ -3,7 +3,7 @@ import datetime
 import django
 from pytz import utc
 
-from data_access.models import DataCubeAccessGrant, DataCubeAccessToken
+from data_access.models import DataCubeAccessToken, DataCubeUserGrant
 
 
 def data_cube_requires_access_grant(data_cube, datetime_now=None):
@@ -25,9 +25,9 @@ def has_access_to_data_cube(user, data_cube, datetime_now=None):
 
     if data_cube_requires_access_grant(data_cube, datetime_now):
         try:
-            DataCubeAccessGrant.objects.get(user_email=user.email, data_cube=data_cube)
+            DataCubeUserGrant.objects.get(user_email=user.email, data_cube=data_cube)
             return True
-        except DataCubeAccessGrant.DoesNotExist:
+        except DataCubeUserGrant.DoesNotExist:
             return False
 
     return True
