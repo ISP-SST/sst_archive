@@ -1,4 +1,4 @@
-# Extra Data
+# Previews
 
-This is a poorly named Django app that currently is mainly tasked with providing database models for
-preview images and animations for observations.
+This Django app is mainly tasked with providing database models for
+preview images, animations and data to generate plots for observations.

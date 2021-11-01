@@ -1,0 +1,46 @@
+{
+  "_comment": "Observation IDs can simply be constructed in the same way we construct them for SOLARNET SVO submissions",
+
+  "oid": "<observation-id>",
+  "filename": "nb_4846_2020-10-16T09:11:04_scans=0-10_corrected_export2021-06-08T15:40:55_im.fits",
+  "size": 1024000000,
+  "relative_path": "2020-10/CHROMIS/",
+  "instrument": "CHROMIS",
+
+  "tags": [
+    "flare", "sunspot"
+  ],
+
+  "fits_header": "<PRIMARY FITS HEADER STRING>",
+
+  "thumbnail": {
+    "filename": "nb_4846_2020-10-16T09:11:04_scans=0-10_corrected_export2021-06-08T15:40:55_im_image_1.png",
+    "path": "/<path-to-image-file>/",
+    "spectral_position": 450.0,
+    "temporal_position": 0
+  },
+
+  "plots": [
+    {
+      "_comment": "Plots can be provided in different formats. ",
+
+      "filename": "nb_4846_2020-10-16T09:11:04_scans=0-10_corrected_export2021-06-08T15:40:55_im_plot_atmos_r0.svg",
+      "variables": "r0"
+    }
+  ],
+
+  "quicklook_videos": [
+
+  ],
+
+  "extensions": {
+    "_comment": "This sections shows how the current format can be expanded to allow for changes in the models that we likely want to make",
+
+    "thumbnails": {
+        "filename": "nb_4846_2020-10-16T09:11:04_scans=0-10_corrected_export2021-06-08T15:40:55_im_image_2.png",
+        "path": "/<path-to-image-files>/",
+        "spectral_position": 450.01,
+        "temporal_position": 50
+      }
+  }
+}

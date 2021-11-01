@@ -1,3 +1,4 @@
+import unittest
 from pathlib import Path
 
 from astropy.io import fits
@@ -29,6 +30,7 @@ TEST_API_USER = 'daniel'
 TEST_API_KEY = 'bfdd77b84b5a02d7170ad9654e9aef0264ee5c18'
 
 
+@unittest.skip('Requires a local SVO instance')
 class TestSyncWithSvo(TestCase):
     """
     This test case requires an instance of the SOLARNET-service to be running and accessible.

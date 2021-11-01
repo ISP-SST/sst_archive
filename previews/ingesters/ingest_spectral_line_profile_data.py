@@ -6,8 +6,8 @@ from pathlib import Path
 from astropy.io import fits
 from django.core.files import File
 
-from ingestion.utils.generate_spectral_line_profile_data import generate_spectral_line_profile_data_v2
-from ingestion.utils.generate_spectral_line_profile_plot import generate_spectral_line_profile_plot
+from previews.ingesters.generate_spectral_line_profile_data import generate_spectral_line_profile_data_v2
+from previews.ingesters.generate_spectral_line_profile_plot import generate_spectral_line_profile_plot
 from observations.models import DataCube
 from previews.models import SpectralLineData
 

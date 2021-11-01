@@ -4,7 +4,7 @@ from pathlib import Path
 
 from django.core.files import File
 
-from ingestion.utils.create_image_preview import create_image_preview
+from .create_image_preview import create_image_preview
 from previews.models import ImagePreview
 
 

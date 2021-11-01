@@ -4,16 +4,16 @@ from pathlib import Path
 from astropy.io import fits
 
 from data_access.models import DataCubeAccessControl
+from ingestion.svo.sync_with_svo import sync_with_svo
 from ingestion.utils.generate_sparse_list_string import generate_sparse_list_string
 from ingestion.utils.ingest_fits_header import ingest_fits_header
-from ingestion.utils.ingest_image_previews import update_or_create_image_previews
 from ingestion.utils.ingest_metadata import ingest_metadata
-from ingestion.svo.sync_with_svo import sync_with_svo
-from ingestion.utils.ingest_r0_data import ingest_r0_data
-from ingestion.utils.ingest_spectral_line_profile_data import ingest_spectral_line_profile_data
 from ingestion.utils.ingest_tags import ingest_tags, get_features_vocabulary, get_events_vocabulary
-from ingestion.utils.ingest_video_previews import update_or_create_video_previews
 from observations.models import DataCube, Instrument, Observation
+from previews.ingesters.ingest_image_previews import update_or_create_image_previews
+from previews.ingesters.ingest_r0_data import ingest_r0_data
+from previews.ingesters.ingest_spectral_line_profile_data import ingest_spectral_line_profile_data
+from previews.ingesters.ingest_video_previews import update_or_create_video_previews
 
 
 def _generate_access_control_entities(data_cube: DataCube, fits_header: fits.Header):

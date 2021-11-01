@@ -6,7 +6,7 @@ import os
 import datetime
 from astropy.io import fits
 
-from ingestion.utils.generate_date_data import generate_date_data
+from .generate_date_data import generate_date_data
 
 
 def _get_timestamp(ref_datetime, elapsed_seconds):
