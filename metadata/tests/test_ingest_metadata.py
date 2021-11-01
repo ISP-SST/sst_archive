@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from astropy.io import fits
 
-from ingestion.utils.ingest_metadata import ingest_metadata
+from metadata.ingesters.ingest_metadata import ingest_metadata
 from metadata.models import Metadata
 from observations.models import Instrument, DataCube
 

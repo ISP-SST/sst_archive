@@ -6,9 +6,9 @@ from astropy.io import fits
 from data_access.models import DataCubeAccessControl
 from ingestion.svo.sync_with_svo import sync_with_svo
 from ingestion.utils.generate_sparse_list_string import generate_sparse_list_string
-from ingestion.utils.ingest_fits_header import ingest_fits_header
-from ingestion.utils.ingest_metadata import ingest_metadata
-from ingestion.utils.ingest_tags import ingest_tags, get_features_vocabulary, get_events_vocabulary
+from metadata.ingesters.ingest_fits_header import ingest_fits_header
+from metadata.ingesters.ingest_metadata import ingest_metadata
+from observations.ingesters.ingest_tags import ingest_tags, get_features_vocabulary, get_events_vocabulary
 from observations.models import DataCube, Instrument, Observation
 from previews.ingesters.ingest_image_previews import update_or_create_image_previews
 from previews.ingesters.ingest_r0_data import ingest_r0_data

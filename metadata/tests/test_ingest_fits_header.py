@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from astropy.io import fits
 
-from ingestion.utils.ingest_fits_header import ingest_fits_header
+from metadata.ingesters.ingest_fits_header import ingest_fits_header
 from metadata.models import FITSHeader
 from observations.models import Instrument, DataCube
 
