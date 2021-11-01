@@ -21,6 +21,8 @@ window.addEventListener('load', function() {
     dateEnd = [];
     scans = jsonData['data']['scannum'];
 
+    const annotations = [];
+
     if (jsonVersion === 4) {
         for (let date of jsonData['data']['date_beg']) {
             dateBeg.push([date, 0.01]);
@@ -29,6 +31,25 @@ window.addEventListener('load', function() {
         for (let date of jsonData['data']['date_end']) {
             dateEnd.push([date, 0.01]);
         }
+
+        /*
+         * These annotations are kind of useful for marking up regions in the plot,
+         * like those for scan [began,ended]. However, they aren't really that
+         * great for displaying the amount of regions that we usually end up with,
+         * so the result ends up looking very cluttered, and we also don't get any
+         * tooltips.
+         */
+         /*
+         for (let i = 0; i < jsonData['data']['date_beg'].length; i++) {
+            annotations.push({
+                x: jsonData['data']['date_beg'][i],
+                x2: jsonData['data']['date_end'][i],
+                fillColor: '#B3F7CA',
+                label: {
+                    text: 'Scan ' + scans[i]
+                }
+            });
+         }*/
     }
 
     var options = {
@@ -52,7 +73,7 @@ window.addEventListener('load', function() {
           name: 'Scan Began',
           type: 'scatter',
           data: dateBeg
-      }, {
+        }, {
           name: 'Scan Ended',
           type: 'scatter',
           data: dateEnd
@@ -60,6 +81,10 @@ window.addEventListener('load', function() {
       markers: {
         size: [0, 0, 4, 4]
       },
+      /*
+      annotations: {
+        xaxis: annotations
+      },*/
       xaxis: {
         type: 'datetime',
         title: {
