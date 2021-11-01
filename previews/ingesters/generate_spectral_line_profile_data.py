@@ -13,7 +13,7 @@ def _get_datetime(ref_datetime, elapsed_seconds):
     return ref_datetime + datetime.timedelta(seconds=elapsed_seconds)
 
 
-def generate_spectral_line_profile_data_v2(fits_hdus):
+def generate_spectral_line_profile_data_v3(fits_hdus):
 
     primary_hdu = fits_hdus[0]
 
@@ -73,12 +73,15 @@ def generate_spectral_line_profile_data_v2(fits_hdus):
     scan_index = 0
     wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
 
-    json_struct = {
+    wavelength_data = {
         'wavelengths': wavelength_values,
         'amplitude_values': amplitude_values
     }
 
-    return json_struct
+    return {
+        'version': 3,
+        'data': wavelength_data
+    }
 
 
 def main():
@@ -95,7 +98,7 @@ def main():
         output_file = args.output
 
     with fits.open(args.fits_file) as fits_hdus, open(output_file, 'w') as outfile:
-        data = generate_spectral_line_profile_data_v2(fits_hdus)
+        data = generate_spectral_line_profile_data_v3(fits_hdus)
         json.dump(data, outfile)
 
 

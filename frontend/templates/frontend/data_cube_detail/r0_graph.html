@@ -4,35 +4,29 @@
 <script>
 window.addEventListener('load', function() {
     const jsonData = {{ r0_json_data }};
-    const jsonVersion = {{ r0_json_version }};
 
-    if (!jsonData || !jsonVersion) {
+    if (!jsonData) {
         return;
     }
 
     let dataLow = [];
     let dataLowHigh = [];
 
-    if (jsonVersion === 1) {
-        for (let i = 0; i < jsonData['r0_timestamps'].length; i++) {
-            dataLow.push([ jsonData['r0_timestamps'][i], jsonData['r0_0'][i] ]);
-            dataLowHigh.push([ jsonData['r0_timestamps'][i], jsonData['r0_1'][i] ]);
-        }
-    } else if (jsonVersion >= 2) {
-        dataLow = jsonData['r0_low'];
-        dataLowHigh = jsonData['r0_low_high'];
-    }
+    const jsonVersion = jsonData['version'];
+
+    dataLow = jsonData['data']['r0_low'];
+    dataLowHigh = jsonData['data']['r0_low_high'];
 
     dateBeg = [];
     dateEnd = [];
-    scans = jsonData['scannum'];
+    scans = jsonData['data']['scannum'];
 
-    if (jsonVersion === 3) {
-        for (let date of jsonData['date_beg']) {
+    if (jsonVersion === 4) {
+        for (let date of jsonData['data']['date_beg']) {
             dateBeg.push([date, 0.01]);
         }
 
-        for (let date of jsonData['date_end']) {
+        for (let date of jsonData['data']['date_end']) {
             dateEnd.push([date, 0.01]);
         }
     }

@@ -9,8 +9,6 @@ class SpectralLineData(models.Model):
     data_cube = models.OneToOneField('observations.DataCube', related_name='spectral_line_data', null=False,
                                      on_delete=models.CASCADE)
     data_json = models.TextField('JSON blob with data for the plot')
-    data_version = models.IntegerField('Version number that indicates the format of the JSON blob. If the JSON blob '
-                                       'data format changes this field should be bumped as well')
     data_preview = models.ImageField('Small preview image stored in managed upload folder',
                                      upload_to='spectral-line/thumbnails/', null=True)
 

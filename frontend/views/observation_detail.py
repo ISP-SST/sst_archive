@@ -28,16 +28,12 @@ def observation_detail(request, observation_pk):
     metadata_fields.pop('Observation ID', None)
 
     r0_json_data = None
-    r0_json_version = None
     if hasattr(primary_cube, 'r0data'):
         r0_json_data = primary_cube.r0data.data_json
-        r0_json_version = primary_cube.r0data.data_version
 
     spectral_line_data = None
-    spectral_line_data_version = None
     if hasattr(primary_cube, 'spectral_line_data'):
         spectral_line_data = primary_cube.spectral_line_data.data_json
-        spectral_line_data_version = primary_cube.spectral_line_data.data_version
 
     download_choices = [(cube.filename, cube.filename) for cube in data_cubes]
 
@@ -54,9 +50,7 @@ def observation_detail(request, observation_pk):
         'metadata_dict': model_to_dict(metadata),
         'metadata_fields': metadata_fields,
         'r0_json_data': r0_json_data,
-        'r0_json_version': r0_json_version,
         'spectral_line_data': spectral_line_data,
-        'spectral_line_data_version': spectral_line_data_version
     }
 
     return render(request, 'frontend/observation_detail.html', context)

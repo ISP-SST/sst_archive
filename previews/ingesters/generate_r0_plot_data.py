@@ -14,7 +14,7 @@ def _get_timestamp(ref_datetime, elapsed_seconds):
     return round(dt.timestamp() * 1000)
 
 
-def generate_r0_plot_data_v3(fits_hdus: fits.header.Header):
+def generate_r0_plot_data_v4(fits_hdus: fits.header.Header):
     primary_hdu = fits_hdus[0]
 
     ref_datetime = datetime.datetime.fromisoformat(primary_hdu.header['DATEREF'])
@@ -38,12 +38,15 @@ def generate_r0_plot_data_v3(fits_hdus: fits.header.Header):
 
     scan_times_data_struct = generate_scan_times_data(fits_hdus)
 
-    json_struct = {
+    r0_data_struct = {
         'r0_low': r0_values_low,
         'r0_low_high': r0_values_low_high
     }
 
-    return {**json_struct, **scan_times_data_struct}
+    return {
+        'version': 4,
+        'data': { **r0_data_struct, **scan_times_data_struct }
+    }
 
 
 def main():
@@ -59,7 +62,7 @@ def main():
         output_file = args.output
 
     with fits.open(args.fits_file) as data_cube, open(output_file, 'w') as outfile:
-        json_data = generate_r0_plot_data_v3(data_cube)
+        json_data = generate_r0_plot_data_v4(data_cube)
         outfile.write(json_data)
 
 

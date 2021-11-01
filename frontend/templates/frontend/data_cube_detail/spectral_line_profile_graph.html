@@ -5,39 +5,24 @@
 
 window.addEventListener('load', function() {
     const jsonData = {{ spectral_line_data }};
-    const jsonVersion = {{ spectral_line_data_version }};
 
-    if (!jsonData || !jsonVersion) {
+    if (!jsonData) {
         return;
     }
 
+    const jsonVersion = jsonData['version'];
+
     const amplitudeData = [];
-    const wavelengths = jsonData['wavelengths'];
+    const wavelengths = jsonData['data']['wavelengths'];
 
     let logged = false;
 
     const seriesData = [];
 
-    if (jsonVersion === 1) {
-        for (let amplitudeValues of jsonData['amplitude_values']) {
-            const data = [];
-
-            for (let j = 0; j < amplitudeValues.length; j++) {
-                data.push([ wavelengths[j], amplitudeValues[j] ]);
-            }
-
-            const series = {
-              name: 'Scan',
-              type: 'line',
-              data: data
-            };
-
-            seriesData.push(series);
-        }
-    } else if (jsonVersion === 2) {
+    if (jsonVersion === 3) {
         const data = [];
 
-        const amplitudeValues = jsonData['amplitude_values'];
+        const amplitudeValues = jsonData['data']['amplitude_values'];
 
         for (let i = 0; i < amplitudeValues.length; i++) {
             data.push([ wavelengths[i], amplitudeValues[i] ]);
