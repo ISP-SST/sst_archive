@@ -3,7 +3,7 @@ import os
 from astropy.io import fits
 from django.test import TestCase
 
-from ingestion.utils.ingest_data_cube import ingest_data_cube, generate_observation_id
+from ingestion.ingesters.ingest_data_cube import ingest_data_cube, generate_observation_id
 from observations.models import Instrument, DataCube
 
 TEST_FITS_FILE = '/Users/dani2978/local_science_data/2019-04-19/CRISP/nb_6173_2019-04-19T17:34:39_scans=0-4_stokes_corrected_export2021-05-28T15:08:12_im.fits'

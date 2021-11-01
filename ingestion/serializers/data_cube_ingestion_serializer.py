@@ -5,7 +5,7 @@ from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from ingestion.utils.ingest_data_cube import ingest_data_cube
+from ingestion.ingesters.ingest_data_cube import ingest_data_cube
 
 
 def _generate_absolute_path_to_data_cube(relative_path):
