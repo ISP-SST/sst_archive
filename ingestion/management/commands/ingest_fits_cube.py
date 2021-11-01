@@ -3,7 +3,7 @@ import os.path
 from astropy.io import fits
 from django.core.management.base import BaseCommand, CommandError
 
-from ingestion.utils.ingest_data_cube import ingest_data_cube, generate_observation_id
+from ingestion.ingesters.ingest_data_cube import ingest_data_cube, generate_observation_id
 
 
 class Command(BaseCommand):

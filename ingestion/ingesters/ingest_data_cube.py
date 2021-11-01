@@ -148,7 +148,8 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
 
         ingest_metadata(primary_hdu_header, data_cube)
 
-        # TODO(daniel): Vocabulary is fetched from server. To speed this up we can cache it between runs.
+        # TODO(daniel): Vocabulary is fetched from server. To speed this up when processing multiple
+        #               cubes we can cache it between runs.
         features_vocabulary = get_features_vocabulary()
         events_vocabulary = get_events_vocabulary()
         ingest_tags(primary_hdu_header, data_cube, features_vocabulary, events_vocabulary)

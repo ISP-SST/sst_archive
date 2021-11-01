@@ -41,7 +41,7 @@ def _find_latest_date(t, scan, n_wavelengths):
     return latest_date
 
 
-def generate_date_data(fits_hdus: fits.HDUList):
+def generate_scan_times_data(fits_hdus: fits.HDUList):
     date_beg_hdu_index = fits_hdus.index_of('VAR-EXT-DATE-BEG')
     date_end_hdu_index = fits_hdus.index_of('VAR-EXT-DATE-END')
     scannum_hdu_index = fits_hdus.index_of('VAR-EXT-SCANNUM')
@@ -91,7 +91,7 @@ def main():
         output_file = args.output
 
     with fits.open(args.fits_file) as fits_hdus, open(output_file, 'w') as outfile:
-        json.dump(generate_date_data(fits_hdus), outfile)
+        json.dump(generate_scan_times_data(fits_hdus), outfile)
 
 
 if __name__ == '__main__':

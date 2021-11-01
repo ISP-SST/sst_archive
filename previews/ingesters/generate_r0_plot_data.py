@@ -6,7 +6,7 @@ import os
 import datetime
 from astropy.io import fits
 
-from .generate_date_data import generate_date_data
+from .generate_scan_times_data import generate_scan_times_data
 
 
 def _get_timestamp(ref_datetime, elapsed_seconds):
@@ -36,14 +36,14 @@ def generate_r0_plot_data_v3(fits_hdus: fits.header.Header):
     r0_values_low = [[ r0_timestamps[i], float(r0_values_all[i][0])] for i in range(len(r0_values_all))]
     r0_values_low_high = [[ r0_timestamps[i], float(r0_values_all[i][1])] for i in range(len(r0_values_all))]
 
-    date_beg_end_struct = generate_date_data(fits_hdus)
+    scan_times_data_struct = generate_scan_times_data(fits_hdus)
 
     json_struct = {
         'r0_low': r0_values_low,
         'r0_low_high': r0_values_low_high
     }
 
-    return {**json_struct, **date_beg_end_struct}
+    return {**json_struct, **scan_times_data_struct}
 
 
 def main():
