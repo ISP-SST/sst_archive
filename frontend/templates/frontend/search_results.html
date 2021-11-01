@@ -37,7 +37,7 @@
         </thead>
         <tbody>
 {% if page_obj %}
-    {% for observation in page_obj %}
+    {% for observation in page_search_results %}
         <tr>
             <td scope="row">
                 <a href="{% url 'observation_detail' observation.observation_pk %}">

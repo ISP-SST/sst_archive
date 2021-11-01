@@ -42,6 +42,10 @@ class SearchResult:
 def _create_search_results_from_observation(request, observation, additional_columns):
 
     cube_count = observation.cubes.count()
+
+    if cube_count == 0:
+        return None
+
     cube = observation.cubes.all()[0]
 
     if not hasattr(cube, 'metadata') or not cube.metadata:
@@ -172,7 +176,8 @@ def search_view(request):
         complete_query['cubes__instrument__name__iexact'] = instrument
 
     only_fields = ['oid', 'observation_id', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'previews',
-                   'spectral_line_data', *additional_columns.get_all_only_specs()]
+                   'spectral_line_data', 'metadata__%s' % SPECTRAL_LINE_METADATA_KEY,
+                   *additional_columns.get_all_only_specs()]
 
     datacube_dataset = DataCube.objects.only(*only_fields).select_related('metadata', 'instrument', 'previews',
                                                                           'spectral_line_data')
@@ -182,17 +187,17 @@ def search_view(request):
     observations = observations.filter(freeform_query_q).filter(**complete_query).\
         prefetch_related(Prefetch('cubes', queryset=datacube_dataset)).annotate(total_size=Sum('cubes__size')).distinct()
 
-    results = [_create_search_results_from_observation(request, observation, additional_columns)
-               for observation in observations]
-
-    results = list(filter(None, results))
-
-    paginator = Paginator(results, 25)
+    paginator = Paginator(observations, 25)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
+    results = [_create_search_results_from_observation(request, observation, additional_columns)
+               for observation in page_obj]
+
+    results = list(filter(None, results))
+
     context = {
-        'search_results': results,
+        'page_search_results': results,
         'paginator': paginator,
         'page_obj': page_obj,
         'additional_column_names': additional_columns.get_all_names(),
