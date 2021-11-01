@@ -14,7 +14,6 @@ class DataCubeGroupGrant(models.Model):
 
     class Meta:
         ordering = ['data_cube__filename']
-        verbose_name = 'Data Cube Group Grant'
         unique_together = [('group', 'data_cube')]
 
     def __str__(self):

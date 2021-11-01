@@ -31,7 +31,6 @@ class DataCubeAccessToken(models.Model):
 
     class Meta:
         ordering = ['data_cube__filename']
-        verbose_name = 'Data Cube Access Token'
 
     def __str__(self):
         return '%s (%s)' % (self.token_string, self.data_cube.filename)

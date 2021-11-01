@@ -23,8 +23,5 @@ class DataCubeAccessControl(models.Model):
                                                  'for this data.', null=True)
     data_class = models.CharField(choices=DataClass.choices, max_length=32, default=DataClass.UNSPECIFIED)
 
-    class Meta:
-        verbose_name = 'Data Cube Access Control'
-
     def __str__(self):
         return self.data_cube.filename if self.data_cube else str(self.release_date)

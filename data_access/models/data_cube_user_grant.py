@@ -19,7 +19,6 @@ class DataCubeUserGrant(models.Model):
 
     class Meta:
         ordering = ['user']
-        verbose_name = 'Data Cube User Grant'
         unique_together = [('user', 'data_cube')]
         permissions = (
             ("can_access_protected_data", "Can access protected data"),
