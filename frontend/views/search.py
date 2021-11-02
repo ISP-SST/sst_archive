@@ -187,6 +187,10 @@ def search_view(request):
     observations = observations.filter(freeform_query_q).filter(**complete_query).\
         prefetch_related(Prefetch('cubes', queryset=datacube_dataset)).annotate(total_size=Sum('cubes__size')).distinct()
 
+    # FIXME(daniel): Pagination currently suffers from a big flaw. It does not properly slice the DataCube QuerySet,
+    #                so we end up making an SQL query that queries the entire database with the given search criteria.
+    #                This does not scale, so we will need to modify the QuerySets above to restrict the prefetch of the
+    #                DataCubes to only concern the Observations displayed on the current page.
     paginator = Paginator(observations, 25)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
