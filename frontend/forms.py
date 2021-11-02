@@ -26,6 +26,7 @@ def _get_query_label():
            'title="Allows for arbitrary queries into observation metadata: ' + \
            '<code>metadata__xposure__lt=0.15</code>"></a> '
 
+
 class DropdownCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     template_name = 'frontend/widgets/dropdown_checkbox_select.html'
 

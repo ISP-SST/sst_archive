@@ -183,7 +183,6 @@ def search_view(request):
                                                                           'spectral_line_data')
 
     observations = Observation.objects.all()
-
     observations = observations.filter(freeform_query_q).filter(**complete_query).\
         prefetch_related(Prefetch('cubes', queryset=datacube_dataset)).annotate(total_size=Sum('cubes__size')).distinct()
 

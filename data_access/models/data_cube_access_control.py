@@ -7,8 +7,6 @@ class DataCubeAccessControl(models.Model):
     """
 
     class DataClass(models.TextChoices):
-        """
-        """
         SOLARNET = "solarnet"
         SWEDISH_UNIVERSITY = "swedish_university"
         INTERNATIONAL_PAYING_UNIVERSITY = "ipu"
@@ -21,7 +19,10 @@ class DataCubeAccessControl(models.Model):
     release_comment = models.TextField(verbose_name='Release comment',
                                        help_text='Comment about the release restrictions'
                                                  'for this data.', null=True)
-    data_class = models.CharField(choices=DataClass.choices, max_length=32, default=DataClass.UNSPECIFIED)
+
+    # This should probably signify the original data class. This information can change along the way, with different
+    # groups being given different levels of access.
+    original_data_class = models.CharField(choices=DataClass.choices, max_length=32, default=DataClass.UNSPECIFIED)
 
     def __str__(self):
         return self.data_cube.filename if self.data_cube else str(self.release_date)

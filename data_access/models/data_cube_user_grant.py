@@ -7,12 +7,8 @@ class DataCubeUserGrant(models.Model):
     Creates a link between a user and a DataCube, signalling that the user has read access to the file pointed
     to by the DataCube.
     """
-
-    # The email is used to link the access rights to a user without requiring the user to be registered in the
-    # system at the time of the grant. Data can currently be ingested without a user account.
-    # TODO: Would we rather have a strict requirement on the specific user being registered in the system prior to
-    #       ingestion in the pipeline?
-    user = models.ForeignKey(User, verbose_name='User email', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='The User the permission has been granted to',
+                             on_delete=models.CASCADE)
     data_cube = models.ForeignKey('observations.DataCube', verbose_name='Data Cube',
                                   help_text='The data cube that this token gives provides access to.',
                                   on_delete=models.CASCADE, related_name='user_grants', null=True)

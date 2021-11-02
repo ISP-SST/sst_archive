@@ -1,13 +1,17 @@
 import datetime
 
 import django
+from django.contrib.auth.models import User
 from pytz import utc
 
-from data_access.models import DataCubeAccessToken, DataCubeUserGrant
+from data_access.models import DataCubeAccessToken, DataCubeUserGrant, DataCubeGroupGrant
+from observations.models import DataCube
 
 
-def data_cube_requires_access_grant(data_cube, datetime_now=None):
-    """Tests if access to the provided DataCube needs to be explicitly granted to any user."""
+def data_cube_requires_access_grant(data_cube: DataCube, datetime_now=None):
+    """
+    Tests if access to the provided DataCube needs to be explicitly granted to any user.
+    """
     if not datetime_now:
         datetime_now = django.utils.timezone.now()
 
@@ -18,23 +22,33 @@ def data_cube_requires_access_grant(data_cube, datetime_now=None):
         return release_datetime > datetime_now
 
 
-def has_access_to_data_cube(user, data_cube, datetime_now=None):
-    """Tests if a user has access to a certain DataCube."""
+def user_has_access_to_data_cube(user: User, data_cube: DataCube, datetime_now=None):
+    """
+    Tests if a user has access to a certain DataCube.
+    """
     if not datetime_now:
         datetime_now = django.utils.timezone.now()
 
-    if data_cube_requires_access_grant(data_cube, datetime_now):
-        try:
-            DataCubeUserGrant.objects.get(user_email=user.email, data_cube=data_cube)
-            return True
-        except DataCubeUserGrant.DoesNotExist:
-            return False
+    if not data_cube_requires_access_grant(data_cube, datetime_now):
+        return True
 
-    return True
+    try:
+        DataCubeUserGrant.objects.get(user=user, data_cube=data_cube)
+        return True
+    except DataCubeUserGrant.DoesNotExist:
+        pass
+
+    groups = DataCubeGroupGrant.objects.filter(data_cube=data_cube).values_list('group', flat=True)
+    if user.groups.filter(id__in=groups).exists():
+        return True
+
+    return False
 
 
-def has_valid_token_for_data_cube(data_cube, token_string, datetime_now=None):
-    """Tests if a token grants access to a certain DataCube."""
+def has_valid_token_for_data_cube(data_cube: DataCube, token_string: str, datetime_now=None):
+    """
+    Tests if a token grants access to a certain DataCube.
+    """
     if not datetime_now:
         datetime_now = django.utils.timezone.now()
 

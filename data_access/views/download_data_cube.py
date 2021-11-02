@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse, FileResponse
 from django.shortcuts import render
 
 from data_access.forms import TokenForm
-from data_access.utils import data_cube_requires_access_grant, has_valid_token_for_data_cube, has_access_to_data_cube
+from data_access.utils import data_cube_requires_access_grant, has_valid_token_for_data_cube, user_has_access_to_data_cube
 from observations.models import DataCube
 
 
@@ -31,7 +31,7 @@ def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
                 form.add_error('token', 'The specified token is not valid for the selected data cube.')
         elif request.user.is_authenticated:
             access_granted = request.user.has_perm(
-                'data_access.can_access_protected_data') or has_access_to_data_cube(request.user, data_cube)
+                'data_access.can_access_protected_data') or user_has_access_to_data_cube(request.user, data_cube)
     else:
         access_granted = True
 
