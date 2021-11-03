@@ -30,7 +30,6 @@
 
             {% if user.is_authenticated %}
             <div class="col-2 text-end">
-                <!-- <small> -->
                     <strong>{{ user.email }}</strong>
                         {% if user.is_staff %}
                     <p>
@@ -38,23 +37,19 @@
                         {% endif %}
                         <a class="btn btn-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-person-fill"></i> Log out</a>
                     </p>
-                <!-- </small> -->
             </div>
             {% else %}
-            <div class="col-4 text-right">
-                <!--
-                // Disable the login stuff for now. Once we know more about how access control should work we can
-                // create a proper solution.
+            <div class="col-4 text-end">
                 <small>
-                    <a class="btn btn-dark btn-sm" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>
-                    <a class="btn btn-dark btn-sm" href="{% url 'register' %}">Register</a>
+                    <a class="btn btn-light btn-sm" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}"><i class="bi bi-person-fill"></i> Log in</a>
+                    <a class="btn btn-light btn-sm" href="{% url 'register' %}"><i class="bi bi-pen-fill"></i> Register</a>
                 </small>
-                -->
             </div>
             {% endif %}
         </div>
     </header>
 
+    {% block full_width_content %}
     <div class="row">
         <div id="sidebar" class="col-3 bg-light p-3 border">
             {% block sidebar %}
@@ -67,6 +62,7 @@
             {% block content %}{% endblock %}
         </div>
     </div>
+    {% endblock %}
 
     <footer class="row">
         <div style="height: 5em"></div>

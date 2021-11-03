@@ -3,23 +3,28 @@
 {% block sidebar %}
 {% endblock %}
 
-{% block content %}
-<div class="container">
+{% block full_width_content %}
+<div class="container col-6">
 
     <h2>Register User</h2>
 
-    {% if form.errors %}
-    <div class="alert alert-danger">
-        <!-- Please correct errors in the form below. -->
+    <div class="container mt-5">
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <!-- Please correct errors in the form below. -->
+        </div>
+        {% endif %}
+
+        <form action="{% url 'register' %}" method="POST">
+
+            <table class="table table-borderless">
+                {% csrf_token %}
+                {{ registration_form.as_table }}
+            </table>
+
+            <button class="btn btn-primary float-end" type="submit">Register</button>
+        </form>
     </div>
-    {% endif %}
-
-    <form action="{% url 'register' %}" method="POST">
-        {% csrf_token %}
-        {{ registration_form }}
-
-        <button class="btn btn-primary" type="submit">Register</button>
-    </form>
 
 </div>
 {% endblock %}

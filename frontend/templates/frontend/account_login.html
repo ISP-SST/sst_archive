@@ -3,8 +3,8 @@
 {% block sidebar %}
 {% endblock %}
 
-{% block content %}
-<div class="container">
+{% block full_width_content %}
+<div class="container col-6">
 
     <h2>Login</h2>
     
@@ -14,30 +14,27 @@
     </div>
     {% endif %}
 
-    {% if form.errors %}
-    <div class="alert alert-danger">
-        Your username and password didn't match. Please try again.
+    <div class="container mt-5">
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            Your username and password didn't match. Please try again.
+        </div>
+        {% endif %}
+
+
+        <form method="POST" action="{% url 'login' %}">
+            <table class="table table-borderless">
+                {% csrf_token %}
+                {{ form.as_table }}
+            </table>
+
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <button class="btn btn-primary" type="submit">Log in</button>
+
+        </form>
+
     </div>
-    {% endif %}
-
-    <form method="POST" action="{% url 'login' %}">
-        {% csrf_token %}
-        <table>
-        <tr class="row">
-            <td>{{ form.username.label_tag }}</td>
-            <td>{{ form.username }}</td>
-        </tr>
-        <tr class="row">
-            <td>{{ form.password.label_tag }}</td>
-            <td>{{ form.password }}</td>
-        </tr>
-        <tr>
-            <td><button class="btn btn-primary" type="submit">Log in</button></td>
-        </tr>
-        </table>
-
-        <input type="hidden" name="next" value="{{ next }}">
-    </form>
-
 </div>
 {% endblock %}

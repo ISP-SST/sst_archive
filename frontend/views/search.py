@@ -1,10 +1,10 @@
 import datetime
 
 from django.core.paginator import Paginator
-from django.db.models import Count, Prefetch, Sum
+from django.db.models import Prefetch, Sum
 from django.shortcuts import render
 
-from frontend.complex_filters import get_complex_filter
+from frontend.utils import get_complex_filter
 from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
 from observations.models import DataCube, Observation
 
