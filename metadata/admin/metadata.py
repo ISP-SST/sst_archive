@@ -15,7 +15,6 @@ class MetadataAdmin(admin.ModelAdmin):
 
 
 class MetadataInlineAdmin(admin.StackedInline):
-    readonly_fields = []
     model = Metadata
     show_change_link = True
 

@@ -12,8 +12,17 @@ class DataCubeAccessControlAdmin(admin.ModelAdmin):
 
 
 class DataCubeAccessControlInlineAdmin(admin.TabularInline):
+    """
+    Inline admin form that is displayed in the DataCube's admin page.
+
+    Does not allow for inline editing, but does provide a link to the main admin page for DataCubeAccessControls.
+    """
     model = DataCubeAccessControl
     can_delete = False
+    show_change_link = True
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 extend_admin(DataCube, DataCubeAdmin, DataCubeAccessControlInlineAdmin, weight=3)

@@ -7,7 +7,7 @@ class DataCubeUserGrant(models.Model):
     Creates a link between a user and a DataCube, signalling that the user has read access to the file pointed
     to by the DataCube.
     """
-    user = models.ForeignKey(User, verbose_name='The User the permission has been granted to',
+    user = models.ForeignKey(User, verbose_name='Grant this user permission to access the data cube',
                              on_delete=models.CASCADE)
     data_cube = models.ForeignKey('observations.DataCube', verbose_name='Data Cube',
                                   help_text='The data cube that this token gives provides access to.',
