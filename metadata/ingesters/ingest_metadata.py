@@ -3,19 +3,9 @@ import re
 
 import django.db.models.fields
 from astropy.io import fits
-from django.utils.timezone import make_aware
 
 from metadata.models import Metadata
 from observations.models import DataCube
-from django.conf import settings
-
-try:
-    import zoneinfo
-except ImportError:
-    # FIXME(daniel): This is a temporary fix for running on Python 3.7. Upgrading to 3.9 should remove the
-    #                need for this special case. Note that for now backports.zoneinfo needs to be pip
-    #                installed in order to run the service on Python < 3.9.
-    from backports import zoneinfo
 
 
 class InvalidFITSHeader(Exception):
@@ -58,8 +48,7 @@ def _translate_field(field_value: str, field_type):
         except ValueError:
             field_value = datetime.strptime(field_value, '%Y-%m-%dT%H:%M:%S')
 
-        timezone = zoneinfo.ZoneInfo(settings.OBSERVATION_TIMEZONE)
-        return make_aware(field_value, timezone=timezone)
+        return field_value
 
     return field_value
 

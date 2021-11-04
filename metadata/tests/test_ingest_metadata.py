@@ -32,5 +32,5 @@ class TestIngestMetadata(TestCase):
         self.assertEqual(metadata.release, '2020-08-05')
         self.assertEqual(metadata.timesys, 'UTC')
         self.assertEqual(metadata.waveband, 'Fe I 6173')
-        self.assertEqual(metadata.date_beg, datetime.datetime(2019, 4, 19, 17, 34, 55, 503950, datetime.timezone.utc))
+        self.assertEqual(metadata.date_beg, datetime.datetime(2019, 4, 19, 17, 34, 55, 503950))
         self.assertAlmostEquals(metadata.datamin, -1.42056e-08, 5)

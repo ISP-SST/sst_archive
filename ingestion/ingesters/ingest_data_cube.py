@@ -88,7 +88,7 @@ def update_or_create_data_cube(fits_cube: str, instrument: Instrument, fits_hdus
         'instrument': instrument
     })
 
-    primary_fits_hdu = fits_hdus[0]
+    primary_fits_hdu = fits_hdus[0].header
 
     # Determine if this data cube belongs to a new or existing observation.
     _assign_to_observation(data_cube, primary_fits_hdu)

@@ -20,7 +20,7 @@ def removeprefix(self, prefix):
 
 
 def _utc_datetime_from_date(date):
-    return datetime.datetime(year=date.year, month=date.month, day=date.day, tzinfo=datetime.timezone.utc)
+    return datetime.datetime(year=date.year, month=date.month, day=date.day)
 
 
 class SearchResult:
