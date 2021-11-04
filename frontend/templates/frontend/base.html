@@ -30,19 +30,21 @@
 
             {% if user.is_authenticated %}
             <div class="col-2 text-end">
-                    <strong>{{ user.email }}</strong>
-                        {% if user.is_staff %}
+
+                    <strong><a href="{% url 'account_profile' %}">{{ user.email }}</a></strong>
+
                     <p>
+                    {% if user.is_staff %}
                         <a class="btn btn-light btn-sm" href="{% url 'admin:index' %}"><i class="bi bi-pen-fill"></i> Admin</a>
-                        {% endif %}
-                        <a class="btn btn-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-person-fill"></i> Log out</a>
+                    {% endif %}
+                        <a class="btn btn-light btn-sm" href="{% url 'account_logout' %}"><i class="bi bi-person-fill"></i> Sign out</a>
                     </p>
             </div>
             {% else %}
             <div class="col-4 text-end">
                 <small>
-                    <a class="btn btn-light btn-sm" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}"><i class="bi bi-person-fill"></i> Log in</a>
-                    <a class="btn btn-light btn-sm" href="{% url 'register' %}"><i class="bi bi-pen-fill"></i> Register</a>
+                    <a class="btn btn-light btn-sm" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}"><i class="bi bi-person-fill"></i> Sign in</a>
+                    <a class="btn btn-light btn-sm" href="{% url 'account_signup' %}"><i class="bi bi-pen-fill"></i> Sign up</a>
                 </small>
             </div>
             {% endif %}

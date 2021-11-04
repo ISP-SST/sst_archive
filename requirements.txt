@@ -17,3 +17,11 @@ django_q~=1.3.9
 # Currently used for generating static and animated previews.
 # Likely not going to be relevant in the future if the
 matplotlib~=3.4.3
+
+# django-allauth required to provide a more developed account management
+# flow, with registration that requires email verification, etc.
+django-allauth~=0.45.0
+
+# django-recaptcha is used in tandem with allauth to provide a sign up experience
+# that adds a measure of validation for non-
+django-recaptcha~=2.0.6

@@ -1,0 +1,27 @@
+{% extends "frontend/base.html" %}
+
+{% block full_width_content %}
+<div class="container col-6">
+
+    <h2>Sign Up</h2>
+
+    <div class="container mt-5">
+
+        <p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>.</p>
+
+        <form class="form signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            <table class="table table-borderless">
+                {% csrf_token %}
+                {{ form.as_table }}
+            </table>
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+            {% endif %}
+
+            <button class="btn btn-primary" type="submit"><i class="bi bi-pen-fill"></i> Sign Up </button>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

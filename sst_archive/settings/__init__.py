@@ -20,8 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRETS_FILE = os.path.join(BASE_DIR, 'secrets.json')
 
-with open(SECRETS_FILE) as secrets_file:
-    secrets = json.load(secrets_file)
+try:
+    with open(SECRETS_FILE) as secrets_file:
+        secrets = json.load(secrets_file)
+except:
+    raise ImproperlyConfigured('Unable to open secrets file %s' % SECRETS_FILE)
 
 def get_secret(setting, secrets=secrets):
     """Get secret setting or fail with ImproperlyConfigured"""
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
@@ -52,6 +56,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    'captcha',
 
     'observations',
     'metadata',
@@ -85,7 +95,7 @@ ROOT_URLCONF = 'sst_archive.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'frontend/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -94,7 +104,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'frontend.forms.inject_search_form',
-                'frontend.file_selection.inject_selection_list',
+
+                # `allauth` needs this from django
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -147,6 +159,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -159,8 +179,39 @@ USE_I18N = True
 
 USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
+SITE_ID = 1
+
+RECAPTCHA_PUBLIC_KEY = '6LczSRAdAAAAAPBN926J7MqfH-QTyWhHqRqYU-4h'
+RECAPTCHA_PRIVATE_KEY = '6LczSRAdAAAAAFkHPxSZ1Zp8jD8pNhTAgZ8hPolq'
+RECAPTCHA_USE_SSL = True
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+ACCOUNT_FORMS = {
+    'signup': 'frontend.forms.CustomSignupForm',
+    'login': 'frontend.forms.CustomLoginForm',
+    'reset_password': 'frontend.forms.CustomResetPasswordForm',
+    'change_password': 'frontend.forms.CustomChangePasswordForm',
+    'reset_password_from_key': 'frontend.forms.CustomResetPasswordKeyForm'
+}
+
+ACCOUNT_ADAPTER = 'frontend.forms.CustomAccountAdapter'
+
+
+# Email backend configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 25
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'sst_archive@astro.su.se'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

@@ -1,0 +1,26 @@
+{% extends "frontend/base.html" %}
+
+{% block full_width_content %}
+<div class="container col-6">
+
+    <h2>Account Profile</h2>
+
+    <div class="container mt-5">
+
+        <table class="table table-borderless">
+            <tr>
+                <td>E-mail:</td>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <td>Registered as Swedish Citizen:</td>
+                <td>{{ swedish_citizen }}</td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+{% endblock %}
+
+
+

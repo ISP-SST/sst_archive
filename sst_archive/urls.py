@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('', include('data_access.urls')),
     path('', include('frontend.urls', namespace='')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

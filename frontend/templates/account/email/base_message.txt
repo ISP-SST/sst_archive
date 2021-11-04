@@ -1,0 +1,10 @@
+{% autoescape off %}
+Hello from {{ current_site.name }}!
+
+{% block content %}
+{% endblock %}
+
+{% with site_name=current_site.name site_domain=current_site.domain %}Thank you for using {{ site_name }}!
+{{ site_domain }}{% endwith %}
+
+{% endautoescape %}

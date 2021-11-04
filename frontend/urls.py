@@ -1,5 +1,4 @@
-from django.urls import path, re_path
-from django.contrib.auth import views as auth_views
+from django.urls import path
 
 from . import views
 
@@ -8,8 +7,5 @@ urlpatterns = [
     path('files/<filename>', views.data_cube_detail, name='data_cube_detail'),
     path('observations/<observation_pk>', views.observation_detail, name='observation_detail'),
     path('search', views.search_view, name='search'),
-
-    path('accounts/login/', auth_views.LoginView.as_view(template_name='frontend/account_login.html', redirect_authenticated_user=True), name='login'),
-    path('accounts/logout/', auth_views.LogoutView.as_view(template_name='frontend/account_logout.html'), name='logout'),
-    path('accounts/register/', views.register, name='register'),
+    path('accounts/profile', views.account_profile, name='account_profile')
 ]

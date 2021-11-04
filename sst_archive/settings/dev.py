@@ -42,3 +42,8 @@ if DEBUG_QUERY_LOGGING:
             }
         }
     }
+
+# Use Gmail email server for local tests. Credentials need to be specified in the secrets.json file.
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
