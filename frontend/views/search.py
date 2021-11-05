@@ -19,7 +19,7 @@ def removeprefix(self, prefix):
         return self[:]
 
 
-def _utc_datetime_from_date(date):
+def datetime_from_date(date):
     return datetime.datetime(year=date.year, month=date.month, day=date.day)
 
 
@@ -161,9 +161,9 @@ def search_view(request):
             complete_query['cubes__metadata__naxis4__exact'] = 1
 
     if start_date:
-        complete_query['cubes__metadata__date_beg__gte'] = _utc_datetime_from_date(start_date)
+        complete_query['cubes__metadata__date_beg__gte'] = datetime_from_date(start_date)
     if end_date:
-        complete_query['cubes__metadata__date_end__lte'] = _utc_datetime_from_date(end_date)
+        complete_query['cubes__metadata__date_end__lte'] = datetime_from_date(end_date)
 
     if spectral_line_ids:
         complete_query['cubes__metadata__%s__in' % SPECTRAL_LINE_METADATA_KEY] = spectral_line_ids

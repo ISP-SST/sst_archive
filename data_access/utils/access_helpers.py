@@ -2,7 +2,6 @@ import datetime
 
 import django
 from django.contrib.auth.models import User
-from pytz import utc
 
 from data_access.models import DataCubeAccessToken, DataCubeUserGrant, DataCubeGroupGrant
 from observations.models import DataCube
@@ -18,7 +17,7 @@ def data_cube_requires_access_grant(data_cube: DataCube, datetime_now=None):
     if not data_cube.access_control or not data_cube.access_control.release_date:
         return False
     else:
-        release_datetime = utc.localize(datetime.datetime.combine(data_cube.access_control.release_date, datetime.datetime.min.time()))
+        release_datetime = datetime.datetime.combine(data_cube.access_control.release_date, datetime.datetime.min.time())
         return release_datetime > datetime_now
 
 

@@ -11,12 +11,12 @@ from observations.models import Tag, Instrument
 
 def initial_start_date():
     # Start date defaults to three years back.
-    today = datetime.datetime.now(tz=datetime.timezone.utc)
+    today = datetime.datetime.now()
     return today.replace(year=today.year - 3)
 
 
 def initial_end_date():
-    return datetime.datetime.now(tz=datetime.timezone.utc)
+    return datetime.datetime.now()
 
 
 def _get_query_label():
