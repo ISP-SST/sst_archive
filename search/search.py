@@ -14,8 +14,8 @@ class SearchCriteria:
     start_date: datetime.datetime = None
     end_date: datetime.datetime = None
     instrument: str = None
-    spectral_line_ids: list[int] = field(default_factory=list)
-    features: list[str] = field(default_factory=list)
+    spectral_line_ids: list = field(default_factory=list)
+    features: list = field(default_factory=list)
 
 
 @dataclass
@@ -28,9 +28,9 @@ class SearchResult:
     size: int
     thumbnail: str
     spectral_line_profile: str
-    spectral_lines: list[str]
+    spectral_lines: list
     additional_values: list
-    cubes_in_observation: list[DataCube]
+    cubes_in_observation: list
 
 
 def datetime_from_date(date):
