@@ -103,24 +103,28 @@ class SearchForm(forms.Form):
                                                           'placeholder': 'Select a date',
                                                           'type': 'date'}))
     instrument = forms.ChoiceField(label='Instrument',
+                                   required=False,
                                    choices=get_instruments_choices,
                                    widget=forms.Select(attrs={'class': 'form-select'}))
     spectral_lines = forms.MultipleChoiceField(label='Spectral Lines',
                                                choices=get_spectral_line_choices,
+                                               required=False,
                                                widget=DropdownCheckboxSelectMultiple(
                                                    attrs={
                                                        'full_field_name': 'Spectral Lines'
                                                    }
                                                ))
     features = forms.MultipleChoiceField(label='Features', choices=get_features_choices,
+                                         required=False,
                                          widget=DropdownCheckboxSelectMultiple(attrs={
                                              'full_field_name': 'Features'
                                          }))
     polarimetry = forms.ChoiceField(label='Polarimetry',
+                                    required=False,
                                     choices=(('any', 'Any'),
                                              ('polarimetric', 'Polarimetric'),
                                              ('nonpolarimetric', 'Non-Polarimetric')),
-                                    widget=forms.Select(attrs={'class': 'form-select'}), required=False)
+                                    widget=forms.Select(attrs={'class': 'form-select'}))
     query = forms.CharField(label=mark_safe(_get_query_label()), required=False,
                             widget=forms.TextInput(attrs={'class': 'form-control'}))
 
