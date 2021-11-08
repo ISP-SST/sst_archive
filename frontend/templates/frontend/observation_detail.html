@@ -49,13 +49,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Observation began (UTC):</td>
-                    <td>{{ metadata.date_beg }}</td>
-                </tr>
-
-                <tr>
-                    <td>Observation ended (UTC):</td>
-                    <td>{{ metadata.date_end }}</td>
+                    <td>Observation time (UTC):</td>
+                    <td>
+                        <p>Started {{ metadata.date_beg }}</p>
+                        <p>Ended {{ metadata.date_end }}.</p>
+                        <p>Total duration: {{ metadata.date_end|timeuntil:metadata.date_beg }}</p>
+                    </td>
                 </tr>
 
                 <tr>
@@ -65,6 +64,16 @@
                 <tr>
                     <td>Spectral Line:</td>
                     <td>{{ metadata.filter1 }} Å ({{ metadata.waveband }})</td>
+                </tr>
+
+                <tr>
+                    <td>Scans:</td>
+                    <td>{{ metadata.naxis5 }}</td>
+                </tr>
+
+                <tr>
+                    <td>Polarimetric:</td>
+                    <td>{% if metadata.naxis4 > 1 %}Yes{% else %}No{% endif %}</td>
                 </tr>
 
                 <tr>
