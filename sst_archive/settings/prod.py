@@ -28,6 +28,7 @@ SCIENCE_DATA_ROOT = '/srv/www/dubshen/sst_archive/science_data/'
 
 STATIC_URL = '/sst_archive/static/'
 MEDIA_URL = '/sst_archive/media/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/sst_archive/'
 
 LOGGING = {
     'version': 1,
