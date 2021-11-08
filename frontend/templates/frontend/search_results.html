@@ -51,7 +51,7 @@
             <td>
                 {% if observation.spectral_line_profile %}
                 <a href="{% url 'observation_detail' observation.observation_pk %}">
-                    <img style="width: 12em; border: 2px solid #efefef" data-src="{{ observation.spectral_line_profile.url }}" />
+                    <img style="width: 11em; border: 1px dashed #efefef" data-src="{{ observation.spectral_line_profile.url }}" />
                 </a>
                 {% endif %}
             </td>
