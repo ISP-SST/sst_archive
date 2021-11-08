@@ -189,6 +189,9 @@ RECAPTCHA_PRIVATE_KEY = '6LczSRAdAAAAAFkHPxSZ1Zp8jD8pNhTAgZ8hPolq'
 RECAPTCHA_USE_SSL = True
 
 ACCOUNT_EMAIL_REQUIRED = True
+# We need to set max length to < 191 to ensure that the email address can be stored as a primary key in MySQL InnoDB
+# tables. This is a MySQL limitation.
+ACCOUNT_EMAIL_MAX_LENGTH = 190
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
