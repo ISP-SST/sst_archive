@@ -59,7 +59,7 @@
                     <td>{{ data_cube.instrument.name }}</td>
                 </tr>
                 <tr>
-                    <td>Spectral Line:</td>
+                    <td>Spectral line:</td>
                     <td>{{ metadata.filter1 }} Å ({{ metadata.waveband }})</td>
                 </tr>
 
@@ -71,6 +71,11 @@
                 <tr>
                     <td>Polarimetric:</td>
                     <td>{% if metadata.naxis4 > 1 %}Yes{% else %}No{% endif %}</td>
+                </tr>
+
+                <tr>
+                    <td>Average cadence</td>
+                    <td>{{ metadata.cadavg }} seconds</td>
                 </tr>
 
                 <tr>
