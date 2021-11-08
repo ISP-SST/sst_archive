@@ -1,13 +1,8 @@
-import datetime
-
-from django.core.paginator import Paginator
-from django.db.models import Prefetch, Sum
 from django.shortcuts import render
 
 from frontend.utils import get_complex_filter
 from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
-from observations.models import DataCube, Observation
-
+from search.search import SearchCriteria, search_observations
 
 SPECTRAL_LINE_METADATA_KEY = 'filter1'
 
@@ -19,191 +14,47 @@ def removeprefix(self, prefix):
         return self[:]
 
 
-def datetime_from_date(date):
-    return datetime.datetime(year=date.year, month=date.month, day=date.day)
-
-
-class SearchResult:
-    def __init__(self, observation_pk, oid, filename, instrument, date, size, thumbnail, spectral_line_profile,
-                 spectral_lines, additional_values, cubes_in_observation):
-        self.observation_pk = observation_pk
-        self.oid = oid
-        self.filename = filename
-        self.instrument = instrument
-        self.date = date
-        self.size = size
-        self.thumbnail = thumbnail
-        self.spectral_line_profile = spectral_line_profile
-        self.spectral_lines = spectral_lines
-        self.additional_values = additional_values
-        self.cubes_in_observation = cubes_in_observation
-
-
-def _create_search_results_from_observation(request, observation, additional_columns):
-
-    cube_count = observation.cubes.count()
-
-    if cube_count == 0:
-        return None
-
-    cube = observation.cubes.all()[0]
-
-    if not hasattr(cube, 'metadata') or not cube.metadata:
-        return None
-
-    if hasattr(cube, 'previews'):
-        thumbnail = cube.previews.thumbnail if cube.previews else None
-    else:
-        thumbnail = None
-
-    if hasattr(cube, 'spectral_line_data'):
-        spectral_line_profile = cube.spectral_line_data.data_preview if cube.spectral_line_data else None
-    else:
-        spectral_line_profile = None
-
-    spectral_lines = list(set([getattr(cube.metadata, SPECTRAL_LINE_METADATA_KEY) for cube in observation.cubes.all()]))
-
-    additional_values = [col.get_value(observation) for col in additional_columns]
-
-    return SearchResult(observation.id, cube.oid, cube.filename, cube.instrument.name,
-                        cube.metadata.date_beg, observation.total_size, thumbnail, spectral_line_profile,
-                        spectral_lines, additional_values, cube_count)
-
-
-class Column:
-    def __init__(self, name, only_spec):
-        self.name = name
-        self.only_spec = only_spec
-
-    def get_name(self):
-        return self.name
-
-    def get_value(self, observation):
-        raise NotImplementedError()
-
-    def get_only_spec(self):
-        return self.only_spec
-
-
-class MetadataColumn(Column):
-    def __init__(self, name, value_key):
-        super().__init__(name, 'metadata__%s' % value_key)
-        self.value_key = value_key
-
-    def get_value(self, observation):
-        return list(set([getattr(cube.metadata, self.value_key) for cube in observation.cubes.all()]))
-
-
-class TagColumn(Column):
-    def __init__(self, name):
-        super().__init__(name, 'tags')
-
-    def get_value(self, observation):
-        return list(set([tag.name for cube in observation.cubes.all() for tag in cube.tags.all()]))
-
-
-class AdditionalColumns:
-    def __init__(self):
-        self.additional_columns = []
-
-    def __iter__(self):
-        return self.additional_columns.__iter__()
-
-    def add(self, column: Column):
-        self.additional_columns.append(column)
-
-    def get_all_names(self):
-        return [col.get_name() for col in self.additional_columns if col.get_name() is not None]
-
-    def get_all_only_specs(self):
-        return [col.get_only_spec() for col in self.additional_columns if col.get_only_spec() is not None]
-
-
 def search_view(request):
     form = SearchForm(request.GET)
 
-    if not form.is_valid():
-        # TODO(daniel): Handle this error case.
-        pass
-
-    if not hasattr(form, 'cleaned_data') or 'start_date' not in form.cleaned_data:
+    if not form.is_valid() or not hasattr(form, 'cleaned_data') or 'start_date' not in form.cleaned_data:
         form = SearchForm(data=get_initial_search_form(request))
         form.full_clean()
 
-    start_date = form.cleaned_data['start_date'] if 'start_date' in form.cleaned_data else None
-    end_date = form.cleaned_data['end_date'] if 'end_date' in form.cleaned_data else None
+    search_criteria = SearchCriteria()
 
     instrument = form.cleaned_data['instrument'] if 'instrument' in form.cleaned_data else 'all'
+    if instrument and instrument != 'all':
+        search_criteria.instrument = instrument
 
-    additional_columns = AdditionalColumns()
-
-    spectral_line_ids = None
     if 'spectral_lines' in form.cleaned_data and form.cleaned_data['spectral_lines'] != '':
         spectral_lines = form.cleaned_data['spectral_lines']
         spectral_line_ids = [int(sl) for sl in spectral_lines]
+        if spectral_line_ids:
+            search_criteria.spectral_line_ids = spectral_line_ids
 
-    features = None
     if 'features' in form.cleaned_data and form.cleaned_data['features']:
-        features = form.cleaned_data['features']
-
-    persist_search_form(request, form.cleaned_data)
-
-    complete_query = {}
+        search_criteria.features = form.cleaned_data['features']
 
     query = form.cleaned_data['query']
     freeform_query_q = get_complex_filter(query)
 
     if 'polarimetry' in form.cleaned_data:
-        pol = form.cleaned_data['polarimetry']
-        if pol == 'polarimetric':
-            complete_query['cubes__metadata__naxis4__exact'] = 4
-        elif pol == 'nonpolarimetric':
-            complete_query['cubes__metadata__naxis4__exact'] = 1
+        search_criteria.polarimetry = form.cleaned_data['polarimetry']
 
-    if start_date:
-        complete_query['cubes__metadata__date_beg__gte'] = datetime_from_date(start_date)
-    if end_date:
-        complete_query['cubes__metadata__date_end__lte'] = datetime_from_date(end_date)
+    search_criteria.start_date = form.cleaned_data['start_date'] if 'start_date' in form.cleaned_data else None
+    search_criteria.end_date = form.cleaned_data['end_date'] if 'end_date' in form.cleaned_data else None
 
-    if spectral_line_ids:
-        complete_query['cubes__metadata__%s__in' % SPECTRAL_LINE_METADATA_KEY] = spectral_line_ids
+    # persist_search_form(request, form.cleaned_data)
 
-    if features:
-        complete_query['cubes__tags__name__in'] = features
-        additional_columns.add(TagColumn('Features'))
-
-    if instrument and instrument != 'all':
-        complete_query['cubes__instrument__name__iexact'] = instrument
-
-    only_fields = ['oid', 'observation_id', 'filename', 'instrument__name', 'metadata__date_beg', 'size', 'previews',
-                   'spectral_line_data', 'metadata__%s' % SPECTRAL_LINE_METADATA_KEY,
-                   *additional_columns.get_all_only_specs()]
-
-    datacube_dataset = DataCube.objects.only(*only_fields).select_related('metadata', 'instrument', 'previews',
-                                                                          'spectral_line_data')
-
-    observations = Observation.objects.all()
-    observations = observations.filter(freeform_query_q).filter(**complete_query).\
-        prefetch_related(Prefetch('cubes', queryset=datacube_dataset)).annotate(total_size=Sum('cubes__size')).distinct()
-
-    # FIXME(daniel): Pagination currently suffers from a big flaw. It does not properly slice the DataCube QuerySet,
-    #                so we end up making an SQL query that queries the entire database with the given search criteria.
-    #                This does not scale, so we will need to modify the QuerySets above to restrict the prefetch of the
-    #                DataCubes to only concern the Observations displayed on the current page.
-    paginator = Paginator(observations, 25)
     page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-
-    results = [_create_search_results_from_observation(request, observation, additional_columns)
-               for observation in page_obj]
-
-    results = list(filter(None, results))
+    results = search_observations(search_criteria, page_number=page_number, complex_query=freeform_query_q)
 
     context = {
-        'page_search_results': results,
-        'paginator': paginator,
-        'page_obj': page_obj,
-        'additional_column_names': additional_columns.get_all_names(),
+        'page_search_results': results.page,
+        'paginator': results.page.paginator,
+        'page_obj': results.page,
+        'additional_column_names': results.additional_columns.get_all_names(),
     }
 
     return render(request, 'frontend/search_results.html', context)

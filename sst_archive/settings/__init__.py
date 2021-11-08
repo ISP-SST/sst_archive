@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'data_access',
     'ingestion',
     'previews',
+    'search',
     'api',
     'frontend',
 ]
