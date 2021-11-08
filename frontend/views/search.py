@@ -45,7 +45,7 @@ def search_view(request):
     search_criteria.start_date = form.cleaned_data['start_date'] if 'start_date' in form.cleaned_data else None
     search_criteria.end_date = form.cleaned_data['end_date'] if 'end_date' in form.cleaned_data else None
 
-    # persist_search_form(request, form.cleaned_data)
+    persist_search_form(request, form.cleaned_data)
 
     page_number = request.GET.get('page', 1)
     results = search_observations(search_criteria, page_number=page_number, complex_query=freeform_query_q)
