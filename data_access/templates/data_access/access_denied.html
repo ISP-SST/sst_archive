@@ -1,0 +1,50 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}SST Archive - Restricted Download{% endblock %}
+
+{% block full_width_content %}
+
+<div class="container col-6">
+
+<h2>Content is restricted</h2>
+
+<p>
+    Special permissions are required to access this cube.
+</p>
+
+{% if user.is_authenticated %}
+
+<p>
+    The account you're currently signed in to does not have the necessary permissions. If this is not correct, please
+    <a href="mailto:{{ admin_email }}">contact the system administrator</a>.
+</p>
+
+{% else %}
+
+<p>
+    If you have already registered a user that has the correct permissions, please
+    <a href="{% url 'account_login' %}?next={{request.get_full_path|iriencode}}">sign in</a>.
+</p>
+
+{% endif %}
+
+{% if swedish_data %}
+    <div class="alert alert-secondary">
+        <h4>Swedish Data</h4>
+        <p>This data has been collected by a Swedish University and is freely available to all Swedish citizens.</p>
+        <p>If you are a Swedish citizen, please sign up with an e-mail address belonging to a Swedish University and state
+        that you are a Swedish citizen. Once you've done that your account will be verified and you will be granted
+            access to the data.</p>
+    </div>
+{% endif %}
+
+{% if release_comment %}
+<div class="container">
+    <h4>Release comment:</h4>
+    <blockquote class="blockquote">{{ release_comment }}</blockquote>
+</div>
+{% endif %}
+
+</div>
+
+{% endblock %}

@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.models import User, Group
 from django.db import models
 
+from data_access.models import DataCubeGroupGrant
 
 SWEDISH_CITIZENS_GROUP = 'Swedish Citizen'
 
@@ -25,6 +26,11 @@ def add_user_to_swedish_citizens_group(user):
 def is_user_in_swedish_citizens_group(user):
     group = get_swedish_citizens_group()
     return user.groups.filter(pk=group.id).exists()
+
+
+def is_data_cube_restricted_to_swedish_users(data_cube):
+    swedish_group = get_swedish_citizens_group()
+    return data_cube.group_grants.filter(group_id=swedish_group.id).count()
 
 
 def get_user_swedish_citizen_validation_status(user):

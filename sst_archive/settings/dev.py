@@ -11,6 +11,7 @@ DATABASES = {
 }
 
 HOSTNAME = 'http://localhost:8000/'
+ADMIN_EMAIL = 'daniel.nitsche@astro.su.se'
 
 SCIENCE_DATA_ROOT = '/Users/dani2978/science_data/'
 

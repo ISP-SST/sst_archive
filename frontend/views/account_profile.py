@@ -2,8 +2,7 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from data_access.models import is_user_in_swedish_citizens_group, get_user_swedish_citizen_validation_status, \
-    ValidationResult
+from data_access.models import get_user_swedish_citizen_validation_status, ValidationResult
 
 
 def account_profile(request: HttpRequest):

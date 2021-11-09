@@ -1,9 +1,11 @@
 import os
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse, FileResponse
 from django.shortcuts import render
 
 from data_access.forms import TokenForm
+from data_access.models import is_data_cube_restricted_to_swedish_users
 from data_access.utils import data_cube_requires_access_grant, has_valid_token_for_data_cube, user_has_access_to_data_cube
 from observations.models import DataCube
 
@@ -14,31 +16,21 @@ def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
     """
     data_cube = DataCube.objects.get(filename__iexact=filename)
 
-    form = TokenForm()
-
-    token = None
-    if request.method == 'POST':
-        form = TokenForm(request.POST)
-        if form.is_valid() and form.cleaned_data and 'token' in form.cleaned_data:
-            token = form.cleaned_data.get('token')
-
     access_granted = False
     if data_cube_requires_access_grant(data_cube):
-        if token:
-            if has_valid_token_for_data_cube(data_cube, token):
-                access_granted = True
-            else:
-                form.add_error('token', 'The specified token is not valid for the selected data cube.')
-        elif request.user.is_authenticated:
+        if request.user.is_authenticated:
             access_granted = request.user.has_perm(
                 'data_access.can_access_protected_data') or user_has_access_to_data_cube(request.user, data_cube)
     else:
         access_granted = True
 
+    swedish_data = is_data_cube_restricted_to_swedish_users(data_cube)
+
     if not access_granted:
-        return render(request, 'data_access/token_prompt.html', {
+        return render(request, 'data_access/access_denied.html', {
             'data_cube': data_cube,
-            'form': form,
+            'admin_email': settings.ADMIN_EMAIL,
+            'swedish_data': swedish_data,
             'release_comment': data_cube.access_control.release_comment
         }, status=403)
 
