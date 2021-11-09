@@ -23,6 +23,9 @@ DEBUG = True
 
 SECRET_KEY = get_secret('SECRET_KEY')
 
+# TLS seems to not be set up for the localhost Postfix server.
+EMAIL_USE_TLS = False
+
 # Points to a read-only science data folder that has been mounted.
 SCIENCE_DATA_ROOT = '/srv/www/dubshen/sst_archive/science_data/'
 
