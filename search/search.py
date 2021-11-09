@@ -8,6 +8,7 @@ from observations.models import DataCube, Observation
 
 SPECTRAL_LINE_METADATA_KEY = 'filter1'
 
+
 @dataclass
 class SearchCriteria:
     polarimetry: str = None
@@ -93,7 +94,6 @@ class SearchResultPage:
 
 
 def _create_search_results_from_observation(observation, additional_columns):
-
     cube_count = observation.cubes.count()
     default_cube = observation.cubes.all()[0]
 
@@ -124,6 +124,7 @@ class SearchResultsWrapper:
     contained within it to SearchResult instances so that they can be
     easily presented in the interface.
     """
+
     def __init__(self, query_set, additional_columns, ordered=True):
         self.query_set = query_set
         self.additional_columns = additional_columns
@@ -152,10 +153,14 @@ def search_observations(search_criteria: SearchCriteria, page_number=1, complex_
     elif search_criteria.polarimetry == 'nonpolarimetric':
         complete_query['cubes__metadata__naxis4__exact'] = 1
 
-    if search_criteria.start_date:
-        complete_query['cubes__metadata__date_beg__gte'] = datetime_from_date(search_criteria.start_date)
-    if search_criteria.end_date:
-        complete_query['cubes__metadata__date_end__lte'] = datetime_from_date(search_criteria.end_date)
+    # Date search criteria are always specified because they are needed to ensure that correct
+    # query generation and prefetching. There is likely a specific cause for this that allows
+    # us to address the problem with more precision, but that will require more time to debug
+    # and figure out.
+    complete_query['cubes__metadata__date_beg__gte'] = datetime_from_date(
+        search_criteria.start_date) if search_criteria.start_date else datetime.datetime.min
+    complete_query['cubes__metadata__date_end__lte'] = datetime_from_date(
+        search_criteria.end_date) if search_criteria.end_date else datetime.datetime.max
 
     if search_criteria.spectral_line_ids:
         complete_query['cubes__metadata__%s__in' % SPECTRAL_LINE_METADATA_KEY] = search_criteria.spectral_line_ids

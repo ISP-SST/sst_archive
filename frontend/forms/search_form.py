@@ -120,7 +120,7 @@ class SearchForm(forms.Form):
                                              'full_field_name': 'Features'
                                          }))
     polarimetry = forms.ChoiceField(label='Polarimetry',
-                                    required=False,
+                                    required=True,
                                     choices=(('any', 'Any'),
                                              ('polarimetric', 'Polarimetric'),
                                              ('nonpolarimetric', 'Non-Polarimetric')),
