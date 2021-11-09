@@ -43,7 +43,7 @@
                 {% if observation.thumbnail %}
                 <img style="border-radius: 4px; background: #000; width: 78px; min-height: 78px;" data-src="{{ observation.thumbnail.url }}"/>
                 {% else %}
-                {{ observation.oid }}
+                <img style="border-radius: 4px; background: #000; width: 78px; min-height: 78px;" data-src="{% static 'frontend/default-thumbnail.png' %}"/>
                 {% endif %}
                 </a>
             </td>

@@ -17,7 +17,12 @@ def removeprefix(self, prefix):
 def search_view(request):
     form = SearchForm(request.GET)
 
-    if not form.is_valid() or not hasattr(form, 'cleaned_data') or 'start_date' not in form.cleaned_data:
+    if not form.is_valid():
+        # Just ignore this error. This should never happen in practice, but a call to is_valid() is required in order
+        # to get the cleaned_data from the form.
+        pass
+
+    if not hasattr(form, 'cleaned_data') or 'start_date' not in form.cleaned_data:
         form = SearchForm(data=get_initial_search_form(request))
         form.full_clean()
 

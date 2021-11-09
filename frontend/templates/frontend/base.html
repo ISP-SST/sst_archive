@@ -1,4 +1,6 @@
 {% load static %}
+{% load account %}
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -31,7 +33,7 @@
             {% if user.is_authenticated %}
             <div class="col-2 text-end">
 
-                    <strong><a href="{% url 'account_profile' %}">{{ user.email }}</a></strong>
+                    <strong><a href="{% url 'account_profile' %}">{% user_display user %}</a></strong>
 
                     <p>
                     {% if user.is_staff %}

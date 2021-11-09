@@ -40,9 +40,31 @@ def observation_detail(request, observation_pk):
     download_form = create_download_form(download_choices)
     download_form.full_clean()
 
+    is_data_cube_group = data_cube_count > 1
+
+    average_cadence = primary_cube.metadata.cadavg
+    date_beg = primary_cube.metadata.date_beg
+    date_end = primary_cube.metadata.date_end
+    instruments = set()
+    spectral_lines = set()
+    total_number_of_scans = 0
+
+    for cube in data_cubes:
+        date_beg = min(date_beg, cube.metadata.date_beg)
+        date_end = max(date_end, cube.metadata.date_end)
+        instruments.add(cube.instrument.name)
+        spectral_lines.add('%s Å (%s)' % (cube.metadata.filter1, cube.metadata.waveband))
+        total_number_of_scans += cube.metadata.naxis5
+
     context = {
         'observation': observation,
-        'data_cube_count': data_cube_count,
+        'is_data_cube_group': is_data_cube_group,
+        'date_beg': date_beg,
+        'date_end': date_end,
+        'instruments': instruments,
+        'spectral_lines': spectral_lines,
+        'total_number_of_scans': total_number_of_scans,
+        'average_cadence': average_cadence,
         'data_cubes': data_cubes,
         'data_cube': primary_cube,
         'download_form': download_form,
