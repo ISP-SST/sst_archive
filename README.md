@@ -27,6 +27,7 @@ The quickest way to get the system up and running:
     ./manage.py makemigrations
     ./manage.py migrate
     ./manage.py collectstatic --noinput
+    ./manage.py createcachetable
 
     # Create your own super user to access the admin portal
     ./manage.py createsuperuser --username <YOUR-USERNAME> --email <YOUR-EMAIL>
