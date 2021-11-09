@@ -42,7 +42,6 @@ def observation_detail(request, observation_pk):
 
     is_data_cube_group = data_cube_count > 1
 
-    average_cadence = primary_cube.metadata.cadavg
     date_beg = primary_cube.metadata.date_beg
     date_end = primary_cube.metadata.date_end
     instruments = set()
@@ -53,7 +52,7 @@ def observation_detail(request, observation_pk):
         date_beg = min(date_beg, cube.metadata.date_beg)
         date_end = max(date_end, cube.metadata.date_end)
         instruments.add(cube.instrument.name)
-        spectral_lines.add('%s Å (%s)' % (cube.metadata.filter1, cube.metadata.waveband))
+        spectral_lines.add(cube.metadata.waveband)
         total_number_of_scans += cube.metadata.naxis5
 
     context = {
@@ -64,12 +63,10 @@ def observation_detail(request, observation_pk):
         'instruments': instruments,
         'spectral_lines': spectral_lines,
         'total_number_of_scans': total_number_of_scans,
-        'average_cadence': average_cadence,
         'data_cubes': data_cubes,
         'data_cube': primary_cube,
         'download_form': download_form,
         'metadata': metadata,
-        'metadata_dict': model_to_dict(metadata),
         'metadata_fields': metadata_fields,
         'r0_json_data': r0_json_data,
         'spectral_line_data': spectral_line_data,
