@@ -10,6 +10,20 @@ class MetadataManager(models.Manager):
         return queryset
 
 
+def update_parent_observation(parent_observation):
+    related_metadata_objects = Metadata.objects.filter(data_cube__observation_id=parent_observation.id).only(
+        'data_cube', 'date_beg', 'date_end')
+    date_begs = [metadata.date_beg for metadata in related_metadata_objects]
+    date_ends = [metadata.date_end for metadata in related_metadata_objects]
+
+    if date_begs:
+        parent_observation.date_beg = min(date_begs)
+    if date_ends:
+        parent_observation.date_end = max(date_begs)
+
+    parent_observation.save()
+
+
 class Metadata(models.Model):
     """Model for the joint set of metadata present in CRISP and CHROMIS"""
 
@@ -366,6 +380,16 @@ class Metadata(models.Model):
     prmode2 = models.TextField(verbose_name='PRMODE2', help_text='Processing mode', blank=True, null=True)
 
     objects = MetadataManager()
+
+    def save(self, *args, **kwargs):
+        result = super().save(*args, **kwargs)
+        update_parent_observation(self.data_cube.observation)
+        return result
+
+    def delete(self, *args, **kwargs):
+        result = super().delete(*args, **kwargs)
+        update_parent_observation(self.data_cube.observation)
+        return result
 
     def __str__(self):
         return self.data_cube.oid

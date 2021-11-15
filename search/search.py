@@ -2,7 +2,7 @@ import datetime
 from dataclasses import dataclass, field
 
 from django.core.paginator import Paginator, Page
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Subquery, Q
 
 from observations.models import DataCube, Observation
 
@@ -144,7 +144,7 @@ class SearchResultsWrapper:
         return self.query_set.__len__()
 
 
-def search_observations(search_criteria: SearchCriteria, page_number=1, complex_query=None):
+def search_observations(search_criteria: SearchCriteria, page_number=1, complex_query=Q()):
     additional_columns = AdditionalColumns()
     complete_query = {}
 
@@ -176,23 +176,25 @@ def search_observations(search_criteria: SearchCriteria, page_number=1, complex_
                    'spectral_line_data', 'metadata__%s' % SPECTRAL_LINE_METADATA_KEY,
                    *additional_columns.get_all_only_specs()]
 
+    observation_ids = Observation.objects.filter(complex_query).filter(**complete_query).only('pk').values_list(
+        'pk', flat=True).distinct()
+
     datacube_dataset = DataCube.objects.only(*only_fields).select_related('metadata', 'instrument', 'previews',
                                                                           'spectral_line_data', 'observation')
 
-    observations = Observation.objects.filter(**complete_query)
+    # It's tempting to add an .order_by('cubes__metadata__date_beg') here to ensure predictable sorting of the
+    # search results in the list, but adding such a call to the QuerySet messes up the number of results returned
+    # since the field we're sorting on can have many entries that matches the same Observation ID. Instead we
+    # ensure that fields we want to sort on are present in the Observation model. If this becomes too much of
+    # a limitation we will have to revisit the design.
 
-    if complex_query:
-        observations = observations.filter(complex_query)
-
-    observations = observations.prefetch_related(Prefetch(
-        'cubes', queryset=datacube_dataset))
-    observations = observations.order_by('cubes__metadata__date_beg').distinct()
+    observations = Observation.objects.filter(pk__in=Subquery(observation_ids)).prefetch_related(
+        Prefetch('cubes', queryset=datacube_dataset)).order_by('-date_beg')
 
     paginator = Paginator(observations, 25)
     page_obj = paginator.get_page(page_number)
 
-    # Wrap the QuerySet to ensure that the caller will get a list of
-    # SearchResult items back.
+    # Wrap the QuerySet to ensure that the caller will get a list of SearchResult items back.
     page_obj.object_list = SearchResultsWrapper(page_obj.object_list, additional_columns)
 
     return SearchResultPage(page=page_obj, additional_columns=additional_columns)

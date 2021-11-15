@@ -7,7 +7,7 @@ from observations.models import DataCube, Observation
 
 
 def observation_detail(request, observation_pk):
-    data_cubes_queryset = DataCube.objects.select_related('previews', 'metadata', 'r0data',
+    data_cubes_queryset = DataCube.objects.select_related('instrument', 'previews', 'metadata', 'r0data',
                                                           'spectral_line_data', 'video_preview')
     observation = Observation.objects.prefetch_related(
         Prefetch('cubes', queryset=data_cubes_queryset)).get(pk=observation_pk)
