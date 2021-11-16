@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib import admin
 
-from data_access.models.swedish_citizen_validation_request import SwedishCitizenValidationRequest, ValidationResult
+from data_access.models.swedish_user_validation_request import SwedishUserValidationRequest, ValidationResult
 
 
 @admin.action(description='Approve selected requests')
@@ -15,8 +15,8 @@ def reject_requests(modeladmin, request, queryset):
     queryset.update(validation_result=ValidationResult.REJECTED, validation_date=datetime.datetime.now())
 
 
-@admin.register(SwedishCitizenValidationRequest)
-class SwedishCitizenValidationRequestAdmin(admin.ModelAdmin):
+@admin.register(SwedishUserValidationRequest)
+class SwedishUserValidationRequestAdmin(admin.ModelAdmin):
     search_fields = ['user__email']
     autocomplete_fields = ['user']
     ordering = ['validation_result']

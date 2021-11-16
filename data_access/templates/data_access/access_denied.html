@@ -8,9 +8,17 @@
 
 <h2>Content is restricted</h2>
 
-<p>
-    Special permissions are required to access this cube.
+    <p>
+    Special permissions are required to access this data.
 </p>
+
+{% if release_comment %}
+<div class="alert alert-primary">
+    <h5>Comment:</h5>
+    <p>{{ release_comment }}</p>
+</div>
+{% endif %}
+
 
 {% if user.is_authenticated %}
 
@@ -32,18 +40,12 @@
     <div class="alert alert-secondary">
         <h4>Swedish Data</h4>
         <p>This data has been collected by a Swedish University and is freely available to all Swedish citizens.</p>
-        <p>If you are a Swedish citizen, please sign up with an e-mail address belonging to a Swedish University and state
-        that you are a Swedish citizen. Once you've done that your account will be verified and you will be granted
-            access to the data.</p>
+        <p>If you are affiliated with a Swedish university, please sign up with an e-mail address belonging to that
+            University and state that you are a Swedish user. Once you've done that your account will be verified and
+            you will be granted access to the data.</p>
     </div>
 {% endif %}
 
-{% if release_comment %}
-<div class="container">
-    <h4>Release comment:</h4>
-    <blockquote class="blockquote">{{ release_comment }}</blockquote>
-</div>
-{% endif %}
 
 </div>
 
