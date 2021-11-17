@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 
     'captcha',
 
+    'core',
     'observations',
     'metadata',
     'data_access',
