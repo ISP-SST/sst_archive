@@ -71,7 +71,7 @@ class CustomResetPasswordForm(ResetPasswordForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(error_class=CustomErrorList, *args, **kwargs)
-        add_bootstrap_form_classes_to_fields(self.fields['email'])
+        add_bootstrap_form_classes_to_fields(self.fields)
 
 
 class CustomSignupForm(SignupForm):
