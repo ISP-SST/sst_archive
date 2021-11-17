@@ -1,9 +1,16 @@
 from django.db.models import Prefetch
-from django.forms import model_to_dict
 from django.shortcuts import render
 
 from frontend.forms import create_download_form
 from observations.models import DataCube, Observation
+
+
+def _remove_uninteresting_metadata_fields(metadata_fields):
+    metadata_fields.pop('fits header', None)
+    metadata_fields.pop('ID', None)
+    metadata_fields.pop('data location', None)
+    metadata_fields.pop('data cube', None)
+    metadata_fields.pop('Observation ID', None)
 
 
 def observation_detail(request, observation_pk):
@@ -20,12 +27,7 @@ def observation_detail(request, observation_pk):
 
     metadata_fields = {field.verbose_name: field.value_from_object(metadata) for field in metadata._meta.get_fields()}
 
-    # FIXME(daniel): We shouldn't need to pop these from the fields.
-    metadata_fields.pop('fits header', None)
-    metadata_fields.pop('ID', None)
-    metadata_fields.pop('data location', None)
-    metadata_fields.pop('data cube', None)
-    metadata_fields.pop('Observation ID', None)
+    _remove_uninteresting_metadata_fields(metadata_fields)
 
     r0_json_data = None
     if hasattr(primary_cube, 'r0data'):
