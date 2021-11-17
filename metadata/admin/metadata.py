@@ -1,7 +1,8 @@
 from django.contrib import admin
 
+from core.utils import extend_admin
 from metadata.models import Metadata
-from observations.admin import extend_admin, DataCubeAdmin
+from observations.admin import DataCubeAdmin
 from observations.models import DataCube
 
 

@@ -1,8 +1,8 @@
 import datetime
 
+from django.contrib import admin
 from django.contrib.auth.models import User, Group
 from django.db import models
-
 
 SWEDISH_USER_GROUP = 'Swedish User'
 
@@ -13,7 +13,7 @@ def get_swedish_user_group():
 
 
 def enqueue_swedish_user_registration_request(user):
-    request, created = SwedishUserValidationRequest.objects.get_or_create(user=user)
+    request, created = SwedishUserValidationRequest.objects.update_or_create(user=user)
 
 
 def add_user_to_swedish_user_group(user):
@@ -59,8 +59,13 @@ class SwedishUserValidationRequest(models.Model):
     validation_result = models.TextField(verbose_name='Validation result', choices=ValidationResult.choices,
                                          default=ValidationResult.NOT_PROCESSED)
 
+    @admin.display(description='User account purpose')
+    def purpose(self):
+        return self.user.profile.purpose
+
     def save(self, *args, **kwargs):
-        self.validation_date = datetime.datetime.now()
+        self.validation_date = datetime.datetime.now() if \
+            self.validation_result != ValidationResult.NOT_PROCESSED else None
 
         super().save(*args, **kwargs)
 
@@ -75,4 +80,4 @@ class SwedishUserValidationRequest(models.Model):
         super().delete(*args, **kwargs)
 
     def __str__(self):
-        return  '%s - %s' %  (self.user.email, self.validation_result)
+        return '%s - %s' % (self.user.email, self.validation_result)

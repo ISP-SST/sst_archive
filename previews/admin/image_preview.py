@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from observations.admin import extend_admin, DataCubeAdmin
+from core.utils import extend_admin
+from observations.admin import DataCubeAdmin
 from observations.models import DataCube
 from previews.models import ImagePreview
 

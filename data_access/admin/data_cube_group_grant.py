@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
 
+from core.utils import extend_admin
 from data_access.models import DataCubeGroupGrant
-from observations.admin import extend_admin, DataCubeAdmin
+from observations.admin import DataCubeAdmin
 from observations.models import DataCube
 
 
