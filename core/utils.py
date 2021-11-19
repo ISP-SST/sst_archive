@@ -8,6 +8,13 @@ _inlines_collection = {}
 
 
 def extend_admin(root_model_cls, root_admin_cls, new_inline_admin, weight=sys.maxsize):
+    """
+    Extends an existing ModelAdmin instance with an admin class based on an InlineModelAdmin.
+
+    An optional weight can also be provided to affect the ordering on the ModelAdmin page. The
+    lower the weight is the higher up the element will rise in the stack.
+    """
+
     inline_tuples = _inlines_collection.get(root_admin_cls, [])
 
     if not inline_tuples:

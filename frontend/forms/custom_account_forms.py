@@ -1,11 +1,9 @@
-from allauth.account.adapter import DefaultAccountAdapter
-from allauth.account.forms import ResetPasswordForm, LoginForm, ChangePasswordForm, ResetPasswordKeyForm
-from allauth.account.forms import SignupForm
+from allauth.account.forms import ResetPasswordForm, ChangePasswordForm, ResetPasswordKeyForm
 from captcha.fields import ReCaptchaField
-from django import forms
 from django.forms.utils import ErrorList
 from django.utils.safestring import mark_safe
 
+from core.account import EmailVerificationEnforcingLoginForm, ExtendedSignupForm
 from data_access.models import enqueue_swedish_user_registration_request
 from frontend.utils import add_bootstrap_form_classes_to_fields
 
@@ -15,33 +13,9 @@ SWEDISH_USER_HELP_TEXT = '<strong>IMPORTANT:</strong> By specifying that you are
                          'with a Swedish university, do not check this box.'
 
 PURPOSE_HELP_TEXT = 'Please provide a brief description of the purpose for the account, e.g. what type of data you ' \
-                   'are interested in.'
+                    'are interested in.'
 
 REQUIRED_SUFFIX = mark_safe(' <span class="text-primary">*</span>')
-
-
-class CustomAccountAdapter(DefaultAccountAdapter):
-    def populate_username(self, request, user):
-        """
-        Fills in a valid username, if required and missing.  If the
-        username is already present it is assumed to be valid
-        (unique).
-        """
-        from allauth.account.utils import user_field, user_email, user_username
-        from allauth.account import app_settings
-
-        first_name = user_field(user, "first_name")
-        last_name = user_field(user, "last_name")
-        email = user_email(user)
-        username = user_email(user)
-        if app_settings.USER_MODEL_USERNAME_FIELD:
-            user_username(
-                user,
-                username
-                or self.generate_unique_username(
-                    [first_name, last_name, email, username, "user"]
-                ),
-            )
 
 
 class CustomErrorList(ErrorList):
@@ -56,7 +30,7 @@ class CustomErrorList(ErrorList):
                 ['<div class="error"><i class="bi bi-exclamation-circle-fill"></i> %s</div>' % e for e in self])
 
 
-class CustomLoginForm(LoginForm):
+class CustomLoginForm(EmailVerificationEnforcingLoginForm):
     error_css_class = 'alert alert-warning'
 
     def __init__(self, *args, **kwargs):
@@ -74,7 +48,7 @@ class CustomResetPasswordForm(ResetPasswordForm):
         add_bootstrap_form_classes_to_fields(self.fields)
 
 
-class CustomSignupForm(SignupForm):
+class CustomSignupForm(ExtendedSignupForm):
     field_order = ['email', 'password1', 'password2', 'first_name', 'last_name', 'affiliation', 'purpose',
                    'swedish_user', 'captcha']
 
@@ -87,14 +61,11 @@ class CustomSignupForm(SignupForm):
         for field_name in self.fields:
             field = self.fields[field_name]
             if field.required:
-                field.label_suffix = field.label_suffix + REQUIRED_SUFFIX if field.label_suffix is not None else REQUIRED_SUFFIX
+                field.label_suffix = field.label_suffix + REQUIRED_SUFFIX if field.label_suffix is not None \
+                    else REQUIRED_SUFFIX
 
     def save(self, request):
         user = super().save(request)
-
-        user.profile.affiliation = self.cleaned_data.get('affiliation')
-        user.profile.purpose = self.cleaned_data.get('purpose')
-        user.profile.save()
 
         swedish_user = self.cleaned_data.get('swedish_user')
 
@@ -104,21 +75,7 @@ class CustomSignupForm(SignupForm):
 
         return user
 
-    first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={
-        'placeholder': 'First name'
-    }))
-    last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={
-        'placeholder': 'Last name'
-    }))
-    affiliation = forms.CharField(required=True, widget=forms.TextInput(attrs={
-        'placeholder': 'Affiliation (University or Research center)'
-    }))
-    purpose = forms.CharField(widget=forms.Textarea(attrs={'rows': 2, 'cols': 20}), help_text=PURPOSE_HELP_TEXT)
-
     captcha = ReCaptchaField(label=False)
-    swedish_user = forms.BooleanField(label='Swedish User', required=False,
-                                      help_text=SWEDISH_USER_HELP_TEXT,
-                                      widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
 
 
 class CustomChangePasswordForm(ChangePasswordForm):

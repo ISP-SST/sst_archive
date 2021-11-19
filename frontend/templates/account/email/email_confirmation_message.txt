@@ -1,13 +1,8 @@
 {% extends "account/email/base_message.txt" %}
-{% load account %}
+{% load account %}{% block content %}{% autoescape off %}{% user_display user as user_display %}{% with site_name=current_site.name site_domain=current_site.domain %}
 
-{% block content %}
-{% autoescape off %}
-{% user_display user as user_display %}
-{% with site_name=current_site.name site_domain=current_site.domain %}
-You're receiving this e-mail because a user has given your e-mail address to register an account on {{ site_domain }}.
+You are receiving this e-mail because a user has been registered with this e-mail address on {{ site_domain }}. We recurringly verify e-mail addresses to ensure that the accounts are still active.
 
-To confirm this is correct, go to {{ activate_url }}
-{% endwith %}
-{% endautoescape %}
-{% endblock %}
+To confirm that this e-mail address belongs to your account, go to {{ activate_url }}
+
+{% endwith %}{% endautoescape %}{% endblock %}

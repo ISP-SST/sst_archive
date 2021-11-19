@@ -14,7 +14,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileInlineAdmin(admin.StackedInline):
     model = UserProfile
     can_delete = False
-    fields = ['affiliation', 'purpose']
+    fields = ['affiliation', 'purpose', 'email_verification_date', 'email_reverification_disabled']
+    readonly_fields = ['email_verification_date']
 
 
 extend_admin(User, UserAdmin, UserProfileInlineAdmin, weight=0)

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import datetime
 from pathlib import Path
 import json
 import os
@@ -26,12 +26,14 @@ try:
 except:
     raise ImproperlyConfigured('Unable to open secrets file %s' % SECRETS_FILE)
 
+
 def get_secret(setting, secrets=secrets):
     """Get secret setting or fail with ImproperlyConfigured"""
     try:
         return secrets[setting]
     except KeyError:
         raise ImproperlyConfigured("Set the {} setting".format(setting))
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -77,7 +79,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 25
 }
 
 MIDDLEWARE = [
@@ -88,6 +90,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'core.account.EmailVerificationChallengeMiddleware',
 
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
@@ -189,6 +193,11 @@ RECAPTCHA_PUBLIC_KEY = '6LczSRAdAAAAAPBN926J7MqfH-QTyWhHqRqYU-4h'
 RECAPTCHA_PRIVATE_KEY = '6LczSRAdAAAAAFkHPxSZ1Zp8jD8pNhTAgZ8hPolq'
 RECAPTCHA_USE_SSL = True
 
+
+def _user_display(user):
+    return '%s %s' % (user.first_name, user.last_name)
+
+
 ACCOUNT_EMAIL_REQUIRED = True
 # We need to set max length to < 191 to ensure that the email address can be stored as a primary key in MySQL InnoDB
 # tables. This is a MySQL limitation.
@@ -197,6 +206,13 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_USER_DISPLAY = _user_display
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_TEMPLATE_EXTENSION = 'html'
+
+# User email verification expires once per quarter.
+EMAIL_VERIFICATION_EXPIRATION_PERIOD = datetime.timedelta(weeks=12)
+EMAIL_VERIFICATION_CHECK_PERIOD = datetime.timedelta(minutes=5)
 
 ACCOUNT_FORMS = {
     'signup': 'frontend.forms.CustomSignupForm',
@@ -206,7 +222,7 @@ ACCOUNT_FORMS = {
     'reset_password_from_key': 'frontend.forms.CustomResetPasswordKeyForm'
 }
 
-ACCOUNT_ADAPTER = 'frontend.forms.CustomAccountAdapter'
+ACCOUNT_ADAPTER = 'core.account.EmailEnforcingAccountAdapter'
 
 
 # Email backend configuration
@@ -216,7 +232,7 @@ EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'sst_archive@astro.su.se'
+DEFAULT_FROM_EMAIL = 'no-reply@astro.su.se'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -234,7 +250,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 OBSERVATION_TIMEZONE = 'UTC'
 DATETIME_FORMAT = 'Y-m-d H:i:s'
 DATE_FORMAT = 'Y-m-d'
-TIME_FORAT = ''
+TIME_FORMAT = 'H:i:s'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
