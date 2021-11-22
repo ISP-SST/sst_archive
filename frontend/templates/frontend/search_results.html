@@ -4,12 +4,12 @@
 {% load format_column_value %}
 {% load static %}
 
-{% block title %}- Datasets{% endblock %}
+{% block title %}&mdash; Search results{% endblock %}
 
 {% block content %}
 
 <div class="container">
-    <h3>
+    <h3 class="fw-light mb-4">
         Showing
         {% if page_obj.start_index != page_obj.end_index %}
         results {{ page_obj.start_index }} to {{ page_obj.end_index }}
@@ -18,6 +18,10 @@
         {% endif %}
         of {{ paginator.count }}
     </h3>
+
+    <div class="float-end">
+        {% pagination_controls request paginator page_obj %}
+    </div>
 
     <table class="table" style="table-layout: fixed">
         <thead class=".thead-light">
@@ -80,7 +84,9 @@
         </tbody>
     </table>
 
-    {% pagination_controls request paginator page_obj %}
+    <div class="float-end">
+        {% pagination_controls request paginator page_obj %}
+    </div>
 
 </div>
 {% endblock %}

@@ -1,0 +1,36 @@
+{% load account %}
+
+<div class="container">
+
+    <div class="row justify-content-between py-3">
+        <h1 class="col-6 px-5 mt-3 display-4 fs-1 fw-lighter">
+            <a class="text-decoration-none text-white" href="{% url 'landing_page' %}">Stockholm SST
+            Archive <span class="text-muted fw-light"><sup><small>&alpha;lpha</small></sup></span></a>
+        </h1>
+
+        <div class="col-4 text-end row">
+
+        {% if user.is_authenticated %}
+            <div class="row justify-content-end align-items-center">
+                <div class="col-4 fw-bold">
+                    <a class="text-decoration-none text-white" href="{% url 'account_profile' %}">{% user_display user %}</a>
+                </div>
+
+                {% if user.is_staff %}
+                <div class="col-3">
+                    <a class="btn btn-light rounded-pill mx-2" style="width: 100%" href="{% url 'admin:index' %}"><i class="bi bi-pen-fill"></i> Admin</a>
+                </div>
+                {% endif %}
+
+                <a class="col-3 btn btn-light rounded-pill" href="{% url 'account_logout' %}"><i class="bi bi-door-open-fill"></i> Sign out</a>
+            </div>
+        {% else %}
+            <div class="row flex-row justify-content-end align-items-center">
+                <a class="col-3 btn btn-light rounded-pill mx-2" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}"><i class="bi bi-person-fill"></i> Sign in</a>
+                <a class="col-3 btn btn-light rounded-pill" href="{% url 'account_signup' %}"><i class="bi bi-pen-fill"></i> Sign up</a>
+            </div>
+        {% endif %}
+
+        </div>
+    </div>
+</div>

@@ -113,6 +113,8 @@ TEMPLATES = [
 
                 # `allauth` needs this from django
                 'django.template.context_processors.request',
+
+                'frontend.context_processors.contact_information',
             ],
         },
     },
@@ -195,7 +197,10 @@ RECAPTCHA_USE_SSL = True
 
 
 def _user_display(user):
-    return '%s %s' % (user.first_name, user.last_name)
+    if user.first_name or user.last_name:
+        return '%s %s' % (user.first_name, user.last_name)
+    else:
+        return user.email
 
 
 ACCOUNT_EMAIL_REQUIRED = True
@@ -263,3 +268,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SVO_API_URL = 'https://solarnet.oma.be/service/api/svo'
 SVO_USERNAME = get_secret('SVO_USERNAME')
 SVO_API_KEY = get_secret('SVO_API_KEY')
+
+DEFAULT_CONTACT_EMAIL = 'data_request@astro.su.se'
