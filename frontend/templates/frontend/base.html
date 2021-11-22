@@ -12,6 +12,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    {% block head %}
+    {% endblock %}
+
     <style>
     html {
         /* A default font size of 14 px gives us more screen real-estate for content without feeling too cramped. */
@@ -23,24 +26,28 @@
 </head>
 
 <body>
-<div id="main-container" class="container">
+<div id="main-container" class="container-fluid">
 
-    <header class="row mb-3">
+    <header class="row mb-5 bg-dark text-white">
+        <div class="container">
         <div class="row justify-content-between py-3">
-            <h1 class="col-8 mt-3 display-4"><a style="color: #000000; text-decoration: none" href="{% url 'search' %}">Stockholm SST
-                Archive <span class="text-muted"><sup><small>Prototype</small></sup></span></a></h1>
+            <h1 class="col-8 mt-3 display-4 fs-1 fw-lighter">
+                <a class="text-decoration-none text-white" href="{% url 'search' %}">Stockholm SST
+                Archive <span class="text-muted fw-light"><sup><small>&alpha;lpha</small></sup></span></a>
+            </h1>
 
             {% if user.is_authenticated %}
-            <div class="col-2 text-end">
+            <div class="col-3 text-end">
+                <div class="row">
+                    <strong class="col"><a href="{% url 'account_profile' %}">{% user_display user %}</a></strong>
 
-                    <strong><a href="{% url 'account_profile' %}">{% user_display user %}</a></strong>
-
-                    <p>
+                    <p class="col">
                     {% if user.is_staff %}
                         <a class="btn btn-light btn-sm" href="{% url 'admin:index' %}"><i class="bi bi-pen-fill"></i> Admin</a>
                     {% endif %}
                         <a class="btn btn-light btn-sm" href="{% url 'account_logout' %}"><i class="bi bi-person-fill"></i> Sign out</a>
                     </p>
+                </div>
             </div>
             {% else %}
             <div class="col-4 text-end">
@@ -51,25 +58,38 @@
             </div>
             {% endif %}
         </div>
+            </div>
     </header>
 
     {% block full_width_content %}
-    <div class="row">
-        <div id="sidebar" class="col-3 bg-light p-3 border">
-            {% block sidebar %}
-            {% include "frontend/search_sidebar.html" %}
-            {% include "frontend/feedback_sidebar.html" %}
-            {% endblock %}
-        </div>
+    <div class="container">
+        <div class="row">
+            <div id="sidebar" class="col-3 bg-light p-3 border">
+                {% block sidebar %}
+                {% include "frontend/search_sidebar.html" %}
+                {% comment %}
+                {% include "frontend/feedback_sidebar.html" %}
+                {% endcomment %}
+                {% endblock %}
+            </div>
 
-        <div id="content" class="col-9 ml-5 offset-0">
-            {% block content %}{% endblock %}
+            <div id="content" class="col-9 ml-5 offset-0">
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </div>
     {% endblock %}
 
-    <footer class="row">
-        <div style="height: 5em"></div>
+    <footer class="row mt-5 bg-dark text-white">
+        <div class="col-2 m-3">
+            <h4 class="fw-light py-5">Feedback</h4>
+
+            <p>Have opinions or suggestions about the Stockholm SST Archive?</p>
+
+            <p>Feel free to reach out with your feedback to
+                <a href="mailto:daniel.nitshe@astro.su.se?subject=Stockholm SST Archive - Feedback">daniel.nitsche@astro.su.se</a>.
+            </p>
+        </div>
     </footer>
 </div>
 

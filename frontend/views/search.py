@@ -4,7 +4,6 @@ from frontend.utils import get_complex_filter
 from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
 from search.search import SearchCriteria, search_observations
 
-SPECTRAL_LINE_METADATA_KEY = 'filter1'
 
 # Compatibility function. Was introduced in Python 3.9, but we're currently only on 3.7.
 def removeprefix(self, prefix):

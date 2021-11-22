@@ -5,13 +5,6 @@ from frontend.forms import create_download_form
 from observations.models import DataCube, Observation
 
 
-def _remove_uninteresting_metadata_fields(metadata_fields):
-    metadata_fields.pop('fits header', None)
-    metadata_fields.pop('ID', None)
-    metadata_fields.pop('data location', None)
-    metadata_fields.pop('data cube', None)
-    metadata_fields.pop('Observation ID', None)
-
 
 def observation_detail(request, observation_pk):
     data_cubes_queryset = DataCube.objects.select_related('instrument', 'previews', 'metadata', 'r0data',
@@ -24,10 +17,7 @@ def observation_detail(request, observation_pk):
     primary_cube = data_cubes[0]
 
     metadata = primary_cube.metadata
-
-    metadata_fields = {field.verbose_name: field.value_from_object(metadata) for field in metadata._meta.get_fields()}
-
-    _remove_uninteresting_metadata_fields(metadata_fields)
+    metadata_fields = metadata.get_metadata_fields()
 
     r0_json_data = None
     if hasattr(primary_cube, 'r0data'):
@@ -49,12 +39,16 @@ def observation_detail(request, observation_pk):
     instruments = set()
     spectral_lines = set()
     total_number_of_scans = 0
+    observers = set()
+    polarimetric = False
 
     for cube in data_cubes:
         date_beg = min(date_beg, cube.metadata.date_beg)
         date_end = max(date_end, cube.metadata.date_end)
         instruments.add(cube.instrument.name)
         spectral_lines.add(cube.metadata.waveband)
+        observers.add(cube.metadata.observer)
+        polarimetric = polarimetric or cube.metadata.naxis4 > 1
         total_number_of_scans += cube.metadata.naxis5
 
     context = {
@@ -72,6 +66,8 @@ def observation_detail(request, observation_pk):
         'metadata_fields': metadata_fields,
         'r0_json_data': r0_json_data,
         'spectral_line_data': spectral_line_data,
+        'observers': observers,
+        'polarimetric': polarimetric
     }
 
     return render(request, 'frontend/observation_detail.html', context)

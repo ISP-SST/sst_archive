@@ -2,7 +2,9 @@ from django.db import models
 
 
 class MetadataManager(models.Manager):
-    """Manager that optimize the queries by selecting the foreign objects"""
+    """
+    Manager that optimize the queries by selecting the foreign objects.
+    """
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -11,6 +13,12 @@ class MetadataManager(models.Manager):
 
 
 def update_parent_observation(parent_observation):
+    """
+    Updates an observation by looking at the the cubes associated with it and producing information
+    to put in the aggregated fields. For example, date_beg and date_end exists on the Observation
+    level as well, and will always be set to the minimum date_beg and maximum date_end for all the
+    associated DataCubes respectively.
+    """
     related_metadata_objects = Metadata.objects.filter(data_cube__observation_id=parent_observation.id).only(
         'data_cube', 'date_beg', 'date_end')
     date_begs = [metadata.date_beg for metadata in related_metadata_objects]
@@ -25,7 +33,9 @@ def update_parent_observation(parent_observation):
 
 
 class Metadata(models.Model):
-    """Model for the joint set of metadata present in CRISP and CHROMIS"""
+    """
+    Model for the joint set of metadata present in CRISP and CHROMIS.
+    """
 
     class Meta:
         verbose_name = 'Metadata'
@@ -390,6 +400,24 @@ class Metadata(models.Model):
         result = super().delete(*args, **kwargs)
         update_parent_observation(self.data_cube.observation)
         return result
+
+    def get_metadata_fields(self):
+        """
+        Returns a dictionary of fields present in this Metadata instance. The dictionary
+        will be on the form: { '<verbose_field_name>': field_value, ... }.
+        """
+        metadata_fields = {field.verbose_name: field.value_from_object(self) for field in
+                           self._meta.get_fields()}
+
+        # NOTE(daniel): Would be cleaner if these fields could be  ignored by member variable
+        #               names instead of verbose names.
+        metadata_fields.pop('fits header', None)
+        metadata_fields.pop('ID', None)
+        metadata_fields.pop('data location', None)
+        metadata_fields.pop('data cube', None)
+        metadata_fields.pop('Observation ID', None)
+
+        return metadata_fields
 
     def __str__(self):
         return self.data_cube.oid

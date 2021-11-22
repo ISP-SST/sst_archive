@@ -1,13 +1,19 @@
 {% extends "frontend/base.html" %}
 
+{% load account %}
+
 {% block full_width_content %}
 <div class="container col-6">
 
-    <h2>Account Profile</h2>
+    <h2>Account Profile for {% user_display user %}</h2>
 
-    <div class="container mt-5">
+    <div class="container mt-5 min-vh-100">
 
         <table class="table table-borderless">
+            <tr>
+                <td>Full name:</td>
+                <td>{% user_display user %}</td>
+            </tr>
             <tr>
                 <td>E-mail:</td>
                 <td>{{ user.email }}</td>
@@ -15,6 +21,10 @@
             <tr>
                 <td>Registered as a Swedish user:</td>
                 <td>{{ swedish_user }}</td>
+            </tr>
+            <tr>
+                <td>Affiliation:</td>
+                <td>{{ user.profile.affiliation }}</td>
             </tr>
         </table>
 

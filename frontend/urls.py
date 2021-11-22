@@ -1,9 +1,10 @@
 from django.urls import path
+from django.views.generic import TemplateView
 
 from . import views
 
 urlpatterns = [
-    path('', views.search_view, name='index'),
+    path('', TemplateView.as_view(template_name="frontend/landing_page.html"), name='landing_page'),
     path('files/<filename>', views.data_cube_detail, name='data_cube_detail'),
     path('observations/<observation_pk>', views.observation_detail, name='observation_detail'),
     path('search', views.search_view, name='search'),

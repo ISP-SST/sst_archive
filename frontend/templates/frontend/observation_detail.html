@@ -4,11 +4,15 @@
 
 {% block title %}- {{ data_cube.oid }}{% endblock %}
 
+{% block head %}
+<meta name="robots" content="noindex">
+{% endblock %}
+
 {% block content %}
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-<div class="container">
+<div class="container min-vh-100">
 
     {% if metadata %}
 
@@ -22,9 +26,9 @@
                 {% if data_cube.video_preview and data_cube.video_preview.video_wings %}
                 <div class="video-container">
                     <div class="video-inlay" style="position: relative">
-                        <video id="video-wings" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" style="border-radius: 5px; max-width: 100%" loop muted playsinline></video>
-                        <div id="video-wings-play-button">
-                            <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px" onclick="const video = document.getElementById('video-wings'); video.play(); video.controls = true; const playButton = document.getElementById('video-wings-play-button'); playButton.style.display = 'None';"
+                        <video id="video-core" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" style="border-radius: 5px; max-width: 100%" loop muted playsinline></video>
+                        <div id="video-core-play-button">
+                            <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px" onclick="const video = document.getElementById('video-core'); video.play(); video.controls = true; const playButton = document.getElementById('video-core-play-button'); playButton.style.display = 'None';"
                                  class="bi bi-play-circle-fill"></div>
                         </div>
                     </div>
@@ -44,12 +48,13 @@
                     <td>Features:</td>
                     <td>
                         {% for tag in data_cube.tags.all %}
-                        <span class="badge bg-info">{{ tag }}</span>
+                        <span class="badge bg-light text-dark">{{ tag }}</span>
                         {% empty %}
                         &mdash;
                         {% endfor %}
                     </td>
                 </tr>
+
                 <tr>
                     <td>Observation time (UTC):</td>
                     <td>
@@ -69,6 +74,7 @@
                         </ul>
                     </td>
                 </tr>
+
                 <tr>
                     <td>Spectral line(s):</td>
                     <td>
@@ -81,13 +87,24 @@
                 </tr>
 
                 <tr>
+                    <td>Observer(s):</td>
+                    <td>
+                        <ul style="list-style-type: none; padding-left: 0">
+                        {% for observer in observers %}
+                            <li>{{ observer }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
                     <td>Scans:</td>
                     <td>{{ total_number_of_scans }}</td>
                 </tr>
 
                 <tr>
                     <td>Polarimetric:</td>
-                    <td>{% if metadata.naxis4 > 1 %}Yes{% else %}No{% endif %}</td>
+                    <td>{% if polarimetric %}Yes{% else %}No{% endif %}</td>
                 </tr>
 
                 <tr>

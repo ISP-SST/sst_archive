@@ -10,14 +10,7 @@ def data_cube_detail(request, filename):
         filename__iexact=filename)
     metadata = data_cube.metadata
 
-    metadata_fields = {field.verbose_name: field.value_from_object(metadata) for field in metadata._meta.get_fields()}
-
-    # FIXME(daniel): We shouldn't need to pop these from the fields.
-    metadata_fields.pop('fits header', None)
-    metadata_fields.pop('ID', None)
-    metadata_fields.pop('data location', None)
-    metadata_fields.pop('data cube', None)
-    metadata_fields.pop('Observation ID', None)
+    metadata_fields = metadata.get_metadata_fields()
 
     r0_json_data = None
     r0_json_version = None
