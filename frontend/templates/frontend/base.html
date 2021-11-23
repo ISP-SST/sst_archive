@@ -19,6 +19,13 @@
         /* A default font size of 14 px gives us more screen real-estate for content without feeling too cramped. */
         font-size: 14px;
     }
+
+    body {
+        /* Enforce stable scroll bars. This is just a workaround for the bootstrap HTML+CSS not being 100% correct.
+           We should be able to remove this if we fix the underlying cause. */
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
     </style>
 
     <title>Stockholm SST Archive Prototype {% block title %}{% endblock %}</title>
@@ -32,19 +39,17 @@
             {% include "frontend/header.html" %}
         </header>
 
-        <div class="row flex-fill">
+        <div class="row flex-grow-1 ">
             {% block full_width_content %}
-            <div class="container">
-                <div class="row gx-5">
-                    <div id="sidebar" class="col-3 bg-light p-4 border-end mw-25 py-5">
-                        {% block sidebar %}
-                        {% include "frontend/search_sidebar.html" %}
-                        {% endblock %}
-                    </div>
+            <div class="container row gx-5">
+                <div id="sidebar" class="col-3 bg-light p-4 border-end mw-25 py-5">
+                    {% block sidebar %}
+                    {% include "frontend/search_sidebar.html" %}
+                    {% endblock %}
+                </div>
 
-                    <div id="content" class="col-9 ml-5 offset-0 my-5">
-                        {% block content %}{% endblock %}
-                    </div>
+                <div id="content" class="col-9 ml-5 offset-0 my-5">
+                    {% block content %}{% endblock %}
                 </div>
             </div>
             {% endblock %}
