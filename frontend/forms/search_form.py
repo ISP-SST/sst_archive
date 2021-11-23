@@ -20,10 +20,13 @@ def initial_end_date():
 
 
 def _get_query_label():
-    return 'Query <a class="bi bi-question-circle" ' + \
+    return '<p>Advanced query <a class="bi bi-question-circle" ' + \
            'data-bs-toggle="tooltip" data-bs-html="true" href="#" ' + \
-           'title="Allows for arbitrary queries into observation metadata: ' + \
-           '<code>metadata__xposure__lt=0.15</code>"></a> '
+           'title="Allows for arbitrary queries into observation metadata.</p>' \
+           '<p>Example: ' + \
+           '<code>cubes__metadata__xposure__lt=0.15</code></p>' \
+           '<p>This is an advanced feature and will likely not be suitable for ' \
+           'most users.</p>"></a> '
 
 
 def get_spectral_line_choices():
@@ -125,7 +128,7 @@ class SearchForm(forms.Form):
                                              ('polarimetric', 'Polarimetric'),
                                              ('nonpolarimetric', 'Non-Polarimetric')),
                                     widget=forms.Select(attrs={'class': 'form-select'}))
-    query = forms.CharField(label=mark_safe(_get_query_label()), required=False,
+    advanced_query = forms.CharField(label=mark_safe(_get_query_label()), required=False,
                             widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 

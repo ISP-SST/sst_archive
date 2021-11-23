@@ -27,7 +27,7 @@
 
     {% if metadata %}
 
-    <div class="container row">
+    <div class="row">
         <h3 class="fw-light mb-5">Observation Details</h3>
 
         <div class="mb-5 col-6" style="position: relative; overflow: hidden">
@@ -146,23 +146,23 @@
         </div>
     </div>
 
-    <div class="container row">
+    <div class="row border rounded bg-white mb-5 p-3 gx-0">
         {% if r0_json_data %}
-        <figure class="mb-5 col-6">
-            <h5>Seeing (r<sub>0</sub>)</h5>
+        <figure class="col-6">
+            <h5 class="text-center">Seeing (r<sub>0</sub>)</h5>
             {% include "frontend/data_cube_detail/r0_graph.html" %}
         </figure>
         {% endif %}
 
         {% if spectral_line_data %}
-        <figure class="mb-5 col-6">
-            <h5>Spectral Line Profile</h5>
+        <figure class="col-6">
+            <h5 class="text-center">Spectral Line Profile</h5>
             {% include "frontend/data_cube_detail/spectral_line_profile_graph.html" %}
         </figure>
         {% endif %}
     </div>
 
-    <div class="container mb-5">
+    <div class="row mb-5">
         <div class="accordion" id="metadata-accordion">
           <div class="accordion-item">
             <h2 class="accordion-header" id="flush-headingOne">

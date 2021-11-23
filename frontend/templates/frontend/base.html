@@ -39,10 +39,10 @@
             {% include "frontend/header.html" %}
         </header>
 
-        <div class="row flex-grow-1 ">
+        <div class="row flex-grow-1 bg-light">
             {% block full_width_content %}
             <div class="container row gx-5">
-                <div id="sidebar" class="col-3 bg-light p-4 border-end mw-25 py-5">
+                <div id="sidebar" class="col-3 p-4 border-end mw-25 py-5" style="background-color: #ebebeb">
                     {% block sidebar %}
                     {% include "frontend/search_sidebar.html" %}
                     {% endblock %}
