@@ -269,4 +269,4 @@ SVO_API_URL = 'https://solarnet.oma.be/service/api/svo'
 SVO_USERNAME = get_secret('SVO_USERNAME')
 SVO_API_KEY = get_secret('SVO_API_KEY')
 
-DEFAULT_CONTACT_EMAIL = 'data_request@astro.su.se'
+DEFAULT_CONTACT_EMAIL = 'sst-data-requests@astro.su.se'
