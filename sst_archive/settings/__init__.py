@@ -238,6 +238,7 @@ EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'no-reply@astro.su.se'
+DEFAULT_CONTACT_EMAIL = 'sst-data-requests@astro.su.se'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -268,5 +269,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SVO_API_URL = 'https://solarnet.oma.be/service/api/svo'
 SVO_USERNAME = get_secret('SVO_USERNAME')
 SVO_API_KEY = get_secret('SVO_API_KEY')
-
-DEFAULT_CONTACT_EMAIL = 'sst-data-requests@astro.su.se'
