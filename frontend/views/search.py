@@ -40,8 +40,8 @@ def search_view(request):
     if 'features' in form.cleaned_data and form.cleaned_data['features']:
         search_criteria.features = form.cleaned_data['features']
 
-    query = form.cleaned_data['query']
-    freeform_query_q = get_complex_filter(query)
+    advanced_query = form.cleaned_data['advanced_query']
+    complex_query = get_complex_filter(advanced_query)
 
     if 'polarimetry' in form.cleaned_data:
         search_criteria.polarimetry = form.cleaned_data['polarimetry']
@@ -52,7 +52,7 @@ def search_view(request):
     persist_search_form(request, form.cleaned_data)
 
     page_number = request.GET.get('page', 1)
-    results = search_observations(search_criteria, page_number=page_number, complex_query=freeform_query_q)
+    results = search_observations(search_criteria, page_number=page_number, complex_query=complex_query)
 
     context = {
         'page_search_results': results.page,
