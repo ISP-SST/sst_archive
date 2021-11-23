@@ -9,6 +9,17 @@
 {% block content %}
 
 <div class="container">
+
+    <!-- TODO: Decide if we need breadcrumbs or not. -->
+    <!--
+    <nav aria-label="breadcrumb" class="breadcrumbs">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'landing_page' %}">Home</a></li>
+            <li class="breadcrumb-item" aria-current="page">Search</li>
+        </ol>
+    </nav>
+    -->
+
     <h3 class="fw-light mb-4">
         Showing
         {% if page_obj.start_index != page_obj.end_index %}

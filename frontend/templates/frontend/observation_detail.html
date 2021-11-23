@@ -12,7 +12,18 @@
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-<div class="container min-vh-100">
+<div class="container">
+
+    <!-- TODO: Decide if we need breadcrumbs or not. -->
+    <!--
+    <nav aria-label="breadcrumb" class="breadcrumbs">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'landing_page' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'search' %}">Search</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Observation Details</li>
+        </ol>
+    </nav>
+    -->
 
     {% if metadata %}
 
