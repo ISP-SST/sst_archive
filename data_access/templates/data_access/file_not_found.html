@@ -1,13 +1,21 @@
 
 {% extends "frontend/base.html" %}
 
-{% block title %}SST Archive - 404{% endblock %}
+{% block title %}&mdash; Not found{% endblock %}
 
-{% block content %}
+{% block full_width_content %}
 
-<h2>Something went wrong</h2>
+<div class="container col-5 mt-5 mb-5">
 
-<p>The file "{{ filename }}" does not exist at the expected location.</p>
-<p>Please contact the system administrator.</p>
+<h2>File was not found</h2>
+
+<div class="mt-5">
+
+    <p>The file <code>{{ filename }}</code> does not exist at the expected location.</p>
+
+    <p>Please <a href="mailto:{{ contact_email }}">contact the system administrator</a> with this issue.</p>
+
+</div>
+</div>
 
 {% endblock %}
