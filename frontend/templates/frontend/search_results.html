@@ -82,7 +82,7 @@
                 {% if observation.cubes_in_observation > 1 %}
                 <a style="text-decoration: none" class="bi bi-box" href="{% url 'observation_detail' observation.observation_pk %}" data-bs-toggle="tooltip" title="Number of data cubes in this observation"> {{ observation.cubes_in_observation }}</a>
                 {% else %}
-                <a class="download-symbol bi bi-download" href="{% url 'download_data_cube' observation.filename %}"></a>
+                <a class="download-symbol bi bi-download" href="{% url 'download_data_cube' observation.filename %}" title="Download {{ observation.filename }}"></a>
                 {% endif %}
             </td>
         </tr>
