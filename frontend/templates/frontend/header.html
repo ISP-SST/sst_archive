@@ -16,28 +16,30 @@
             </ul>
         </nav>
 
-        <div class="col flex-grow-0 flex-shrink-0 text-end row">
+        <div class="col flex-grow-0 row flex-nowrap justify-content-end align-items-center gx-3">
         {% if user.is_authenticated %}
-            <div class="row flex-nowrap justify-content-end align-items-center">
-                <div class="col fw-bold text-nowrap">
-                    <a class="text-decoration-none text-white" href="{% url 'account_profile' %}">{% user_display user %}</a>
-                </div>
+            <div class="col text-nowrap fw-bold">
+                <a class="text-decoration-none text-white" href="{% url 'account_profile' %}">{% user_display user %}</a>
+            </div>
 
-                {% if user.is_staff %}
-                <div class="col text-nowrap">
-                    <a class="btn btn-light rounded-pill mx-2" style="width: 100%" href="{% url 'admin:index' %}"><i class="bi bi-pen-fill"></i> Admin</a>
-                </div>
-                {% endif %}
+            {% if user.is_staff %}
+            <div class="col text-nowrap">
+                <a class="btn btn-light rounded-pill" href="{% url 'admin:index' %}"><i class="bi bi-pen-fill"></i> Admin</a>
+            </div>
+            {% endif %}
 
-                <a class="col text-nowrap btn btn-light rounded-pill" href="{% url 'account_logout' %}"><i class="bi bi-door-open-fill"></i> Sign out</a>
+            <div class="col text-nowrap">
+                <a class="btn btn-light rounded-pill" href="{% url 'account_logout' %}"><i class="bi bi-door-open-fill"></i> Sign out</a>
             </div>
         {% else %}
-            <div class="row flex-nowrap justify-content-end align-items-center">
-                <a class="col btn btn-light text-nowrap rounded-pill mx-2" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}"><i class="bi bi-person-fill"></i> Sign in</a>
-                <a class="col btn btn-light text-nowrap rounded-pill" href="{% url 'account_signup' %}"><i class="bi bi-pen-fill"></i> Sign up</a>
+            <div class="col text-nowrap">
+                <a class="btn btn-light rounded-pill" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}"><i class="bi bi-person-fill"></i> Sign in</a>
+            </div>
+
+            <div class="col text-nowrap">
+                <a class="btn btn-light rounded-pill" href="{% url 'account_signup' %}"><i class="bi bi-pen-fill"></i> Sign up</a>
             </div>
         {% endif %}
-
         </div>
     </div>
 </div>
