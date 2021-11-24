@@ -1,17 +1,16 @@
 {% extends "frontend/base.html" %}
 
+{% block title %}&mdash; Verify E-mail Address{% endblock %}
+
 {% block full_width_content %}
-<div class="container col-5 mt-5 mb-5">
+<div class="container col-6 align-self-center p-5 border bg-white rounded">
 
-    <h2>Please Verify Your E-mail Address</h2>
+    <h2 class="mb-5">Please Verify Your E-mail Address</h2>
 
-    <div class="mt-5">
+    <p>We recurrently verify email accounts to ensure that new users have a working email address and that
+        existing users are still active.</p>
 
-        <p>We recurrently verify email accounts to ensure that new users have a working email address and that
-            existing users are still active.</p>
-
-        <p>We have sent an e-mail to you for verification. Follow the link provided to finalize verification
-            process. Please contact us if you do not receive it within a few minutes.</p>
-    </div>
+    <p>We have sent an e-mail to you for verification. Follow the link provided to finalize verification
+        process. Please contact us if you do not receive it within a few minutes.</p>
 </div>
 {% endblock %}

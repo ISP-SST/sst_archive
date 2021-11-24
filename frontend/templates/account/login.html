@@ -1,34 +1,36 @@
 {% extends "frontend/base.html" %}
 
+{% block title %}&mdash; Sign in{% endblock %}
+
 {% block full_width_content %}
-<div class="container col-5 mt-5 mb-5">
+<div class="container col-6 align-self-center p-5 border bg-white rounded">
 
-    <h2>Sign in</h2>
+    <h2 class="mb-5">Sign in</h2>
 
-    <div class="mt-5">
-        {% if request.GET.login_reason %}
-        <div class="alert alert-primary">
-            {{ request.GET.login_reason }}
-        </div>
+    {% if request.GET.login_reason %}
+    <div class="alert alert-primary">
+        {{ request.GET.login_reason }}
+    </div>
+    {% endif %}
+
+    <p>If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
+
+    <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+
+        <table class="table table-borderless">
+        {{ form.as_table }}
+        </table>
+
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
 
-        <p>If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
-
-        <form class="login" method="POST" action="{% url 'account_login' %}">
-            {% csrf_token %}
-
-            <table class="table table-borderless">
-            {{ form.as_table }}
-            </table>
-
-            {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-            {% endif %}
-
-            <a class="btn btn-secondary" href="{% url 'account_reset_password' %}">Forgot Password?</a>
-            <button class="btn btn-primary" type="submit"><i class="bi bi-person-fill"></i> Sign In</button>
-        </form>
-    </div>
+        <div class="clearfix">
+            <a class="btn btn-secondary float-start" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+            <button class="btn btn-primary float-end" type="submit"><i class="bi bi-person-fill"></i> Sign In</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
 

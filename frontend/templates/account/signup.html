@@ -1,27 +1,25 @@
 {% extends "frontend/base.html" %}
 
+{% block title %}&mdash; Sign up{% endblock %}
+
 {% block full_width_content %}
-<div class="container col-5 mt-5 mb-5">
+<div class="container my-5 col-6 align-self-center p-5 border bg-white rounded">
 
-    <h2>Sign Up</h2>
+    <h2 class="mb-5">Sign Up</h2>
 
-    <div class="mt-5">
+    <p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>.</p>
 
-        <p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>.</p>
+    <form class="form signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        <table class="table table-borderless">
+            {% csrf_token %}
+            {{ form.as_table }}
+        </table>
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
 
-        <form class="form signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-            <table class="table table-borderless">
-                {% csrf_token %}
-                {{ form.as_table }}
-            </table>
-            {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-            {% endif %}
-
-            <button class="btn btn-primary" type="submit"><i class="bi bi-pen-fill"></i> Sign Up </button>
-        </form>
-
-    </div>
+        <button class="btn btn-primary float-end" type="submit"><i class="bi bi-pen-fill"></i> Sign Up </button>
+    </form>
 </div>
 
 {% endblock %}

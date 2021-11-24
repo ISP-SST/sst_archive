@@ -2,33 +2,31 @@
 
 {% load account %}
 
+{% block title %}&mdash; Account Profile{% endblock %}
+
 {% block full_width_content %}
-<div class="container col-5 mt-5">
+<div class="container col-6 align-self-center border p-5 bg-white rounded">
 
-    <h2>Account Profile for {% user_display user %}</h2>
+    <h2 class="mb-5">Account Profile for {% user_display user %}</h2>
 
-    <div class="mt-5">
-
-        <table class="table table-borderless">
-            <tr>
-                <td>Full name:</td>
-                <td>{% user_display user %}</td>
-            </tr>
-            <tr>
-                <td>E-mail:</td>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <td>Registered as a Swedish user:</td>
-                <td>{{ swedish_user }}</td>
-            </tr>
-            <tr>
-                <td>Affiliation:</td>
-                <td>{{ user.profile.affiliation }}</td>
-            </tr>
-        </table>
-
-    </div>
+    <table class="table table-borderless">
+        <tr>
+            <td>Full name:</td>
+            <td>{% user_display user %}</td>
+        </tr>
+        <tr>
+            <td>E-mail:</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td>Registered as a Swedish user:</td>
+            <td>{{ swedish_user }}</td>
+        </tr>
+        <tr>
+            <td>Affiliation:</td>
+            <td>{{ user.profile.affiliation }}</td>
+        </tr>
+    </table>
 </div>
 {% endblock %}
 

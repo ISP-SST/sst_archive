@@ -152,12 +152,22 @@
             <h5 class="text-center">Seeing (r<sub>0</sub>)</h5>
             {% include "frontend/data_cube_detail/r0_graph.html" %}
         </figure>
+        {% else %}
+        <figure class="col-6">
+            <h5 class="text-center">No seeing information available</h5>
+            <div style="height: 200px"></div>
+        </figure>
         {% endif %}
 
         {% if spectral_line_data %}
         <figure class="col-6">
             <h5 class="text-center">Spectral Line Profile</h5>
             {% include "frontend/data_cube_detail/spectral_line_profile_graph.html" %}
+        </figure>
+        {% else %}
+        <figure class="col-6">
+            <h5 class="text-center">No spectral line profile available</h5>
+            <div style="height: 200px"></div>
         </figure>
         {% endif %}
     </div>
