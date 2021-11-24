@@ -33,6 +33,9 @@ _SWEDISH_USER_HELP_TEXT = '<strong>IMPORTANT:</strong> By specifying that you ar
 _PURPOSE_HELP_TEXT = 'Please provide a brief description of the purpose for the account, e.g. what type of data you ' \
                      'are interested in.'
 
+_EMAIL_HELP_TEXT = 'Please provide an e-mail address belonging to your affiliation (university or research center) ' \
+                   'to ensure that verification performed efficiently.'
+
 
 def _get_logout_and_reverification_response(request):
     user = request.user
@@ -129,6 +132,11 @@ class ExtendedSignupForm(SignupForm):
     field_order = ['email', 'password1', 'password2', 'first_name', 'last_name', 'affiliation', 'purpose',
                    'swedish_user']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].help_text = _EMAIL_HELP_TEXT
+        pass
+
     def save(self, request):
         user = super().save(request)
 
@@ -147,7 +155,7 @@ class ExtendedSignupForm(SignupForm):
     affiliation = forms.CharField(required=True, widget=forms.TextInput(attrs={
         'placeholder': 'Affiliation (University or Research center)'
     }))
-    purpose = forms.CharField(widget=forms.Textarea(attrs={'rows': 2, 'cols': 20}), help_text=_PURPOSE_HELP_TEXT)
+    purpose = forms.CharField(widget=forms.Textarea(attrs={'rows': 2, 'cols': 20, 'placeholder': _PURPOSE_HELP_TEXT}))
 
     swedish_user = forms.BooleanField(label='Swedish User', required=False,
                                       help_text=_SWEDISH_USER_HELP_TEXT,
