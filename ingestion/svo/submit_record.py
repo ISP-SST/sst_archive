@@ -11,10 +11,11 @@ from urllib.parse import urljoin
 
 from astropy.io import fits
 from dateutil.parser import parse, ParserError
-from slumber import API
 from slumber.exceptions import HttpNotFoundError
 
 # Set with proper base URL of data, or set file URL explicitly through script argument
+from ingestion.svo.svo_api import SvoApi
+
 BASE_FILE_URL = None # Used to be 'https://dubshen.astro.su.se/data/'
 
 # The default hdu name or index to use for extracting the metadata from the FITS file (can be specified here to avoid
@@ -47,24 +48,6 @@ TODO(daniel): This file is a bit of a mess right now. It started as a straight f
               that make sense for the synchronization from the SST Archive to the SVO. We basically need to
               clean it up a bit and remove the parts that we don't expect to use.
 """
-
-
-class SvoApi(API):
-    """RESTful API interface for the SVO"""
-
-    def __init__(self, api_url, username, api_key):
-        self.username = username
-        self.api_key = api_key
-        super().__init__(api_url, auth=self.api_key_auth)
-
-    def api_key_auth(self, request):
-        """Sets the API key authentication in the request header"""
-        request.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
-        return request
-
-    def __call__(self, resource_uri):
-        """Return a resource from a resource URI"""
-        return getattr(self, resource_uri)
 
 
 class SvoRecord:
