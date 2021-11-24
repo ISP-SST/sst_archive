@@ -1,0 +1,1451 @@
+[
+  {
+    "name": "ao_lock",
+    "type": "real",
+    "unit": "",
+    "description": "Fraction of time the AO was locking, 2s average",
+    "verbose_name": "AO_LOCK"
+  },
+  {
+    "name": "ao_nmode",
+    "type": "integer",
+    "unit": "",
+    "description": "Number of AO corrected Mirror modes",
+    "verbose_name": "AO_NMODE"
+  },
+  {
+    "name": "atmos_r0",
+    "type": "real",
+    "unit": "",
+    "description": "Atmospheric coherence length (mean value)",
+    "verbose_name": "ATMOS_R0"
+  },
+  {
+    "name": "btype",
+    "type": "text",
+    "unit": "",
+    "description": "Type of data in array",
+    "verbose_name": "BTYPE"
+  },
+  {
+    "name": "bunit",
+    "type": "text",
+    "unit": "",
+    "description": "Units in array",
+    "verbose_name": "BUNIT"
+  },
+  {
+    "name": "cadavg",
+    "type": "real",
+    "unit": "",
+    "description": "Average of actual cadence",
+    "verbose_name": "CADAVG"
+  },
+  {
+    "name": "cadmax",
+    "type": "real",
+    "unit": "",
+    "description": "Maximum of actual cadence",
+    "verbose_name": "CADMAX"
+  },
+  {
+    "name": "cadmin",
+    "type": "real",
+    "unit": "",
+    "description": "Minimum of actual cadence",
+    "verbose_name": "CADMIN"
+  },
+  {
+    "name": "cadvar",
+    "type": "real",
+    "unit": "",
+    "description": "Variance of actual cadence",
+    "verbose_name": "CADVAR"
+  },
+  {
+    "name": "camera",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "CAMERA"
+  },
+  {
+    "name": "cdelt1",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CDELT1"
+  },
+  {
+    "name": "cdelt1a",
+    "type": "real",
+    "unit": "",
+    "description": "Zero FOV extent",
+    "verbose_name": "CDELT1A"
+  },
+  {
+    "name": "cdelt2",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CDELT2"
+  },
+  {
+    "name": "cdelt2a",
+    "type": "real",
+    "unit": "",
+    "description": "Zero FOV extent",
+    "verbose_name": "CDELT2A"
+  },
+  {
+    "name": "cdelt3",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CDELT3"
+  },
+  {
+    "name": "cdelt4",
+    "type": "integer",
+    "unit": "",
+    "description": "Stokes indices [1,2,3,4] --> [I,Q,U,V]",
+    "verbose_name": "CDELT4"
+  },
+  {
+    "name": "cdelt5",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CDELT5"
+  },
+  {
+    "name": "cname1",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "CNAME1"
+  },
+  {
+    "name": "cname2",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "CNAME2"
+  },
+  {
+    "name": "cname3",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "CNAME3"
+  },
+  {
+    "name": "cname5",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "CNAME5"
+  },
+  {
+    "name": "crpix1",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRPIX1"
+  },
+  {
+    "name": "crpix1a",
+    "type": "real",
+    "unit": "",
+    "description": "Center pixel of image array",
+    "verbose_name": "CRPIX1A"
+  },
+  {
+    "name": "crpix2",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRPIX2"
+  },
+  {
+    "name": "crpix2a",
+    "type": "real",
+    "unit": "",
+    "description": "Center pixel of image array",
+    "verbose_name": "CRPIX2A"
+  },
+  {
+    "name": "crpix3",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRPIX3"
+  },
+  {
+    "name": "crpix4",
+    "type": "integer",
+    "unit": "",
+    "description": "Index of Stokes components in pixel 1",
+    "verbose_name": "CRPIX4"
+  },
+  {
+    "name": "crpix5",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRPIX5"
+  },
+  {
+    "name": "crval1",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRVAL1"
+  },
+  {
+    "name": "crval1a",
+    "type": "real",
+    "unit": "arcsec",
+    "description": "Coordinates of center of image array",
+    "verbose_name": "CRVAL1A"
+  },
+  {
+    "name": "crval2",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRVAL2"
+  },
+  {
+    "name": "crval2a",
+    "type": "real",
+    "unit": "arcsec",
+    "description": "Coordinates of center of image array",
+    "verbose_name": "CRVAL2A"
+  },
+  {
+    "name": "crval3",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRVAL3"
+  },
+  {
+    "name": "crval4",
+    "type": "integer",
+    "unit": "",
+    "description": "The first Stokes index is 1",
+    "verbose_name": "CRVAL4"
+  },
+  {
+    "name": "crval5",
+    "type": "integer",
+    "unit": "",
+    "description": "Unity transform",
+    "verbose_name": "CRVAL5"
+  },
+  {
+    "name": "csyer1",
+    "type": "integer",
+    "unit": "",
+    "description": "Orientation unknown",
+    "verbose_name": "CSYER1"
+  },
+  {
+    "name": "csyer2",
+    "type": "integer",
+    "unit": "",
+    "description": "Orientation unknown",
+    "verbose_name": "CSYER2"
+  },
+  {
+    "name": "ctype1",
+    "type": "text",
+    "unit": "",
+    "description": "SOLAR X",
+    "verbose_name": "CTYPE1"
+  },
+  {
+    "name": "ctype2",
+    "type": "text",
+    "unit": "",
+    "description": "SOLAR Y",
+    "verbose_name": "CTYPE2"
+  },
+  {
+    "name": "ctype3",
+    "type": "text",
+    "unit": "",
+    "description": "Wavelength, function of tuning and scan number",
+    "verbose_name": "CTYPE3"
+  },
+  {
+    "name": "ctype4",
+    "type": "text",
+    "unit": "",
+    "description": "Stokes vector [I,Q,U,V]",
+    "verbose_name": "CTYPE4"
+  },
+  {
+    "name": "ctype5",
+    "type": "text",
+    "unit": "",
+    "description": "Time, function of tuning and scan number",
+    "verbose_name": "CTYPE5"
+  },
+  {
+    "name": "cunit1",
+    "type": "text",
+    "unit": "",
+    "description": "Unit along axis 1",
+    "verbose_name": "CUNIT1"
+  },
+  {
+    "name": "cunit2",
+    "type": "text",
+    "unit": "",
+    "description": "Unit along axis 2",
+    "verbose_name": "CUNIT2"
+  },
+  {
+    "name": "cunit3",
+    "type": "text",
+    "unit": "",
+    "description": "Wavelength unit, tabulated for dim. 3 and 5",
+    "verbose_name": "CUNIT3"
+  },
+  {
+    "name": "cunit5",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "CUNIT5"
+  },
+  {
+    "name": "cwdis3",
+    "type": "text",
+    "unit": "",
+    "description": "WAVE distortions in lookup table",
+    "verbose_name": "CWDIS3"
+  },
+  {
+    "name": "cwerr3",
+    "type": "real",
+    "unit": "nm",
+    "description": "Max total distortion",
+    "verbose_name": "CWERR3"
+  },
+  {
+    "name": "datakurt",
+    "type": "real",
+    "unit": "",
+    "description": "The kurtosis (provided value)",
+    "verbose_name": "DATAKURT"
+  },
+  {
+    "name": "datamax",
+    "type": "real",
+    "unit": "",
+    "description": "The maximum data value (provided value)",
+    "verbose_name": "DATAMAX"
+  },
+  {
+    "name": "datamean",
+    "type": "real",
+    "unit": "",
+    "description": "The average data value (provided value)",
+    "verbose_name": "DATAMEAN"
+  },
+  {
+    "name": "datamedn",
+    "type": "real",
+    "unit": "",
+    "description": "The median data value (provided value)",
+    "verbose_name": "DATAMEDN"
+  },
+  {
+    "name": "datamin",
+    "type": "real",
+    "unit": "",
+    "description": "The minimum data value (provided value)",
+    "verbose_name": "DATAMIN"
+  },
+  {
+    "name": "datap01",
+    "type": "real",
+    "unit": "",
+    "description": "The 01 percentile (provided value)",
+    "verbose_name": "DATAP01"
+  },
+  {
+    "name": "datap10",
+    "type": "real",
+    "unit": "",
+    "description": "The 10 percentile (provided value)",
+    "verbose_name": "DATAP10"
+  },
+  {
+    "name": "datap25",
+    "type": "real",
+    "unit": "",
+    "description": "The 25 percentile (provided value)",
+    "verbose_name": "DATAP25"
+  },
+  {
+    "name": "datap75",
+    "type": "real",
+    "unit": "",
+    "description": "The 75 percentile (provided value)",
+    "verbose_name": "DATAP75"
+  },
+  {
+    "name": "datap90",
+    "type": "real",
+    "unit": "",
+    "description": "The 90 percentile (provided value)",
+    "verbose_name": "DATAP90"
+  },
+  {
+    "name": "datap95",
+    "type": "real",
+    "unit": "",
+    "description": "The 95 percentile (provided value)",
+    "verbose_name": "DATAP95"
+  },
+  {
+    "name": "datap98",
+    "type": "real",
+    "unit": "",
+    "description": "The 98 percentile (provided value)",
+    "verbose_name": "DATAP98"
+  },
+  {
+    "name": "datap99",
+    "type": "real",
+    "unit": "",
+    "description": "The 99 percentile (provided value)",
+    "verbose_name": "DATAP99"
+  },
+  {
+    "name": "datarms",
+    "type": "real",
+    "unit": "",
+    "description": "The RMS deviation from the mean (provided value",
+    "verbose_name": "DATARMS"
+  },
+  {
+    "name": "dataskew",
+    "type": "real",
+    "unit": "",
+    "description": "The skewness (provided value)",
+    "verbose_name": "DATASKEW"
+  },
+  {
+    "name": "date",
+    "type": "time (ISO 8601)",
+    "unit": "",
+    "description": "Creation UTC date of FITS header",
+    "verbose_name": "DATE"
+  },
+  {
+    "name": "date_avg",
+    "type": "time (ISO 8601)",
+    "unit": "",
+    "description": "Average time of observation (provided value)",
+    "verbose_name": "DATE-AVG"
+  },
+  {
+    "name": "date_beg",
+    "type": "time (ISO 8601)",
+    "unit": "UTC",
+    "description": "Beginning time of observation (first value)",
+    "verbose_name": "DATE-BEG"
+  },
+  {
+    "name": "date_end",
+    "type": "time (ISO 8601)",
+    "unit": "",
+    "description": "End time of observation (last value)",
+    "verbose_name": "DATE-END"
+  },
+  {
+    "name": "date_obs",
+    "type": "time (ISO 8601)",
+    "unit": "",
+    "description": "Inferred from directory.",
+    "verbose_name": "DATE-OBS"
+  },
+  {
+    "name": "dateref",
+    "type": "time (ISO 8601)",
+    "unit": "",
+    "description": "Reference time in ISO-8601",
+    "verbose_name": "DATEREF"
+  },
+  {
+    "name": "detector",
+    "type": "text",
+    "unit": "",
+    "description": "Inferred from filename.",
+    "verbose_name": "DETECTOR"
+  },
+  {
+    "name": "detfirm",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "DETFIRM"
+  },
+  {
+    "name": "detgain",
+    "type": "real",
+    "unit": "dB",
+    "description": "or camera specific unit",
+    "verbose_name": "DETGAIN"
+  },
+  {
+    "name": "detmodel",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "DETMODEL"
+  },
+  {
+    "name": "detoffs",
+    "type": "integer",
+    "unit": "counts",
+    "description": "or camera specific unit",
+    "verbose_name": "DETOFFS"
+  },
+  {
+    "name": "dw3_apply",
+    "type": "real",
+    "unit": "",
+    "description": "Application stage (world coordinates)",
+    "verbose_name": "DW3.APPLY"
+  },
+  {
+    "name": "dw3_associate",
+    "type": "real",
+    "unit": "",
+    "description": "Association stage (pixel coordinates)",
+    "verbose_name": "DW3.ASSOCIATE"
+  },
+  {
+    "name": "dw3_axis1",
+    "type": "integer",
+    "unit": "",
+    "description": "Spatial X",
+    "verbose_name": "DW3 AXIS1"
+  },
+  {
+    "name": "dw3_axis_1",
+    "type": "real",
+    "unit": "",
+    "description": "Spatial X",
+    "verbose_name": "DW3.AXIS.1"
+  },
+  {
+    "name": "dw3_axis2",
+    "type": "integer",
+    "unit": "",
+    "description": "Spatial Y",
+    "verbose_name": "DW3 AXIS2"
+  },
+  {
+    "name": "dw3_axis_2",
+    "type": "real",
+    "unit": "",
+    "description": "Spatial Y",
+    "verbose_name": "DW3.AXIS.2"
+  },
+  {
+    "name": "dw3_axis3",
+    "type": "integer",
+    "unit": "",
+    "description": "Scan number",
+    "verbose_name": "DW3 AXIS3"
+  },
+  {
+    "name": "dw3_axis_3",
+    "type": "real",
+    "unit": "",
+    "description": "Scan number",
+    "verbose_name": "DW3.AXIS.3"
+  },
+  {
+    "name": "dw3_cwdis_lookup",
+    "type": "real",
+    "unit": "",
+    "description": "Distortions in lookup table",
+    "verbose_name": "DW3.CWDIS.LOOKUP"
+  },
+  {
+    "name": "dw3_cwerr",
+    "type": "real",
+    "unit": "nm",
+    "description": "Max distortion (this correction step)",
+    "verbose_name": "DW3 CWERR"
+  },
+  {
+    "name": "dw3_extver",
+    "type": "real",
+    "unit": "",
+    "description": "Extension version number",
+    "verbose_name": "DW3.EXTVER"
+  },
+  {
+    "name": "dw3_name",
+    "type": "text",
+    "unit": "",
+    "description": "Type of correction",
+    "verbose_name": "DW3 NAME"
+  },
+  {
+    "name": "dw3_naxes",
+    "type": "integer",
+    "unit": "",
+    "description": "3 axes in the lookup table",
+    "verbose_name": "DW3 NAXES"
+  },
+  {
+    "name": "elev_ang",
+    "type": "real",
+    "unit": "",
+    "description": "Elevation angle (mean value)",
+    "verbose_name": "ELEV_ANG"
+  },
+  {
+    "name": "extname",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "EXTNAME"
+  },
+  {
+    "name": "filename",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "FILENAME"
+  },
+  {
+    "name": "filled",
+    "type": "integer",
+    "unit": "",
+    "description": "Missing pixels have been filled.",
+    "verbose_name": "FILLED"
+  },
+  {
+    "name": "filter1",
+    "type": "text",
+    "unit": "",
+    "description": "Inferred from filename.",
+    "verbose_name": "FILTER1"
+  },
+  {
+    "name": "instrume",
+    "type": "text",
+    "unit": "",
+    "description": "Name of instrument",
+    "verbose_name": "INSTRUME"
+  },
+  {
+    "name": "longstrn",
+    "type": "text",
+    "unit": "",
+    "description": "The OGIP long string convention may be used.",
+    "verbose_name": "LONGSTRN"
+  },
+  {
+    "name": "naxis",
+    "type": "integer",
+    "unit": "",
+    "description": "Number of data axes",
+    "verbose_name": "NAXIS"
+  },
+  {
+    "name": "naxis1",
+    "type": "integer",
+    "unit": "",
+    "description": "Number of positions along axis 1",
+    "verbose_name": "NAXIS1"
+  },
+  {
+    "name": "naxis2",
+    "type": "integer",
+    "unit": "",
+    "description": "Number of positions along axis 2",
+    "verbose_name": "NAXIS2"
+  },
+  {
+    "name": "naxis3",
+    "type": "integer",
+    "unit": "",
+    "description": "Number of positions along axis 3",
+    "verbose_name": "NAXIS3"
+  },
+  {
+    "name": "naxis4",
+    "type": "integer",
+    "unit": "",
+    "description": "Number of positions along axis 4",
+    "verbose_name": "NAXIS4"
+  },
+  {
+    "name": "naxis5",
+    "type": "integer",
+    "unit": "",
+    "description": "Number of positions along axis 5",
+    "verbose_name": "NAXIS5"
+  },
+  {
+    "name": "nsumexp",
+    "type": "real",
+    "unit": "",
+    "description": "Number of summed exposures (median value)",
+    "verbose_name": "NSUMEXP"
+  },
+  {
+    "name": "object",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "OBJECT"
+  },
+  {
+    "name": "observer",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "OBSERVER"
+  },
+  {
+    "name": "obsgeo_x",
+    "type": "integer",
+    "unit": "m",
+    "description": "SST location",
+    "verbose_name": "OBSGEO-X"
+  },
+  {
+    "name": "obsgeo_y",
+    "type": "integer",
+    "unit": "m",
+    "description": "SST location",
+    "verbose_name": "OBSGEO-Y"
+  },
+  {
+    "name": "obsgeo_z",
+    "type": "integer",
+    "unit": "m",
+    "description": "SST location",
+    "verbose_name": "OBSGEO-Z"
+  },
+  {
+    "name": "obs_hdu",
+    "type": "integer",
+    "unit": "",
+    "description": "Observational Header and Data Unit",
+    "verbose_name": "OBS_HDU"
+  },
+  {
+    "name": "obsrvtry",
+    "type": "text",
+    "unit": "",
+    "description": "Name of observatory",
+    "verbose_name": "OBSRVTRY"
+  },
+  {
+    "name": "origin",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "ORIGIN"
+  },
+  {
+    "name": "pc1_1",
+    "type": "real",
+    "unit": "",
+    "description": "No rotations",
+    "verbose_name": "PC1_1"
+  },
+  {
+    "name": "pc2_2",
+    "type": "real",
+    "unit": "",
+    "description": "No rotations",
+    "verbose_name": "PC2_2"
+  },
+  {
+    "name": "pc3_3",
+    "type": "real",
+    "unit": "",
+    "description": "No rotations",
+    "verbose_name": "PC3_3"
+  },
+  {
+    "name": "pc4_4",
+    "type": "real",
+    "unit": "",
+    "description": "No rotations",
+    "verbose_name": "PC4_4"
+  },
+  {
+    "name": "pc5_5",
+    "type": "real",
+    "unit": "",
+    "description": "No rotations",
+    "verbose_name": "PC5_5"
+  },
+  {
+    "name": "prbra1",
+    "type": "text",
+    "unit": "",
+    "description": "Version control branch",
+    "verbose_name": "PRBRA1"
+  },
+  {
+    "name": "prbra2",
+    "type": "text",
+    "unit": "",
+    "description": "Version control branch",
+    "verbose_name": "PRBRA2"
+  },
+  {
+    "name": "prbra3",
+    "type": "text",
+    "unit": "",
+    "description": "Version control branch",
+    "verbose_name": "PRBRA3"
+  },
+  {
+    "name": "prbra4",
+    "type": "text",
+    "unit": "",
+    "description": "Version control branch",
+    "verbose_name": "PRBRA4"
+  },
+  {
+    "name": "prlib1",
+    "type": "text",
+    "unit": "",
+    "description": "Software library",
+    "verbose_name": "PRLIB1"
+  },
+  {
+    "name": "prlib1a",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB1A"
+  },
+  {
+    "name": "prlib1b",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB1B"
+  },
+  {
+    "name": "prlib1c",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB1C"
+  },
+  {
+    "name": "prlib1d",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB1D"
+  },
+  {
+    "name": "prlib1e",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB1E"
+  },
+  {
+    "name": "prlib2",
+    "type": "text",
+    "unit": "",
+    "description": "Software library containing chromis::make_wb_cu",
+    "verbose_name": "PRLIB2"
+  },
+  {
+    "name": "prlib2a",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB2A"
+  },
+  {
+    "name": "prlib2b",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB2B"
+  },
+  {
+    "name": "prlib2c",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB2C"
+  },
+  {
+    "name": "prlib2d",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB2D"
+  },
+  {
+    "name": "prlib3",
+    "type": "text",
+    "unit": "",
+    "description": "Software library containing chromis::make_nb_cu",
+    "verbose_name": "PRLIB3"
+  },
+  {
+    "name": "prlib3a",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB3A"
+  },
+  {
+    "name": "prlib3b",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB3B"
+  },
+  {
+    "name": "prlib3c",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB3C"
+  },
+  {
+    "name": "prlib3d",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB3D"
+  },
+  {
+    "name": "prlib4",
+    "type": "text",
+    "unit": "",
+    "description": "Software library containing red::fitscube_expor",
+    "verbose_name": "PRLIB4"
+  },
+  {
+    "name": "prlib4a",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB4A"
+  },
+  {
+    "name": "prlib4b",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB4B"
+  },
+  {
+    "name": "prlib4c",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB4C"
+  },
+  {
+    "name": "prlib4d",
+    "type": "text",
+    "unit": "",
+    "description": "Additional software library",
+    "verbose_name": "PRLIB4D"
+  },
+  {
+    "name": "prmode1",
+    "type": "text",
+    "unit": "",
+    "description": "Processing mode",
+    "verbose_name": "PRMODE1"
+  },
+  {
+    "name": "prmode2",
+    "type": "text",
+    "unit": "",
+    "description": "Processing mode",
+    "verbose_name": "PRMODE2"
+  },
+  {
+    "name": "prmode3",
+    "type": "text",
+    "unit": "",
+    "description": "Processing mode",
+    "verbose_name": "PRMODE3"
+  },
+  {
+    "name": "prmode4",
+    "type": "text",
+    "unit": "",
+    "description": "Processing mode",
+    "verbose_name": "PRMODE4"
+  },
+  {
+    "name": "prpara1",
+    "type": "text",
+    "unit": "",
+    "description": "List of parameters/options for PRPROC1",
+    "verbose_name": "PRPARA1"
+  },
+  {
+    "name": "prpara2",
+    "type": "text",
+    "unit": "",
+    "description": "List of parameters/opt",
+    "verbose_name": "PRPARA2"
+  },
+  {
+    "name": "prpara3",
+    "type": "text",
+    "unit": "",
+    "description": "List of parameters/options for PRPROC2",
+    "verbose_name": "PRPARA3"
+  },
+  {
+    "name": "prpara4",
+    "type": "text",
+    "unit": "",
+    "description": "List of parameters/options for PRPROC4",
+    "verbose_name": "PRPARA4"
+  },
+  {
+    "name": "prproc2",
+    "type": "text",
+    "unit": "",
+    "description": "Name of procedure used",
+    "verbose_name": "PRPROC2"
+  },
+  {
+    "name": "prproc3",
+    "type": "text",
+    "unit": "",
+    "description": "Name of procedure used",
+    "verbose_name": "PRPROC3"
+  },
+  {
+    "name": "prproc4",
+    "type": "text",
+    "unit": "",
+    "description": "Name of procedure used",
+    "verbose_name": "PRPROC4"
+  },
+  {
+    "name": "prstep1",
+    "type": "text",
+    "unit": "",
+    "description": "Processing step name",
+    "verbose_name": "PRSTEP1"
+  },
+  {
+    "name": "prstep2",
+    "type": "text",
+    "unit": "",
+    "description": "Processing step name",
+    "verbose_name": "PRSTEP2"
+  },
+  {
+    "name": "prstep3",
+    "type": "text",
+    "unit": "",
+    "description": "Processing step name",
+    "verbose_name": "PRSTEP3"
+  },
+  {
+    "name": "prstep4",
+    "type": "text",
+    "unit": "",
+    "description": "Processing step name",
+    "verbose_name": "PRSTEP4"
+  },
+  {
+    "name": "prver1",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER1"
+  },
+  {
+    "name": "prver1a",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER1A"
+  },
+  {
+    "name": "prver1b",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER1B"
+  },
+  {
+    "name": "prver1c",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER1C"
+  },
+  {
+    "name": "prver1d",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER1D"
+  },
+  {
+    "name": "prver1e",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update (From .momfb",
+    "verbose_name": "PRVER1E"
+  },
+  {
+    "name": "prver2",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER2"
+  },
+  {
+    "name": "prver2a",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER2A"
+  },
+  {
+    "name": "prver2b",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER2B"
+  },
+  {
+    "name": "prver2c",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER2C"
+  },
+  {
+    "name": "prver2d",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER2D"
+  },
+  {
+    "name": "prver3",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER3"
+  },
+  {
+    "name": "prver3a",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER3A"
+  },
+  {
+    "name": "prver3b",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER3B"
+  },
+  {
+    "name": "prver3c",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER3C"
+  },
+  {
+    "name": "prver3d",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER3D"
+  },
+  {
+    "name": "prver4",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER4"
+  },
+  {
+    "name": "prver4a",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER4A"
+  },
+  {
+    "name": "prver4b",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER4B"
+  },
+  {
+    "name": "prver4c",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER4C"
+  },
+  {
+    "name": "prver4d",
+    "type": "text",
+    "unit": "",
+    "description": "Library version/MJD of last update",
+    "verbose_name": "PRVER4D"
+  },
+  {
+    "name": "ps1_0",
+    "type": "text",
+    "unit": "",
+    "description": "EXTNAME; EXTVER=EXTLEVEL=1 is default",
+    "verbose_name": "PS1_0"
+  },
+  {
+    "name": "ps1_1",
+    "type": "text",
+    "unit": "",
+    "description": "TTYPE for column w/coordinates",
+    "verbose_name": "PS1_1"
+  },
+  {
+    "name": "ps1_2",
+    "type": "text",
+    "unit": "",
+    "description": "TTYPE for INDEX",
+    "verbose_name": "PS1_2"
+  },
+  {
+    "name": "ps2_0",
+    "type": "text",
+    "unit": "",
+    "description": "EXTNAME; EXTVER=EXTLEVEL=1 is default",
+    "verbose_name": "PS2_0"
+  },
+  {
+    "name": "ps2_1",
+    "type": "text",
+    "unit": "",
+    "description": "TTYPE for column w/coordinates",
+    "verbose_name": "PS2_1"
+  },
+  {
+    "name": "ps2_2",
+    "type": "text",
+    "unit": "",
+    "description": "TTYPE for INDEX",
+    "verbose_name": "PS2_2"
+  },
+  {
+    "name": "ps3_0",
+    "type": "text",
+    "unit": "",
+    "description": "EXTNAME; EXTVER=EXTLEVEL=1 is default",
+    "verbose_name": "PS3_0"
+  },
+  {
+    "name": "ps3_1",
+    "type": "text",
+    "unit": "",
+    "description": "TTYPE for column w/coordinates",
+    "verbose_name": "PS3_1"
+  },
+  {
+    "name": "ps5_0",
+    "type": "text",
+    "unit": "",
+    "description": "EXTNAME; EXTVER=EXTLEVEL=1 is default",
+    "verbose_name": "PS5_0"
+  },
+  {
+    "name": "ps5_1",
+    "type": "text",
+    "unit": "",
+    "description": "TTYPE for column w/coordinates",
+    "verbose_name": "PS5_1"
+  },
+  {
+    "name": "pv1_3",
+    "type": "integer",
+    "unit": "",
+    "description": "Coord. 1 tabulated coordinate number",
+    "verbose_name": "PV1_3"
+  },
+  {
+    "name": "pv2_3",
+    "type": "integer",
+    "unit": "",
+    "description": "Coord. 2 tabulated coordinate number",
+    "verbose_name": "PV2_3"
+  },
+  {
+    "name": "pv3_3",
+    "type": "integer",
+    "unit": "",
+    "description": "Coord. 3 tabulated coordinate number",
+    "verbose_name": "PV3_3"
+  },
+  {
+    "name": "pv5_3",
+    "type": "integer",
+    "unit": "",
+    "description": "Coord. 5 tabulated coordinate number",
+    "verbose_name": "PV5_3"
+  },
+  {
+    "name": "release",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "RELEASE"
+  },
+  {
+    "name": "releasec",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "RELEASEC"
+  },
+  {
+    "name": "requestr",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "REQUESTR"
+  },
+  {
+    "name": "scannum",
+    "type": "integer",
+    "unit": "",
+    "description": "Scan number (first value)",
+    "verbose_name": "SCANNUM"
+  },
+  {
+    "name": "solarnet",
+    "type": "real",
+    "unit": "",
+    "description": "",
+    "verbose_name": "SOLARNET"
+  },
+  {
+    "name": "startobs",
+    "type": "time (ISO 8601)",
+    "unit": "",
+    "description": "",
+    "verbose_name": "STARTOBS"
+  },
+  {
+    "name": "telconfg",
+    "type": "text",
+    "unit": "",
+    "description": "Telescope configuration",
+    "verbose_name": "TELCONFG"
+  },
+  {
+    "name": "telescop",
+    "type": "text",
+    "unit": "",
+    "description": "Name of telescope",
+    "verbose_name": "TELESCOP"
+  },
+  {
+    "name": "texposur",
+    "type": "real",
+    "unit": "s",
+    "description": "Single-exposure time (median value)",
+    "verbose_name": "TEXPOSUR"
+  },
+  {
+    "name": "timesys",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "TIMESYS"
+  },
+  {
+    "name": "var_keys",
+    "type": "text",
+    "unit": "",
+    "description": "SOLARNET variable-keywords",
+    "verbose_name": "VAR_KEYS"
+  },
+  {
+    "name": "waveband",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "WAVEBAND"
+  },
+  {
+    "name": "wavelnth",
+    "type": "real",
+    "unit": "nm",
+    "description": "Prefilter peak wavelength",
+    "verbose_name": "WAVELNTH"
+  },
+  {
+    "name": "wavemax",
+    "type": "real",
+    "unit": "nm",
+    "description": "Prefilter max wavelength (0.5 peak)",
+    "verbose_name": "WAVEMAX"
+  },
+  {
+    "name": "wavemin",
+    "type": "real",
+    "unit": "nm",
+    "description": "Prefilter min wavelength (0.5 peak)",
+    "verbose_name": "WAVEMIN"
+  },
+  {
+    "name": "waveunit",
+    "type": "integer",
+    "unit": "",
+    "description": "WAVELNTH in units 10^WAVEUNIT m = nm",
+    "verbose_name": "WAVEUNIT"
+  },
+  {
+    "name": "wcsnamea",
+    "type": "text",
+    "unit": "",
+    "description": "",
+    "verbose_name": "WCSNAMEA"
+  },
+  {
+    "name": "xposure",
+    "type": "real",
+    "unit": "",
+    "description": "Summed exposure times (median value)",
+    "verbose_name": "XPOSURE"
+  }
+]
