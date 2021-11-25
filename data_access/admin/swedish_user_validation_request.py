@@ -30,7 +30,7 @@ class SwedishUserValidationRequestAdmin(admin.ModelAdmin):
     search_fields = ['user__email']
     autocomplete_fields = ['user']
     ordering = ['validation_result']
-    readonly_fields = ['user', 'validation_date', 'purpose']
+    # readonly_fields = ['user', 'validation_date', 'purpose']
     list_display = ['user', 'validation_result', 'purpose', 'validation_date']
     list_display_links = ['user', 'validation_result']
     actions = [approve_requests, reject_requests]

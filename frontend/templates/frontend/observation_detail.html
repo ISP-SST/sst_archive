@@ -37,7 +37,7 @@
                 {% if data_cube.video_preview and data_cube.video_preview.video_wings %}
                 <div class="video-container">
                     <div class="video-inlay" style="position: relative">
-                        <video id="video-core" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" style="border-radius: 5px; max-width: 100%" loop muted playsinline></video>
+                        <video id="video-core" class="mw-100 rounded" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" loop muted playsinline></video>
                         <div id="video-core-play-button">
                             <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px" onclick="const video = document.getElementById('video-core'); video.play(); video.controls = true; const playButton = document.getElementById('video-core-play-button'); playButton.style.display = 'None';"
                                  class="bi bi-play-circle-fill"></div>
@@ -45,11 +45,11 @@
                     </div>
                 </div>
                 {% elif data_cube.previews and data_cube.previews.full_size %}
-                <img src="{{data_cube.previews.full_size.url}}" />
+                <img class="mw-100 rounded" src="{{data_cube.previews.full_size.url}}" />
                 {% endif %}
             </figure>
             {% else %}
-            <img style="border-radius: 5px; max-width: 100%" src="{% static 'frontend/default-thumbnail.png' %}"/>
+            <img class="mw-100 rounded" src="{% static 'frontend/default-thumbnail.png' %}"/>
             {% endif %}
         </div>
 
@@ -153,9 +153,8 @@
             {% include "frontend/data_cube_detail/r0_graph.html" %}
         </figure>
         {% else %}
-        <figure class="col-6">
-            <h5 class="text-center">No seeing information available</h5>
-            <div style="height: 200px"></div>
+        <figure class="col-6 row" style="height: 200px">
+            <h5 class="text-center align-self-center">No seeing information available</h5>
         </figure>
         {% endif %}
 
@@ -165,9 +164,8 @@
             {% include "frontend/data_cube_detail/spectral_line_profile_graph.html" %}
         </figure>
         {% else %}
-        <figure class="col-6">
-            <h5 class="text-center">No spectral line profile available</h5>
-            <div style="height: 200px"></div>
+        <figure class="col-6 row" style="height: 200px">
+            <h5 class="text-center align-self-center">No spectral line profile available</h5>
         </figure>
         {% endif %}
     </div>
