@@ -93,8 +93,6 @@ def update_or_create_data_cube(fits_cube: str, instrument: Instrument, fits_hdus
     # Determine if this data cube belongs to a new or existing observation.
     _assign_to_observation(data_cube, primary_fits_hdu)
 
-    ingest_access_control_entities(data_cube, primary_fits_hdu)
-
     return data_cube
 
 
@@ -112,8 +110,7 @@ def _get_instrument_for_fits_file(primary_hdu_header: fits.Header):
 
 def ingest_data_cube(oid: str, path: str, **kwargs):
     """
-    Main entry point for ingesting a data cube into the database. To do this, we right now only need
-    two things: the observation ID (generated at the call site) and the
+    Main entry point for ingesting a data cube into the database.
     """
     generate_image_previews = kwargs.get('generate_image_previews', False)
     generate_video_previews = kwargs.get('generate_video_previews', False)
@@ -121,12 +118,17 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
     force_regenerate_video = kwargs.get('force_regenerate_videos', False)
     should_sync_with_svo = kwargs.get('sync_with_svo', False)
 
+    owner_email_addresses = kwargs.get('owner_email_addresses', [])
+    swedish_data = kwargs.get('swedish_data', False)
+
     with fits.open(path) as fits_hdus:
         primary_fits_hdu = fits_hdus[0].header
 
         instrument = _get_instrument_for_fits_file(primary_fits_hdu)
 
         data_cube = update_or_create_data_cube(path, instrument, fits_hdus, oid)
+
+        ingest_access_control_entities(data_cube, primary_fits_hdu, owner_email_addresses, swedish_data)
 
         ingest_fits_header(primary_fits_hdu, data_cube)
 

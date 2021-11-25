@@ -2,6 +2,8 @@
 
 import argparse
 import os
+import subprocess
+import sys
 from pathlib import Path
 
 import ffmpeg
@@ -44,6 +46,12 @@ def generate_image_preview(preview_file, wavelength_pos=0.0, data_cube_path=None
     plt.close()
 
 
+def generate_image_preview_in_separate_process(preview_file, data_cube_path, wavelength_pos=0.0):
+    script_path = os.path.realpath(__file__)
+    python_executable = sys.executable
+    subprocess.check_call([python_executable, script_path, data_cube_path, preview_file, '--wavelength', str(wavelength_pos)])
+
+
 def create_image_preview(preview_file, generate_if_missing=False, scale_x=-1,
                          scale_y=-1, fits_hdus=None, data_cube_path=None, data_cube=None):
 
@@ -64,14 +72,16 @@ def create_image_preview(preview_file, generate_if_missing=False, scale_x=-1,
 
         ffmpeg_stream.run(capture_stdout=True, capture_stderr=True)
     elif generate_if_missing:
-        generate_image_preview(preview_file, data_cube_path=data_cube_path, fits_hdus=fits_hdus)
+        generate_image_preview_in_separate_process(preview_file, data_cube_path)
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Export primary FITS cube data to video.')
+    parser = argparse.ArgumentParser(description='Create an preview image from primary FITS cube data.')
     parser.add_argument('image_file')
     parser.add_argument('output', default=None, help='output image file')
-    parser.add_argument('--generate-if-missing', default=False, action='store_true')
+    parser.add_argument('--wavelength', type=float, default=0.0, help='Normalized wavelength position in relation to '
+                                                                      'range (0.0 is the smallest wavelength, 1.0 is '
+                                                                      'the largest).')
 
     args = parser.parse_args()
 
@@ -81,7 +91,7 @@ def main():
     else:
         output_file = args.output
 
-    create_image_preview(output_file, generate_if_missing=args.generate_if_missing, data_cube_path=args.image_file)
+    generate_image_preview(output_file, data_cube_path=args.image_file, wavelength_pos=args.wavelength)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.contrib.auth.models import User, Group
 from django.db import models
 
+from data_access.models import DataCubeGroupGrant
+
 SWEDISH_USER_GROUP = 'Swedish User'
 
 
@@ -30,6 +32,11 @@ def is_user_in_swedish_user_group(user):
 def is_data_cube_restricted_to_swedish_users(data_cube):
     swedish_group = get_swedish_user_group()
     return data_cube.group_grants.filter(group_id=swedish_group.id).count()
+
+
+def grant_swedish_user_group_access_to_data_cube(data_cube):
+    swedish_user_group = get_swedish_user_group()
+    DataCubeGroupGrant.objects.update_or_create(data_cube=data_cube, group=swedish_user_group)
 
 
 def get_user_swedish_user_validation_status(user):

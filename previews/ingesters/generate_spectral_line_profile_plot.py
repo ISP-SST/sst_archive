@@ -3,7 +3,10 @@
 import argparse
 import datetime
 import os
+import re
 import statistics
+import subprocess
+import sys
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -91,10 +94,17 @@ def generate_spectral_line_profile_plot(fits_hdus, plot_file, size=(4, 1)):
     plt.close()
 
 
+def generate_spectral_line_profile_plot_in_separate_process(data_cube_file, output_file, size=(4, 1)):
+    script_path = os.path.realpath(__file__)
+    size_arg = '%dx%d' % (size[0], size[1])
+    subprocess.check_call([sys.executable, script_path, data_cube_file, output_file, '--size', size_arg])
+
+
 def main():
     parser = argparse.ArgumentParser(description='Create Spectral Line Profile plot from FITS file.')
     parser.add_argument('fits_file', help='file to export data from')
     parser.add_argument('output', default=None, help='output image file')
+    parser.add_argument('--size', default=(4,2), help='size of the output plot on the format <WIDTH>x<HEIGHT>')
 
     args = parser.parse_args()
 
@@ -104,9 +114,14 @@ def main():
     else:
         output_file = args.output
 
-    data_cube = fits.open(args.fits_file)
+    match = re.match(r'^(\d+)x(\d+)$', args.size)
+    if not match:
+        raise Exception('Size must be provided on the form <WIDTH>x<HEIGHT>. Eg: 2x4')
 
-    generate_spectral_line_profile_plot(data_cube, output_file)
+    size = (int(match.group(1)), int(match.group(2)))
+
+    with fits.open(args.fits_file) as data_cube:
+        generate_spectral_line_profile_plot(data_cube, output_file, size)
 
 
 if __name__ == '__main__':

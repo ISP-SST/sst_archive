@@ -13,8 +13,8 @@ class DataCubeUserGrantAdmin(admin.ModelAdmin):
     """
     Main admin form for DataCubeUserGrants.
     """
-    search_fields = ['data_cube__filename', 'user__email']
-    autocomplete_fields = ['data_cube', 'user']
+    search_fields = ['data_cube__filename', 'user_email']
+    autocomplete_fields = ['data_cube']
 
 
 class DataCubeUserGrantInlineAdmin(admin.TabularInline):
@@ -23,19 +23,7 @@ class DataCubeUserGrantInlineAdmin(admin.TabularInline):
     """
     verbose_name = 'user to the access list'
     model = DataCubeUserGrant
-    autocomplete_fields = ['user']
-    extra = 0
-
-
-class UserDataCubeGrantInlineAdmin(admin.TabularInline):
-    """
-    The inline admin form that is added to the User's admin page. This allows administrators to quickly view and
-    change what data cubes are assigned to a specific user.
-    """
-    model = DataCubeUserGrant
-    autocomplete_fields = ['data_cube']
     extra = 0
 
 
 extend_admin(DataCube, DataCubeAdmin, DataCubeUserGrantInlineAdmin, weight=4)
-extend_admin(User, UserAdmin, UserDataCubeGrantInlineAdmin)

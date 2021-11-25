@@ -17,7 +17,7 @@ class TestSwedishUserFlow(TestCase):
                                 size=1000000000, instrument=Instrument.objects.get(name='CHROMIS'))
         self.swedish_group = Group.objects.create(name='Swedish User')
 
-        self.test_user = User.objects.create(username='test_user')
+        self.test_user = User.objects.create(username='test_user', email='test@example.com')
 
     def test_swedish_user_approve(self):
         current_time = datetime.datetime.now()
@@ -28,7 +28,7 @@ class TestSwedishUserFlow(TestCase):
 
         validation_request = SwedishUserValidationRequest.objects.get(user=self.test_user)
 
-        self.assertGreaterEqual(validation_request.validation_date, current_time)
+        self.assertEqual(validation_request.validation_date, None)
         self.assertEqual(validation_request.validation_result, ValidationResult.NOT_PROCESSED)
 
         current_time = datetime.datetime.now()
@@ -50,7 +50,7 @@ class TestSwedishUserFlow(TestCase):
 
         validation_request = SwedishUserValidationRequest.objects.get(user=self.test_user)
 
-        self.assertGreaterEqual(validation_request.validation_date, current_time)
+        self.assertEqual(validation_request.validation_date, None)
         self.assertEqual(validation_request.validation_result, ValidationResult.NOT_PROCESSED)
 
         current_time = datetime.datetime.now()
