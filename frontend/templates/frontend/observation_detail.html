@@ -34,10 +34,10 @@
             {% if data_cube.video_preview or data_cube.previews %}
             <h5>Preview</h5>
             <figure class="figure">
-                {% if data_cube.video_preview and data_cube.video_preview.video_wings %}
+                {% if data_cube.video_preview and data_cube.video_preview.video_core %}
                 <div class="video-container">
                     <div class="video-inlay" style="position: relative">
-                        <video id="video-core" class="mw-100 rounded" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_wings.url}}" loop muted playsinline></video>
+                        <video id="video-core" class="mw-100 rounded" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_core.url}}" loop muted playsinline></video>
                         <div id="video-core-play-button">
                             <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px" onclick="const video = document.getElementById('video-core'); video.play(); video.controls = true; const playButton = document.getElementById('video-core-play-button'); playButton.style.display = 'None';"
                                  class="bi bi-play-circle-fill"></div>
