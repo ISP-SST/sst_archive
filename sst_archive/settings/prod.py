@@ -14,7 +14,7 @@ DATABASES = {
 	}
 }
 
-HOSTNAME = 'https://dubshen.astro.su.se/'
+HOSTNAME = 'https://dubshen.astro.su.se'
 ADMIN_EMAIL = 'noreply@dubshen.astro.su.se'
 
 # TODO(daniel): This should be updated with the proper hostname of the service.
@@ -55,4 +55,3 @@ LOGGING = {
         },
     },
 }
-

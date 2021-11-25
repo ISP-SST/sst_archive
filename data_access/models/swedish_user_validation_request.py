@@ -3,8 +3,11 @@ import datetime
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from data_access.models import DataCubeGroupGrant
+from data_access.utils.email_helpers import send_swedish_user_registration_admin_notice
 
 SWEDISH_USER_GROUP = 'Swedish User'
 
@@ -88,3 +91,8 @@ class SwedishUserValidationRequest(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.user.email, self.validation_result)
+
+
+@receiver(post_save, sender=SwedishUserValidationRequest)
+def send_email_on_not_yet_validated_request(sender, instance, **kwargs):
+    send_swedish_user_registration_admin_notice(instance)

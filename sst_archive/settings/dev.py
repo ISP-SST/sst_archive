@@ -10,10 +10,11 @@ DATABASES = {
     }
 }
 
-HOSTNAME = 'http://localhost:8000/'
+HOSTNAME = 'http://localhost:8000'
 ADMIN_EMAIL = 'daniel.nitsche@astro.su.se'
+DEFAULT_CONTACT_EMAIL = 'daniel@nitsche.se'
 
-SCIENCE_DATA_ROOT = '/Users/dani2978/science_data/'
+SCIENCE_DATA_ROOT = '/Users/dani2978/Mounted/science_data/'
 
 SECRET_KEY = 'django-insecure-b0ddy$h-j+*9$emw*!92l4tip7&8q)vj%7-m$hr_ksj1xwf7ih'
 

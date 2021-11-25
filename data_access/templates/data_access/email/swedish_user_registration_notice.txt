@@ -1,0 +1,6 @@
+A Swedish user registration has changed on the queue:
+
+User e-mail: {{ request.user.email }}
+Current status: {{ request.validation_result }}
+
+{{ hostname }}{% url 'admin:data_access_swedishuservalidationrequest_change' request.id %}
