@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from ingestion.utils.ingest_metadata import get_fits_hdu
+from metadata.ingesters.ingest_metadata import get_fits_hdu
 from ingestion.svo.sync_with_svo import sync_with_svo
 from observations.models import DataCube
 
@@ -9,16 +10,12 @@ class Command(BaseCommand):
     help = 'Synchronizes the selected data cube with the SOLARNET Virtual Observatory.'
 
     def add_arguments(self, parser):
-        parser.add_argument('-o', '--observation-id', required=True)
+        parser.add_argument('--dry-run', action='store_true')
+        parser.add_argument('--update-existing', action='store_true')
 
     def handle(self, *args, **options):
-        oid = options['observation_id']
+        dry_run = options['dry_run']
+        update_existing = options['update_existing']
 
-        try:
-            data_cube = DataCube.objects.fetch_related('metadata', 'instrument', 'fits_header').get(oid=oid)
-        except DataCube.DoesNotExist:
-            raise CommandError('Unknown OID, could not find a matching data cube in database')
-
-        primary_fits_hdu = get_fits_hdu(data_cube.fits_header.fits_header)
-
-        sync_with_svo(data_cube, primary_fits_hdu)
+        sync_with_svo(username=settings.SVO_USERNAME, api_key=settings.SVO_API_KEY, api_url=settings.SVO_API_URL,
+                      dry_run=dry_run, update_existing=update_existing)

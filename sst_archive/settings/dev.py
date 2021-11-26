@@ -49,3 +49,6 @@ if DEBUG_QUERY_LOGGING:
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+SVO_API_URL = 'http://127.0.0.1:8888/api/svo'
+

@@ -3,6 +3,7 @@ from pathlib import Path
 from astropy.io import fits
 
 from data_access.ingesters.ingest_access_control_entities import ingest_access_control_entities
+from ingestion.svo.submit_to_svo import submit_to_svo
 from ingestion.svo.sync_with_svo import sync_with_svo
 from ingestion.utils.generate_sparse_list_string import generate_sparse_list_string
 from metadata.ingesters.ingest_fits_header import ingest_fits_header
@@ -150,6 +151,6 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
             update_or_create_video_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_video)
 
         if should_sync_with_svo:
-            sync_with_svo(data_cube, primary_fits_hdu)
+            submit_to_svo(data_cube, primary_fits_hdu)
 
     return data_cube
