@@ -128,11 +128,9 @@ class SvoRecord:
             return metadata.get('data_location', {'id': None})['id']
 
         for dataset_name in datasets:
-            # dataset = self.api.dataset(dataset_name).get()
             dataset = self.svo_cache.dataset(dataset_name)
             metadata_root_uri = dataset['metadata']['resource_uri']
 
-            # all_metadata = self.api(metadata_root_uri).get(limit=0)['objects']
             all_metadata = self.svo_cache.uri(metadata_root_uri, limit=0)['objects']
 
             data_location_ref_count += sum(
@@ -141,7 +139,6 @@ class SvoRecord:
         return data_location_ref_count > 1
 
     def _generate_data_location(self, dataset_name):
-        # dataset = self.api.dataset(dataset_name).get()
         dataset = self.svo_cache.dataset(dataset_name)
 
         data_location = {
@@ -171,7 +168,6 @@ class SvoRecord:
         # Else we need to create a new one, with all the necessary info
 
         # The pair dataset/file_url must be unique in the database so we can search by it
-        # data_locations = self.api.data_location.get(dataset__name=self.dataset, file_url=self.get_file_url())
         data_locations = self.svo_cache.data_location(self.dataset, self.get_file_url())
 
         if data_locations['objects']:
@@ -206,23 +202,19 @@ class SvoRecord:
         return metadata
 
     def get_remote_metadata(self):
-        # dataset = self.api.dataset(self.dataset).get()
         dataset = self.svo_cache.dataset(self.dataset)
         metadata_root_uri = dataset['metadata']['resource_uri']
         oid = self.get_oid()
 
-        # return self.api(metadata_root_uri)(oid).get()
         return self.svo_cache.uri_id(metadata_root_uri, oid)
 
     def exists_in_svo(self):
-        # dataset = self.api.dataset(self.dataset).get()
         dataset = self.svo_cache.dataset(self.dataset)
         metadata_root_uri = dataset['metadata']['resource_uri']
         oid = self.get_oid()
 
         try:
             self.api(metadata_root_uri)(oid).get()
-            # self.svo_cache.uri_id(metadata_root_uri, oid)
             return True
         except HttpNotFoundError:
             return False
@@ -231,7 +223,6 @@ class SvoRecord:
         """Create the metadata and data_location records in the API"""
 
         # Retrieve the metadata resource URI from the dataset
-        # dataset = self.api.dataset(self.dataset).get()
         dataset = self.svo_cache.dataset(self.dataset)
         resource_uri = dataset['metadata']['resource_uri']
 
@@ -247,7 +238,6 @@ class SvoRecord:
         """
         Update the metadata and data_location records in the API.
         """
-        # dataset = self.api.dataset(self.dataset).get()
         dataset = self.svo_cache.dataset(self.dataset)
         metadata_root_uri = dataset['metadata']['resource_uri']
 
@@ -256,7 +246,6 @@ class SvoRecord:
 
         oid = self.get_oid()
 
-        # existing_metadata = self.api(metadata_root_uri)(oid).get()
         existing_metadata = self.svo_cache.uri_id(metadata_root_uri, oid)
         existing_data_location = existing_metadata['data_location']
 
