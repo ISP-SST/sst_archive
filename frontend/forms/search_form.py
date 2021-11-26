@@ -10,9 +10,8 @@ from observations.models import Tag, Instrument
 
 
 def initial_start_date():
-    # Start date defaults to three years back.
-    today = datetime.datetime.now()
-    return today.replace(year=today.year - 3)
+    # Start date defaults to beginning of 2000.
+    return datetime.datetime(2000, month=1, day=1)
 
 
 def initial_end_date():
