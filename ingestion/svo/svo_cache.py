@@ -1,5 +1,10 @@
 
 class SvoCache:
+    """
+    Simple cache class around an SvoApi that allows the caller to not repeat requests
+    while this cache instance is alive. Cache lifetime is purely controlled by the
+    lifetime of this object, there's no timeout in effect.
+    """
     def __init__(self, api):
         self.api = api
         self.cache = {}

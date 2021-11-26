@@ -41,7 +41,9 @@ def sync_with_svo(**kwargs):
     Synchronize the metadata in the SOLARNET SVO with the contents of the local database. The rules for
     synchronization are:
 
-     * Remove items in the SVO that do not exist in the
+     * Remove entries in the SVO that do not exist in the local database
+     * Add entries to the SVO that only exist in the local database
+     * Optionally update all entries that exist in both the SVO and the local database
     """
     username = kwargs.get('username', settings.SVO_USERNAME)
     api_key = kwargs.get('api_key', settings.SVO_API_KEY)
