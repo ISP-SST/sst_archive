@@ -17,7 +17,7 @@ def _get_frame_data(image_data, index, wavelength_index=0):
     return frame_data
 
 
-def generate_image_preview(preview_file, wavelength_pos=0.0, data_cube_path=None, data_cube=None, fits_hdus=None):
+def generate_new_image_preview(preview_file, wavelength_pos=0.0, data_cube_path=None, data_cube=None, fits_hdus=None):
     # FIXME(daniel): This plot does not take into consideration the WCS coordinates
     #                included in the FITS cube. Rotation and scaling is likely off.
     #                Perhaps these kinds of previews should rather be created in IDL
@@ -46,13 +46,13 @@ def generate_image_preview(preview_file, wavelength_pos=0.0, data_cube_path=None
     plt.close()
 
 
-def generate_image_preview_in_separate_process(preview_file, data_cube_path, wavelength_pos=0.0):
+def generate_new_image_preview_in_separate_process(preview_file, data_cube_path, wavelength_pos=0.0):
     script_path = os.path.realpath(__file__)
     python_executable = sys.executable
     subprocess.check_call([python_executable, script_path, data_cube_path, preview_file, '--wavelength', str(wavelength_pos)])
 
 
-def create_image_preview(preview_file, generate_if_missing=False, scale_x=-1,
+def generate_image_preview(preview_file, generate_if_missing=False, scale_x=-1,
                          scale_y=-1, fits_hdus=None, data_cube_path=None, data_cube=None):
 
     if not data_cube_path and data_cube:
@@ -72,7 +72,7 @@ def create_image_preview(preview_file, generate_if_missing=False, scale_x=-1,
 
         ffmpeg_stream.run(capture_stdout=True, capture_stderr=True)
     elif generate_if_missing:
-        generate_image_preview_in_separate_process(preview_file, data_cube_path)
+        generate_new_image_preview_in_separate_process(preview_file, data_cube_path)
 
 
 def main():
@@ -91,7 +91,7 @@ def main():
     else:
         output_file = args.output
 
-    generate_image_preview(output_file, data_cube_path=args.image_file, wavelength_pos=args.wavelength)
+    generate_new_image_preview(output_file, data_cube_path=args.image_file, wavelength_pos=args.wavelength)
 
 
 if __name__ == '__main__':

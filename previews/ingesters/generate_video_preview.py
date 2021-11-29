@@ -7,7 +7,7 @@ import ffmpeg
 import os
 
 
-def create_video_preview(preview_file, scale_x=-1, scale_y=-1, data_cube_path=None, data_cube=None, fits_hdus=None):
+def generate_video_preview(preview_file, scale_x=-1, scale_y=-1, data_cube_path=None, data_cube=None, fits_hdus=None):
     if not data_cube_path and data_cube:
         data_cube_path = data_cube.path
 

@@ -1,17 +1,10 @@
-import os
 from pathlib import Path
 
-from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from data_access.utils import generate_absolute_path_to_data_cube
 from ingestion.ingesters.ingest_data_cube import ingest_data_cube
-
-
-def _generate_absolute_path_to_data_cube(relative_path):
-    # Do not allow navigation upwards in the directory tree.
-    relative_path = relative_path.replace('..', '')
-    return os.path.join(settings.SCIENCE_DATA_ROOT, relative_path)
 
 
 class DataCubeIngestionSerializer(serializers.Serializer):
@@ -26,7 +19,7 @@ class DataCubeIngestionSerializer(serializers.Serializer):
     swedish_data = serializers.BooleanField()
 
     def validate_relative_path(self, value):
-        path = Path(_generate_absolute_path_to_data_cube(value))
+        path = Path(generate_absolute_path_to_data_cube(value))
 
         if not path.is_file():
             raise ValidationError(
@@ -54,7 +47,7 @@ class DataCubeIngestionSerializer(serializers.Serializer):
 
     def ingest(self, data_cube_data):
         oid = data_cube_data['oid']
-        fits_path = _generate_absolute_path_to_data_cube(data_cube_data['relative_path'])
+        fits_path = generate_absolute_path_to_data_cube(data_cube_data['relative_path'])
 
         owner_email_addresses = data_cube_data['owner_email_addresses']
         swedish_data = data_cube_data['swedish_data']

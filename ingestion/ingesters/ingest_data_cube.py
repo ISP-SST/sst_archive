@@ -8,10 +8,10 @@ from observations.ingesters.ingest_data_cube import ingest_observation_data_cube
 from observations.ingesters.ingest_tags import ingest_tags, get_features_vocabulary, get_events_vocabulary
 from observations.models import Instrument
 from observations.utils.generate_observation_id import generate_observation_id
-from previews.ingesters.ingest_image_previews import update_or_create_image_previews
+from previews.ingesters.ingest_image_previews import ingest_image_previews
 from previews.ingesters.ingest_r0_data import ingest_r0_data
 from previews.ingesters.ingest_spectral_line_profile_data import ingest_spectral_line_profile_data
-from previews.ingesters.ingest_video_previews import update_or_create_video_previews
+from previews.ingesters.ingest_video_previews import ingest_video_previews
 
 
 class IngestionError(Exception):
@@ -69,10 +69,10 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
         ingest_spectral_line_profile_data(fits_hdus, data_cube)
 
         if generate_image_previews:
-            update_or_create_image_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_images)
+            ingest_image_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_images)
 
         if generate_video_previews:
-            update_or_create_video_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_video)
+            ingest_video_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_video)
 
         if should_sync_with_svo:
             submit_to_svo(data_cube, primary_fits_hdu)

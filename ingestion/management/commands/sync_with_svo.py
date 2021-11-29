@@ -1,9 +1,7 @@
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from metadata.ingesters.ingest_metadata import get_fits_hdu
 from ingestion.svo.sync_with_svo import sync_with_svo
-from observations.models import DataCube
 
 
 class Command(BaseCommand):
