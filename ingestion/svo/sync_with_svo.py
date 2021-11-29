@@ -51,10 +51,9 @@ def sync_with_svo(**kwargs):
 
     dry_run = kwargs.get('dry_run', False)
     prompt = kwargs.get('prompt', False)
+    update_existing = kwargs.get('update_existing', False)
 
     print("Synchronizing with API at %s" % api_url)
-
-    update_existing = kwargs.get('update_existing', False)
 
     if dry_run:
         print("Doing a dry run")

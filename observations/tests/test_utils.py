@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from ingestion.svo.sync_with_svo import filter_file_path
-from ingestion.utils.generate_sparse_list_string import generate_sparse_list_string
+from ingestion.svo.submit_to_svo import filter_file_path
+from observations.utils import generate_sparse_list_string
 
 
 class TestUtils(TestCase):

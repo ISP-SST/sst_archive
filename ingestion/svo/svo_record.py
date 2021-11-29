@@ -125,7 +125,8 @@ class SvoRecord:
         data_location_ref_count = 0
 
         def get_data_location_id(metadata):
-            return metadata.get('data_location', {'id': None})['id']
+            data_location = metadata.get('data_location', None)
+            return data_location['id'] if data_location is not None else None
 
         for dataset_name in datasets:
             dataset = self.svo_cache.dataset(dataset_name)
