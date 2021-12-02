@@ -12,4 +12,4 @@ Quick summary of the views provided by the app:
  * Landing page
  * Sign in, sign out, and other account related views. Many of the account related views are only modified in terms of their templates, the underlying functionality is provided by the `django_allauth`
  * Search view with paginated search results
- * Observation details (with plots using the ApexCharts JS library)
+ * Observation details (with plots using the [ApexCharts JS library](https://apexcharts.com/))

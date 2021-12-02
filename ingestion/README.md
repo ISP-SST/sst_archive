@@ -4,12 +4,21 @@
 
 This Django app is responsible for bringing the data in the FITS cubes into the database.
 
- * HTTP ingestion endpoint as well as a management script that both do the same thing
- * This app can be seen as the conductor of the ingestion symphony. Most of the ingestion steps are actually performed in other apps, but this app ensures that everything is performed in the right order. To learn more about how a specific ingestion step is performed, see the documentation for that particular app  
- * Ingestion can be performed both for new data and data that already exists in the database. A full ingestion is 
-   executed in either case, and if data already exists it will be updated.
- * Ingestions are synchronous, i.e. upon making a request the response will not be sent until the full ingestion has
-   completed. This is a deliberate decision to keep the code simpler
+### Ingestion endpoints - HTTP and script
+
+The endpoints provided by this app both serve the same purpose - they allow the importing of data contained in a FITS
+cube into the database. This app can be seen as the conductor of the ingestion symphony. Most of the ingestion steps are
+actually performed in other apps that know more about the data structures that they populate during the ingestion, but
+this app ensures that everything is performed in the right order.
+
+To learn more about how a specific ingestion step is performed, see the documentation for that particular app.
+
+Ingestion can be performed with both new data and data that already exists in the database. A full ingestion is executed
+in either case, and if data already exists it will just be updated.
+
+The ingestion flow is synchronous, i.e. upon making a request the response will not be sent until the full ingestion has
+completed. This is a deliberate decision to keep the code simpler, at least until a more sofisticated solution is
+required.
 
 ## Future Work
 

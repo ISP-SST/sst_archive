@@ -12,6 +12,8 @@ This app provides some of the core models for storing observations in the system
 
 ## Ingestion
 
+This section provides more details about how data is ingested into the data models contained in this app.
+
 ### Tags (Features & Events)
 
 While tags can be assigned arbitrarily in the database model and admin site, the source for what tags should be applied

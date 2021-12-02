@@ -19,7 +19,7 @@ Here's a current list of the apps in the system and what their responsibilities 
 
 | App         | Purpose                      |
 |-------------|------------------------------|
-| [api](../api/README.md)                   | Provides the basis for an web based API. Currently the API only powers the ingestion end-point, but this can be extended in the future to provide a more feature rich API that would enable, for example, JavaScript SPAs. |
+| [api](../api/README.md)                   | Provides the basis for an web based API. Currently the API only powers the HTTP endpoint for ingestion, but this can be extended in the future to provide a more feature rich API that would enable, for example, JavaScript SPAs. |
 | [core](../core/README.md)                 | This app is responsible for laying some of the ground-work for the rest of the service. This includes extending the User model with additional profile information and integrating the django-allauth auth framework into the service. |
 | [data_access](../data_access/README.md)   | The `data_access` app controls user access to download the FITS data cubes that have been ingested by the archive. All downloads must go through this module. |
 | [frontend](../frontend/README.md)         | This is the main UI for the application: searching, viewing observation details, sign in/sign out, It's based on the fundamental Django framework primitives of templates and views and provides URL routes for these different views. |
