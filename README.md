@@ -8,10 +8,14 @@ This repo contains a searchable database of the science data produced using the 
 
 ### Requirements
 
-Have a look a `apt-dependencies.txt` to see what system dependencies are required in order to get the database up and
-running. On a Debian-like system you should be able to install the dependencies listed therein using:
+The service needs Python >= 3.7 to run.
+
+Have a look a `apt-dependencies.txt` to see what other system dependencies are required in order to get the database up
+and running. On a Debian-like system you should be able to install the dependencies listed therein using:
 
     apt-get install < apt-dependencies.txt
+
+### Setting Up the Service
 
 The quickest way to get the service up and running is by using the development configuration. The dev config uses SQLite
 as the database backend and is therefore quicker to get started with:
@@ -45,3 +49,8 @@ If you only have access to a couple of FITS cubes you can use the `ingest_fits_c
 If you happen to have access to the entire `/storage/science_data` folder on `dubshen` mounted on your local drive then
 you can use the `ingest_test_data.sh` script. Just point the script to the `science_data/` root directory. Ingesting all
 of it and generating all the previews usually takes a few minutes.
+
+## Learning How It Works
+
+A good place to start getting to know the inner workings of the SST Archive is to have a look at the
+[architecture documentation](./docs/ARCHITECTURE.md). 

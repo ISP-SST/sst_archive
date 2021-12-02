@@ -45,18 +45,18 @@ On production server:
 
 ### 4. Ingest new data (and possibly re-ingest old data)
 
-## Updating the SOLARNET SVO
+## Updating the SOLARNET Virtual Observatory
 
 ### 1. Update master lists for keywords
 
 Included in this repo are master lists for each instrument for the 
-keywords that the SOLARNET SVO knows about:  
+keywords that the SVO knows about:  
 
     ingestion/svo/solarnet_metadata_crisp_keywords.json
     ingestion/svo/solarnet_metadata_chromis_keywords.json
 
 These keyword lists need to be updated in order to update the production
-database. In the SOLARNET SVO there are two scripts that are used to update
+database. In the SVO there are two scripts that are used to update
 the keywords in the database from a JSON file, and then writing updating
 model files from the keywords in the database.
 

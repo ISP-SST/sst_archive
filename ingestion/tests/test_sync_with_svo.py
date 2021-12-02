@@ -1,5 +1,6 @@
 import unittest
 from pathlib import Path
+from unittest import skip
 
 from astropy.io import fits
 from django.conf import settings
@@ -36,6 +37,7 @@ TEST_API_USER = 'daniel'
 TEST_API_KEY = 'eb00702a03a5e77114d5f254dde3c275261d7726'
 
 
+@skip("By default we don't run SVO tests since they require a special local setup")
 class TestSyncWithSvo(TestCase):
     """
     This test case requires an instance of the SOLARNET-service to be running and accessible.
