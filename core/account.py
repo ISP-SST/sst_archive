@@ -174,7 +174,8 @@ class EmailVerificationAccountAdapter(DefaultAccountAdapter):
 class EmailEnforcingAccountAdapter(EmailVerificationAccountAdapter):
     def populate_username(self, request, user):
         """
-        Fills in a valid username, if required and missing. This overridden function always ensures that the
+        Fills in a valid username, if required and missing. This overridden function always ensures that the username
+        is set to the email of that user.
         """
         from allauth.account.utils import user_field, user_email, user_username
         from allauth.account import app_settings

@@ -10,7 +10,7 @@ from slumber.exceptions import HttpNotFoundError
 from ingestion.svo.svo_api import SvoApi
 from ingestion.svo.svo_cache import SvoCache
 
-BASE_FILE_URL = None # Used to be 'https://dubshen.astro.su.se/data/'
+BASE_FILE_URL = None  # Used to be 'https://dubshen.astro.su.se/data/'
 
 # The default hdu name or index to use for extracting the metadata from the FITS file (can be specified here to avoid
 # passing it by parameter to the script)
