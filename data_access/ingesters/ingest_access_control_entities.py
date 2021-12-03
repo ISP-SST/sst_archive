@@ -2,13 +2,14 @@ import datetime
 
 from astropy.io import fits
 
-from data_access.models import DataCubeAccessControl, DataCubeUserGrant, grant_swedish_user_group_access_to_data_cube
+from data_access.models import DataCubeAccessControl, DataCubeUserGrant, grant_swedish_user_group_access_to_data_cube, \
+    remove_swedish_user_group_access_to_data_cube
 from observations.models import DataCube
 
 
 def ingest_access_control_entities(data_cube: DataCube, fits_header: fits.Header,
-                                   owner_email_addresses=[],
-                                   swedish_data=False):
+                                   owner_email_addresses=None,
+                                   swedish_data=None):
     # Create access control row for this observation.
     release_date_str = fits_header.get('RELEASE', None)
 
@@ -25,9 +26,15 @@ def ingest_access_control_entities(data_cube: DataCube, fits_header: fits.Header
         'release_comment': release_comment
     })
 
-    if owner_email_addresses:
+    if owner_email_addresses is not None:
+        # Remove previous grants if a new list of owners was provided.
+        DataCubeUserGrant.objects.filter(data_cube=data_cube).delete()
+
         for email_address in owner_email_addresses:
             grant = DataCubeUserGrant.objects.update_or_create(user_email=email_address, data_cube=data_cube)
 
-    if swedish_data:
-        grant_swedish_user_group_access_to_data_cube(data_cube)
+    if swedish_data is not None:
+        if swedish_data:
+            grant_swedish_user_group_access_to_data_cube(data_cube)
+        else:
+            remove_swedish_user_group_access_to_data_cube(data_cube)

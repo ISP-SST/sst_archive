@@ -39,9 +39,10 @@ class TestIngestDataCube(TestCase):
         self.assertTrue(os.path.exists(self.fits_file))
 
         oid = '2019-04-19T17:34:39_6173_0-4'
-        ingest_data_cube(oid, self.fits_file,
+        ingest_data_cube(self.fits_file,
                          generate_image_previews=True,
-                         generate_video_previews=True)
+                         generate_video_previews=True,
+                         oid=oid)
 
         cube: DataCube = DataCube.objects.get(oid=oid)
 
@@ -73,7 +74,7 @@ class TestIngestDataCube(TestCase):
         oid = '2019-04-19T17:34:39_6173_0-4'
 
         with self.assertRaises(FileNotFoundError):
-            ingest_data_cube(oid, fits_file)
+            ingest_data_cube(fits_file, oid=oid)
 
     def test_generate_observation_id(self):
         self.assertTrue(os.path.exists(self.fits_file))

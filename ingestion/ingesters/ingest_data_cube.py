@@ -30,7 +30,7 @@ def _get_instrument_for_fits_file(primary_hdu_header: fits.Header):
     return instrument
 
 
-def ingest_data_cube(oid: str, path: str, **kwargs):
+def ingest_data_cube(path: str, **kwargs):
     """
     Main entry point for ingesting a data cube into the database.
     """
@@ -40,8 +40,9 @@ def ingest_data_cube(oid: str, path: str, **kwargs):
     force_regenerate_video = kwargs.get('force_regenerate_videos', False)
     should_sync_with_svo = kwargs.get('sync_with_svo', False)
 
-    owner_email_addresses = kwargs.get('owner_email_addresses', [])
-    swedish_data = kwargs.get('swedish_data', False)
+    owner_email_addresses = kwargs.get('owner_email_addresses', None)
+    swedish_data = kwargs.get('swedish_data', None)
+    oid = kwargs.get('oid', None)
 
     with fits.open(path) as fits_hdus:
         primary_fits_hdu = fits_hdus[0].header

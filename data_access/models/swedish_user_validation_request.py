@@ -42,6 +42,11 @@ def grant_swedish_user_group_access_to_data_cube(data_cube):
     DataCubeGroupGrant.objects.update_or_create(data_cube=data_cube, group=swedish_user_group)
 
 
+def remove_swedish_user_group_access_to_data_cube(data_cube):
+    swedish_user_group = get_swedish_user_group()
+    DataCubeGroupGrant.objects.filter(data_cube=data_cube, group=swedish_user_group).delete()
+
+
 def get_user_swedish_user_validation_status(user):
     try:
         request = SwedishUserValidationRequest.objects.get(user=user)

@@ -12,7 +12,7 @@ class DataCubeIngestionSerializer(serializers.Serializer):
     This serializer is responsible for the mechanics of taking a description of a new data cube and
     ingesting it into the database.
     """
-    oid = serializers.CharField()
+    oid = serializers.CharField(required=False)
     relative_path = serializers.CharField()
 
     owner_email_addresses = serializers.ListField()
@@ -46,18 +46,19 @@ class DataCubeIngestionSerializer(serializers.Serializer):
         return data_cube
 
     def ingest(self, data_cube_data):
-        oid = data_cube_data['oid']
+        oid = data_cube_data.get('oid', None)
         fits_path = generate_absolute_path_to_data_cube(data_cube_data['relative_path'])
 
         owner_email_addresses = data_cube_data['owner_email_addresses']
         swedish_data = data_cube_data['swedish_data']
 
         try:
-            ingested_cube = ingest_data_cube(oid, fits_path,
+            ingested_cube = ingest_data_cube(fits_path,
                                              generate_image_previews=True,
                                              generate_video_previews=True,
                                              owner_email_addresses=owner_email_addresses,
-                                             swedish_data=swedish_data)
+                                             swedish_data=swedish_data,
+                                             oid=oid)
         except Exception as e:
             raise ValidationError(e)
 
