@@ -86,7 +86,7 @@ class SstArchiveApi(API):
         return getattr(self, resource_uri)
 
 
-def submit_fits_cube(fits_file, swedish_data=None, owner_emails=None, oid=None, prompt=False,
+def submit_fits_cube(fits_file, swedish_data=None, owner_emails=None, oid=None, interactive=False,
                      api_endpoint=DEFAULT_SST_API_INGESTION_ENDPOINT, api_key=DEFAULT_SST_API_KEY,
                      science_data_root=DEFAULT_SCIENCE_DATA_ROOT):
     """
@@ -95,7 +95,7 @@ def submit_fits_cube(fits_file, swedish_data=None, owner_emails=None, oid=None, 
 
     release_date = get_release_date_from_fits_file(science_data_root, fits_file)
     data_is_restricted = release_date > date.today()
-    should_prompt = data_is_restricted and prompt
+    should_prompt = data_is_restricted and interactive
 
     if swedish_data is None:
         swedish_data = prompt_for_is_swedish_data() if should_prompt else False
@@ -132,8 +132,8 @@ def main():
     parser.add_argument('--swedish-data', action='store_true', default=None, help='Tag the FITS cube as Swedish data')
     parser.add_argument('--owner-emails', nargs='*', default=None,
                         help='Register the e-mails of the owners of this data')
-    parser.add_argument('--prompt', action='store_true', help='Interactively prompt the user for owner e-mails and'
-                                                              'Swedish data status')
+    parser.add_argument('--interactive', action='store_true', help='Interactively prompt the user for owner e-mails and'
+                                                                   'Swedish data status')
     parser.add_argument('--api-endpoint', default=DEFAULT_SST_API_INGESTION_ENDPOINT,
                         help='Override the HTTP ingestion endpoint')
     parser.add_argument('--api-key', default=DEFAULT_SST_API_KEY, help='API key for the ingestion endpoint')
