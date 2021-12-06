@@ -1,9 +1,11 @@
 {% extends "frontend/base.html" %}
 
+{% load static %}
+
 {% block full_width_content %}
 
-
 <div class="container col-6 align-self-center text-center border p-5 bg-white rounded">
+    <img class="rounded float-start w-25" src="{% static 'frontend/Swedish_Solar_Telescope.jpeg' %}" />
     <h1 class="mt-5 mb-5">Welcome to the Stockholm SST Archive</h1>
 
     <p class="mt-5 mb-5">&mdash; a searchable database of observational data gathered using the Swedish 1-m Solar
