@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 
-from data_access.models import DataCubeAccessToken, DataCubeUserGrant, DataCubeGroupGrant
+from data_access.models import DataCubeUserGrant, DataCubeGroupGrant
 from observations.models import DataCube
 
 
@@ -42,26 +42,6 @@ def user_has_access_to_data_cube(user: User, data_cube: DataCube, datetime_now=N
         return True
 
     return False
-
-
-def has_valid_token_for_data_cube(data_cube: DataCube, token_string: str, datetime_now=None):
-    """
-    Tests if a token grants access to a certain DataCube.
-    """
-    if not datetime_now:
-        datetime_now = datetime.datetime.now()
-
-    if data_cube_requires_access_grant(data_cube, datetime_now):
-        try:
-            token = DataCubeAccessToken.objects.get(token_string=token_string, data_cube=data_cube)
-            # FIXME(daniel): We should take the grant date into account and only allow downloads after that date,
-            #                but due to apparent time skew we can't always assume that datetime_now will be after
-            #                grant date if the token was added very recently.
-            return datetime_now < token.expiration_date
-        except DataCubeAccessToken.DoesNotExist:
-            return False
-
-    return True
 
 
 def get_data_cube_release_comments(data_cube):

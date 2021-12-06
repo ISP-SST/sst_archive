@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse, FileResponse
 from django.shortcuts import render
 
 from data_access.models import is_data_cube_restricted_to_swedish_users
-from data_access.utils import data_cube_requires_access_grant, has_valid_token_for_data_cube, user_has_access_to_data_cube
+from data_access.utils import data_cube_requires_access_grant, user_has_access_to_data_cube
 from observations.models import DataCube
 
 
