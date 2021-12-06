@@ -121,7 +121,7 @@
                 </tr>
 
                 <tr>
-                    <td>Average cadence</td>
+                    <td>Average cadence:</td>
                     <td>
                         {% if metadata.cadavg %}
                         {{ metadata.cadavg }} seconds
@@ -133,17 +133,17 @@
 
                 <tr>
                     <td>
-                        Release status
+                        Release status:
                     </td>
                     <td>
                         {% if restricted %}
                         <div class="badge bg-danger rounded-pill" data-bs-toggle="tooltip" data-bs-html="true"
-                             title="<p>The data in this observation is not freely available in its entirety.</p><p>{{release_comment}}</p>">Restricted <i class="bi bi-info-circle-fill"></i>
+                             title="<p>This observation data is not publicly available in its entirety.</p><p>{{release_comment}}</p>">Restricted <i class="bi bi-info-circle-fill"></i>
                         </div>
 
                         {% if swedish_data %}
                         <div class="badge bg-info rounded-pill" data-bs-html="true" data-bs-toggle="tooltip"
-                             title="<p>The data in this observation is restricted but freely available to Swedish researchers.</p><p>Gain access by registering a user and specifying that you are based in Sweden.</p>">
+                             title="<p>Access to this observation data is restricted but immediately available to Swedish researchers.</p><p>Gain access by registering a user and specifying that you are based in Sweden.</p>">
                             Swedish Data
                         </div>
                         {% endif %}
