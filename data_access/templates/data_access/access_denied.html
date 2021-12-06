@@ -19,6 +19,16 @@
 </div>
 {% endif %}
 
+{% if swedish_data %}
+    <div class="alert alert-secondary">
+        <h4>Swedish Data</h4>
+        <p>This data has been collected by a Swedish University and is available to Swedish researchers.</p>
+        <p>If you are affiliated with a Swedish university, please sign up with an e-mail address belonging to that
+            University and state that you are a Swedish user. Once you've done that your account will be verified and
+            you will be granted access to the data.</p>
+    </div>
+{% endif %}
+
 
 {% if user.is_authenticated %}
 
@@ -35,17 +45,6 @@
 </p>
 
 {% endif %}
-
-{% if swedish_data %}
-    <div class="alert alert-secondary">
-        <h4>Swedish Data</h4>
-        <p>This data has been collected by a Swedish University and is freely available to all Swedish citizens.</p>
-        <p>If you are affiliated with a Swedish university, please sign up with an e-mail address belonging to that
-            University and state that you are a Swedish user. Once you've done that your account will be verified and
-            you will be granted access to the data.</p>
-    </div>
-{% endif %}
-
 
 </div>
 
