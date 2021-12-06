@@ -88,8 +88,12 @@ def update_email_verification_date(user):
     user.profile.save()
 
 
+def get_full_site_paths(paths):
+    return [settings.PATH_ROOT + path for path in paths]
+
+
 def _should_not_challenge_verification_for_request(request):
-    return any(filter(request.path.startswith, _EXCLUDED_VERIFICATION_PATHS))
+    return any(filter(request.path.startswith, get_full_site_paths(_EXCLUDED_VERIFICATION_PATHS)))
 
 
 class EmailVerificationChallengeMiddleware(MiddlewareMixin):

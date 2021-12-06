@@ -23,8 +23,8 @@ from core.models import UserProfile
     ACCOUNT_SIGNUP_REDIRECT_URL="/accounts/welcome/",
     ACCOUNT_ADAPTER="core.account.EmailEnforcingAccountAdapter",
     ACCOUNT_FORMS={
-                            'signup': 'core.account.ExtendedSignupForm',
-                            'login': 'core.account.EmailVerificationEnforcingLoginForm'
+        'signup': 'core.account.ExtendedSignupForm',
+        'login': 'core.account.EmailVerificationEnforcingLoginForm'
     },
     ACCOUNT_USERNAME_REQUIRED=False,
     ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN=0,
@@ -37,7 +37,7 @@ class TestAccountEmailReVerification(TestCase):
         test_affiliation = 'Test affiliation'
 
         user = User.objects.create(username='test@example.com', password='password123', email='test@example.com',
-                            first_name='Firstname', last_name='Lastname')
+                                   first_name='Firstname', last_name='Lastname')
 
         user.profile.purpose = test_purpose
         user.profile.affiliation = test_affiliation
@@ -85,7 +85,6 @@ class TestAccountEmailReVerification(TestCase):
             "account/verification_sent.%s" % settings.ACCOUNT_TEMPLATE_EXTENSION,
         )
 
-        all_confirmations = EmailConfirmation.objects.all()
 
         # Verify, and attempt to login.
         confirmation = EmailConfirmation.objects.filter(
