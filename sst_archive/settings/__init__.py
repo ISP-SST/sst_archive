@@ -238,7 +238,7 @@ EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'no-reply@astro.su.se'
-DEFAULT_CONTACT_EMAIL = 'sst-data-requests@astro.su.se'
+DEFAULT_CONTACT_EMAIL = 'sst-data-request@astro.su.se'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
