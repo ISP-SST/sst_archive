@@ -37,15 +37,17 @@
                 {% if data_cube.video_preview and data_cube.video_preview.video_core %}
                 <div class="video-container">
                     <div class="video-inlay" style="position: relative">
-                        <video id="video-core" class="mw-100 rounded" poster="{{data_cube.previews.full_size.url}}" src="{{data_cube.video_preview.video_core.url}}" loop muted playsinline></video>
+                        <video id="video-core" class="mw-100 rounded" poster="{{data_cube.previews.full_size.url}}"
+                               src="{{data_cube.video_preview.video_core.url}}" loop muted playsinline></video>
                         <div id="video-core-play-button">
-                            <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px" onclick="const video = document.getElementById('video-core'); video.play(); video.controls = true; const playButton = document.getElementById('video-core-play-button'); playButton.style.display = 'None';"
+                            <div style="cursor: pointer; text-shadow: 0 0 2px rgb(0, 0, 0); color: rgb(230, 230, 230); position: absolute; left: 5px; bottom: 0px; font-size: 40px"
+                                 onclick="const video = document.getElementById('video-core'); video.play(); video.controls = true; const playButton = document.getElementById('video-core-play-button'); playButton.style.display = 'None';"
                                  class="bi bi-play-circle-fill"></div>
                         </div>
                     </div>
                 </div>
                 {% elif data_cube.previews and data_cube.previews.full_size %}
-                <img class="mw-100 rounded" src="{{data_cube.previews.full_size.url}}" />
+                <img class="mw-100 rounded" src="{{data_cube.previews.full_size.url}}"/>
                 {% endif %}
             </figure>
             {% else %}
@@ -59,7 +61,7 @@
                     <td>Features:</td>
                     <td>
                         {% for tag in data_cube.tags.all %}
-                        <span class="badge bg-light text-dark">{{ tag }}</span>
+                        <span class="badge bg-light rounded-pill text-dark">{{ tag }}</span>
                         {% empty %}
                         &mdash;
                         {% endfor %}
@@ -79,9 +81,9 @@
                     <td>Instrument:</td>
                     <td>
                         <ul style="list-style-type: none; padding-left: 0">
-                        {% for instrument in instruments %}
+                            {% for instrument in instruments %}
                             <li>{{ instrument }}</li>
-                        {% endfor %}
+                            {% endfor %}
                         </ul>
                     </td>
                 </tr>
@@ -90,9 +92,9 @@
                     <td>Spectral line(s):</td>
                     <td>
                         <ul style="list-style-type: none; padding-left: 0">
-                        {% for line in spectral_lines %}
+                            {% for line in spectral_lines %}
                             <li>{{ line }}</li>
-                        {% endfor %}
+                            {% endfor %}
                         </ul>
                     </td>
                 </tr>
@@ -101,9 +103,9 @@
                     <td>Observer(s):</td>
                     <td>
                         <ul style="list-style-type: none; padding-left: 0">
-                        {% for observer in observers %}
+                            {% for observer in observers %}
                             <li>{{ observer }}</li>
-                        {% endfor %}
+                            {% endfor %}
                         </ul>
                     </td>
                 </tr>
@@ -130,15 +132,41 @@
                 </tr>
 
                 <tr>
+                    <td>
+                        Release status
+                    </td>
+                    <td>
+                        {% if restricted %}
+                        <div class="badge bg-danger rounded-pill" data-bs-toggle="tooltip" data-bs-html="true"
+                             title="<p>The data in this observation is not freely available in its entirety.</p><p>{{release_comment}}</p>">Restricted <i class="bi bi-info-circle-fill"></i>
+                        </div>
+
+                        {% if swedish_data %}
+                        <div class="badge bg-info rounded-pill" data-bs-html="true" data-bs-toggle="tooltip"
+                             title="<p>The data in this observation is restricted but freely available to Swedish researchers.</p><p>Gain access by registering a user and specifying that you are based in Sweden.</p>">
+                            Swedish Data
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="badge bg-success rounded-pill">Publicly Available</div>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
                     <td>FITS Cube(s):</td>
                     <td style="vertical-align: middle">
                         {% if is_data_cube_group %}
                         <form action="{% url 'download_multiple_data_cubes' %}">
                             {{ download_form.as_p }}
-                            <button class="btn btn-primary" type="submit"><i class="bi bi-download"></i> Download selected</button>
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-download"></i> Download
+                                selected
+                            </button>
                         </form>
                         {% else %}
-                        <a class="btn btn-primary" data-bs-toggle="tooltip" href="{% url 'download_data_cube' data_cube.filename %}" title="{{ data_cube.filename }}"><i class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
+                        <a class="btn btn-primary" data-bs-toggle="tooltip"
+                           href="{% url 'download_data_cube' data_cube.filename %}" title="{{ data_cube.filename }}"><i
+                                class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
                         {% endif %}
                     </td>
                 </tr>
@@ -172,41 +200,43 @@
 
     <div class="row mb-5">
         <div class="accordion" id="metadata-accordion">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="flush-headingOne">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                  All FITS Metadata
-                  {% if is_data_cube_group %}
-                  ({{ metadata.filename }})
-                  {% endif %}
-              </button>
-            </h2>
-            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#metadata-accordion">
-              <div class="accordion-body">
-                <table class="table table-hover col-lg-8" style="table-layout: fixed">
-                    <thead class="thead-light">
-                    <tr>
-                        <th scope="col">Keyword</th>
-                        <th scope="col">Value</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for key, value in metadata_fields.items %}
-                    {% if value is not None %}
-                    <tr>
-                        <th scope="row">{{ key }}</th>
-                        <td class="overflow-auto">{{ value }}</td>
-                    </tr>
-                    {% endif %}
-                    {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                    <p>Specified metadata not found.</p>
-                {% endif %}
-              </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                        All FITS Metadata
+                        {% if is_data_cube_group %}
+                        ({{ metadata.filename }})
+                        {% endif %}
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                     data-bs-parent="#metadata-accordion">
+                    <div class="accordion-body">
+                        <table class="table table-hover col-lg-8" style="table-layout: fixed">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Keyword</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key, value in metadata_fields.items %}
+                            {% if value is not None %}
+                            <tr>
+                                <th scope="row">{{ key }}</th>
+                                <td class="overflow-auto">{{ value }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p>Specified metadata not found.</p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
 
     </div>

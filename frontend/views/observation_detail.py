@@ -1,9 +1,10 @@
 from django.db.models import Prefetch
 from django.shortcuts import render
 
+from data_access.models import is_data_cube_restricted_to_swedish_users
+from data_access.utils import data_cube_requires_access_grant
 from frontend.forms import create_download_form
 from observations.models import DataCube, Observation
-
 
 
 def observation_detail(request, observation_pk):
@@ -42,6 +43,11 @@ def observation_detail(request, observation_pk):
     observers = set()
     polarimetric = False
 
+    restricted = False
+    release_date = None
+    swedish_data = False
+    release_comment = ''
+
     for cube in data_cubes:
         date_beg = min(date_beg, cube.metadata.date_beg)
         date_end = max(date_end, cube.metadata.date_end)
@@ -50,6 +56,16 @@ def observation_detail(request, observation_pk):
         observers.add(cube.metadata.observer)
         polarimetric = polarimetric or cube.metadata.naxis4 > 1
         total_number_of_scans += cube.metadata.naxis5
+
+        restricted = restricted or data_cube_requires_access_grant(cube)
+        swedish_data = swedish_data or is_data_cube_restricted_to_swedish_users(cube)
+
+        if release_date:
+            release_date = min(cube.access_control.release_date, release_date)
+        else:
+            release_date = cube.access_control.release_date
+
+        release_comment = release_comment or cube.access_control.release_comment
 
     context = {
         'observation': observation,
@@ -67,7 +83,11 @@ def observation_detail(request, observation_pk):
         'r0_json_data': r0_json_data,
         'spectral_line_data': spectral_line_data,
         'observers': observers,
-        'polarimetric': polarimetric
+        'polarimetric': polarimetric,
+        'restricted': restricted,
+        'release_date': release_date,
+        'swedish_data': swedish_data,
+        'release_comment': release_comment,
     }
 
     return render(request, 'frontend/observation_detail.html', context)
