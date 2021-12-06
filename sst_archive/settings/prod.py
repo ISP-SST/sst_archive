@@ -30,12 +30,16 @@ EMAIL_USE_TLS = False
 # Points to a read-only science data folder that has been mounted.
 SCIENCE_DATA_ROOT = '/srv/www/dubshen/sst_archive/science_data/'
 
-STATIC_URL = '/sst_archive/static/'
-MEDIA_URL = '/sst_archive/media/'
+PATH_ROOT = '/sst_archive'
 
-LOGIN_REDIRECT_URL = '/sst_archive/'
-LOGOUT_REDIRECT_URL = '/sst_archive/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/sst_archive/'
+STATIC_URL = PATH_ROOT + '/static/'
+MEDIA_URL = PATH_ROOT + '/media/'
+
+LOGIN_REDIRECT_URL = PATH_ROOT
+LOGOUT_REDIRECT_URL = PATH_ROOT
+ACCOUNT_LOGOUT_REDIRECT_URL = PATH_ROOT
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = PATH_ROOT
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = PATH_ROOT
 
 LOGGING = {
     'version': 1,

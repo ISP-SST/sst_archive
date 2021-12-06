@@ -243,11 +243,13 @@ DEFAULT_CONTACT_EMAIL = 'sst-data-request@astro.su.se'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+PATH_ROOT = ''
+
+STATIC_URL = PATH_ROOT + '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [BASE_DIR / 'assets']
 
-MEDIA_URL = '/media/'
+MEDIA_URL = PATH_ROOT + '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # This information is available in the FITS cubes, but it may not be safe
