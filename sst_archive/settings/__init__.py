@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_q',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -134,16 +133,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
     }
-}
-
-Q_CLUSTER = {
-    'name': 'DjangORM',
-    'workers': 4,
-    'timeout': 90,
-    'retry': 120,
-    'queue_limit': 50,
-    'bulk': 10,
-    'orm': 'default'
 }
 
 LOGIN_REDIRECT_URL = '/'
