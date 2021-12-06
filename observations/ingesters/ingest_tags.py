@@ -37,19 +37,29 @@ def ingest_tags(fits_header_hdu: fits.Header, data_cube: DataCube, features_voca
     features_str = fits_header_hdu.get('FEATURES', None)
     events_str = fits_header_hdu.get('EVENTS', None)
 
+    features_missing = features_str is None or features_str == 'MISSING'
+    events_missing = events_str is None or events_str == 'MISSING'
+
     features = []
     events = []
 
-    if features_str:
+    if features_str and not features_missing:
         features_in_cube = features_str.split(',')
         matched_features = items_in_vocabulary(features_vocabulary, features_in_cube)
 
-        features = [Tag.objects.update_or_create(name=feature.strip(), type=Tag.Type.FEATURE)[0] for feature in matched_features]
+        features = [Tag.objects.update_or_create(name=feature.strip(), type=Tag.Type.FEATURE)[0] for feature in
+                    matched_features]
 
-    if events_str:
+    data_cube.features_ingested = not features_missing
+
+    if events_str and not events_missing:
         events_in_cube = events_str.split(',')
         matched_events = items_in_vocabulary(events_vocabulary, events_in_cube)
 
         events = [Tag.objects.update_or_create(name=event.strip(), type=Tag.Type.EVENT)[0] for event in matched_events]
 
+    data_cube.events_ingested = not events_missing
+
     data_cube.tags.set(features + events)
+
+    data_cube.save()

@@ -36,6 +36,13 @@ class DataCube(models.Model):
     instrument = models.ForeignKey('observations.Instrument', on_delete=models.CASCADE)
     tags = models.ManyToManyField('observations.Tag', 'cubes', blank=True)
 
+    features_ingested = models.BooleanField('Features have been ingested', default=False,
+                                            help_text='If a proper list of FEATURES was present in the data cube this'
+                                                      'will be set to True')
+    events_ingested = models.BooleanField('Events have been ingested', default=False,
+                                          help_text='If a proper list of EVENTS was present in the data cube this will'
+                                                    'be set to True')
+
     objects = DataCubeManager()
 
     def __str__(self):
