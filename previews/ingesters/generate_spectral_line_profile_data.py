@@ -70,8 +70,11 @@ def generate_spectral_line_profile_data_v3(fits_hdus):
 
     wcs_values = wcs_tab_hdu.data.field(ttype)[0]
 
-    scan_index = 0
-    wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
+    if n_time == 1:
+        wavelength_values = [v[0][0][i_wave] for v in wcs_values]
+    else:
+        scan_index = 0
+        wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
 
     wavelength_data = {
         'wavelengths': wavelength_values,

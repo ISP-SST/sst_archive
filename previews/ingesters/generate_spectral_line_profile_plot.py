@@ -86,7 +86,10 @@ def generate_spectral_line_profile_plot(fits_hdus, plot_file, size=(4, 1)):
 
     wcs_values = wcs_tab_hdu.data.field(ttype)[0]
 
-    wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
+    if n_time == 1:
+        wavelength_values = [v[0][0][i_wave] for v in wcs_values]
+    else:
+        wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
 
     plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=4, markerfacecolor=marker_color, markeredgecolor="None")
 
