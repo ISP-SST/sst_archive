@@ -133,7 +133,7 @@ def main():
     parser.add_argument('--owner-emails', nargs='*', default=None,
                         help='Register the e-mails of the owners of this data')
     parser.add_argument('--interactive', action='store_true', help='Interactively prompt the user for owner e-mails and'
-                                                                   'Swedish data status')
+                                                                   ' Swedish data status')
     parser.add_argument('--api-endpoint', default=DEFAULT_SST_API_INGESTION_ENDPOINT,
                         help='Override the HTTP ingestion endpoint')
     parser.add_argument('--api-key', default=DEFAULT_SST_API_KEY, help='API key for the ingestion endpoint')
