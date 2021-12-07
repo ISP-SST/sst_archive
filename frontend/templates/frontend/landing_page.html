@@ -5,13 +5,20 @@
 {% block full_width_content %}
 
 <div class="container col-6 align-self-center text-center border p-5 bg-white rounded">
-    <img class="rounded float-start w-25" src="{% static 'frontend/Swedish_Solar_Telescope.jpeg' %}" />
-    <h1 class="mt-5 mb-5">Welcome to the Stockholm SST Archive</h1>
+    <div class="row">
+        <div class="col-4">
+            <img class="rounded float-start w-100" src="{% static 'frontend/Swedish_Solar_Telescope.jpeg' %}" />
+        </div>
 
-    <p class="mt-5 mb-5">&mdash; a searchable database of observational data gathered using the Swedish 1-m Solar
-            Telescope (SST).</p>
+        <div class="col">
+            <h1 class="mt-5 mb-5">Welcome to the Stockholm SST Archive</h1>
 
-    <a class="btn btn-primary mx-auto large btn-lg" href="{% url 'search' %}"><i class="bi bi-search"></i> Search observations</a>
+            <p class="mt-5 mb-5">&mdash; a searchable database of observational data gathered using the Swedish 1-m Solar
+                    Telescope (SST).</p>
+
+            <a class="btn btn-primary mx-auto large btn-lg" href="{% url 'search' %}"><i class="bi bi-search"></i> Search observations</a>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
