@@ -45,7 +45,6 @@ def observation_detail(request, observation_pk):
 
     restricted = False
     release_date = None
-    swedish_data = False
     release_comment = ''
 
     swedish_data = are_some_data_cubes_accessible_to_swedish_users(data_cubes)
