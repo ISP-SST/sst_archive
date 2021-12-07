@@ -38,7 +38,7 @@ def ingest_data_cube(path: str, **kwargs):
     generate_video_previews = kwargs.get('generate_video_previews', False)
     force_regenerate_images = kwargs.get('force_regenerate_images', False)
     force_regenerate_video = kwargs.get('force_regenerate_videos', False)
-    should_sync_with_svo = kwargs.get('sync_with_svo', False)
+    should_submit_to_svo = kwargs.get('submit_to_svo', False)
 
     owner_email_addresses = kwargs.get('owner_email_addresses', None)
     swedish_data = kwargs.get('swedish_data', None)
@@ -75,7 +75,7 @@ def ingest_data_cube(path: str, **kwargs):
         if generate_video_previews:
             ingest_video_previews(fits_hdus, data_cube, regenerate_preview=force_regenerate_video)
 
-        if should_sync_with_svo:
+        if should_submit_to_svo:
             submit_to_svo(data_cube, primary_fits_hdu)
 
     return data_cube

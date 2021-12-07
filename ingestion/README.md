@@ -20,6 +20,23 @@ The ingestion flow is synchronous, i.e. upon making a request the response will 
 completed. This is a deliberate decision to keep the code simpler, at least until a more sofisticated solution is
 required.
 
+### SVO Synchronization
+
+The building blocks for SVO synchronization are the following management commands:
+
+ * `submit_to_svo` – Submits a single data cube to SVO, possibly updating an existing cube if it already exists in 
+                     the SVO.
+ * `sync_with_svo` – Performs a full synchronization with the SVO. It uses the local database as the source of truth
+                     and...
+   - Removes any items in the SVO that don't exist in the local database
+   - Adds any items that don't exist in the SVO that do exist in the local database
+   - (Optionally updates items that exist both locally and in the SVO)
+
+The `submit_to_svo` steps should be executed as part of the normal ingestion process.
+
+`sync_with_svo` should be performed periodically to pick up on any files that have been removed. It usually makes sense
+to not do a full update of all the data in the SVO except for when a major update has been made to local data.  
+
 ## Future Work
 
 ### Suggested Flow for Asynchronous Ingestion

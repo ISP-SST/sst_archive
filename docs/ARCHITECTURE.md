@@ -45,6 +45,9 @@ As implied by the name, this app serves as the main entry-point for ingesting da
 important to note that the ingestion steps for individual data types is hosted by the app that also owns the data models
 into which the data will be ingested.
 
+The `ingestion` app is also responsible for synchronizing the contents of the local database with the SOLARNET
+Virtual Observatory. 
+
 ### [metadata](../metadata/README.md)
 
 This app hosts the database models for all the data contained in the FITS keywords that are stored in a data cube.
