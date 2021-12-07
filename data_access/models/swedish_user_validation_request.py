@@ -37,6 +37,11 @@ def is_data_cube_restricted_to_swedish_users(data_cube):
     return data_cube.group_grants.filter(group_id=swedish_group.id).count()
 
 
+def are_some_data_cubes_accessible_to_swedish_users(data_cubes):
+    swedish_group = get_swedish_user_group()
+    return data_cubes.select_related('group_grants').filter(group_grants__group_id=swedish_group.id).count()
+
+
 def grant_swedish_user_group_access_to_data_cube(data_cube):
     swedish_user_group = get_swedish_user_group()
     DataCubeGroupGrant.objects.update_or_create(data_cube=data_cube, group=swedish_user_group)

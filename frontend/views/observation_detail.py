@@ -1,7 +1,7 @@
 from django.db.models import Prefetch
 from django.shortcuts import render
 
-from data_access.models import is_data_cube_restricted_to_swedish_users
+from data_access.models import are_some_data_cubes_accessible_to_swedish_users
 from data_access.utils import data_cube_requires_access_grant
 from frontend.forms import create_download_form
 from observations.models import DataCube, Observation
@@ -9,7 +9,7 @@ from observations.models import DataCube, Observation
 
 def observation_detail(request, observation_pk):
     data_cubes_queryset = DataCube.objects.select_related('instrument', 'previews', 'metadata', 'r0data',
-                                                          'spectral_line_data', 'video_preview')
+                                                          'spectral_line_data', 'video_preview', 'access_control')
     observation = Observation.objects.prefetch_related(
         Prefetch('cubes', queryset=data_cubes_queryset)).get(pk=observation_pk)
 
@@ -48,6 +48,8 @@ def observation_detail(request, observation_pk):
     swedish_data = False
     release_comment = ''
 
+    swedish_data = are_some_data_cubes_accessible_to_swedish_users(data_cubes)
+
     for cube in data_cubes:
         date_beg = min(date_beg, cube.metadata.date_beg)
         date_end = max(date_end, cube.metadata.date_end)
@@ -58,7 +60,6 @@ def observation_detail(request, observation_pk):
         total_number_of_scans += cube.metadata.naxis5
 
         restricted = restricted or data_cube_requires_access_grant(cube)
-        swedish_data = swedish_data or is_data_cube_restricted_to_swedish_users(cube)
 
         if release_date:
             release_date = min(cube.access_control.release_date, release_date)
