@@ -41,7 +41,7 @@ def main():
         image_file_path, ext = os.path.splitext(args.image_file)
         webm_file = os.path.join(image_file_path, 'webm')
 
-    if create_video_preview(webm_file, data_cube_path=args.image_file):
+    if generate_video_preview(webm_file, data_cube_path=args.image_file):
         print('Created .webm file: %s' % webm_file)
     else:
         print('Unable to create .webm file')
