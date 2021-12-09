@@ -116,11 +116,14 @@ class SearchForm(forms.Form):
                                                        'full_field_name': 'Spectral Lines'
                                                    }
                                                ))
+    # Re-add this field when the tags feature is implemented and launched.
+    """
     features = forms.MultipleChoiceField(label='Features', choices=get_features_choices,
                                          required=False,
                                          widget=DropdownCheckboxSelectMultiple(attrs={
                                              'full_field_name': 'Features'
                                          }))
+    """
     polarimetry = forms.ChoiceField(label='Polarimetry',
                                     required=True,
                                     choices=(('any', 'Any'),
