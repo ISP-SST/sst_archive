@@ -1,24 +1,26 @@
+{% load static %}
+
 <div class="container row pb-5 px-5">
-    <div class="col-2 align-self-start container">
+    <div class="col-3 align-self-start container">
         <h4 class="fw-light mt-5 mb-5">Contact the Stockholm SST Archive</h4>
 
-        <p>Have opinions or suggestions about the Stockholm SST Archive?</p>
+        <p>Have questions, opinions or suggestions about the Stockholm SST Archive?</p>
 
-        <p>Feel free to reach out with your feedback to
+        <p>Feel free to reach out with your questions or feedback to
             <a href="mailto:{{ contact_email }}?subject=Stockholm SST Archive - Feedback">{{ contact_email }}</a>.
         </p>
     </div>
 
-    <div class="col-2 align-self-start container">
+    <div class="col-6 align-self-start container">
         <h4 class="fw-light mt-5 mb-5">EU Project Information</h4>
 
-        <p>Placeholder text that should mention the EU project that this database is part of.</p>
-
-        <p></p>
-    </div>
-
-    <div class="col-2 align-self-start container">
-                        <h4 class="fw-light mt-5 mb-5">Any other info</h4>
-
+        <div class="row">
+            <div class="col-3">
+                <img class="w-100" src="{% static 'frontend/images/eu-logo.jpeg' %}" alt="European Union flag"/>
+            </div>
+            <div class="col">
+                <p>This Stockholm SST Archive has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 824135.</p>
+            </div>
+        </div>
     </div>
 </div>
