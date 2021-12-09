@@ -15,7 +15,7 @@
 {% if release_comment %}
 <div class="alert alert-primary">
     <h5>Comment:</h5>
-    <p>{{ release_comment }}</p>
+    <p>{{ release_comment|urlize }}</p>
 </div>
 {% endif %}
 
