@@ -1,3 +1,5 @@
+import logging
+
 from astropy.io import fits
 from django.conf import settings
 
@@ -10,6 +12,9 @@ from observations.models import DataCube, Instrument
 
 REQUEST_METADATA_LIMIT = 50
 
+logger = logging.getLogger('SVO')
+dry_run_logger = logging.getLogger('SVO dry-run')
+
 
 def _get_confirmation(info_message, confirmation_message):
     print(info_message)
@@ -21,8 +26,13 @@ def _get_confirmation(info_message, confirmation_message):
 
 
 def _submit_files_to_svo(filenames, **submit_kwargs):
+    dry_run = submit_kwargs['dry_run']
+    log = dry_run_logger if dry_run else logger
+
     cubes = DataCube.objects.filter(filename__in=filenames).select_related('fits_header')
+
     for cube in cubes:
+        log.debug("Submitting cube with OID: %s" % cube.oid)
         hdus = fits.Header.fromstring(cube.fits_header.fits_header)
         submit_to_svo(cube, hdus, **submit_kwargs)
 
@@ -53,10 +63,10 @@ def sync_with_svo(**kwargs):
     prompt = kwargs.get('prompt', False)
     update_existing = kwargs.get('update_existing', False)
 
-    print("Synchronizing with API at %s" % api_url)
+    logger.debug("Synchronizing with API at %s" % api_url)
 
     if dry_run:
-        print("Doing a dry run")
+        logger.debug("Doing a dry run")
 
     svo_api = SvoApi(api_url, username, api_key)
     svo_cache = SvoCache(svo_api)
@@ -74,17 +84,18 @@ def sync_with_svo(**kwargs):
 
         metadata_results = svo_api(metadata_root_uri).get(limit=REQUEST_METADATA_LIMIT)
 
-        missing_cubes = set(DataCube.objects.filter(instrument__name=instrument, ).only('filename').values_list(
+        missing_cubes = set(DataCube.objects.filter(instrument__name=instrument).only('filename').values_list(
             'filename', flat=True))
 
         while metadata_results:
             objects = metadata_results['objects']
 
             for object in objects:
+                oid = object['oid']
                 filename = object['filename']
 
                 try:
-                    data_cube = DataCube.objects.get(filename=filename)
+                    data_cube = DataCube.objects.get(oid=oid)
                     missing_cubes.remove(filename)
 
                     if update_existing:

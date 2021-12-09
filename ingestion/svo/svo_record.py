@@ -36,6 +36,9 @@ DEFAULT_API_URL = 'https://solarnet.oma.be/service/api/svo'
 
 KNOWN_DATASETS = ['CRISP', 'CHROMIS']
 
+logger = logging.getLogger('SVO')
+dry_run_logger = logging.getLogger('SVO dry-run')
+
 
 class SvoRecord:
     """
@@ -220,8 +223,10 @@ class SvoRecord:
         except HttpNotFoundError:
             return False
 
-    def create(self):
+    def create(self, dry_run=False):
         """Create the metadata and data_location records in the API"""
+
+        log = dry_run_logger if dry_run else logger
 
         # Retrieve the metadata resource URI from the dataset
         dataset = self.svo_cache.dataset(self.dataset)
@@ -232,13 +237,25 @@ class SvoRecord:
         metadata['data_location'] = self.get_data_location()
 
         # To create a new record, POST to the resource URI of the metadata record
-        result = self.api(resource_uri).post(metadata)
+        result = None
+        log.debug('Posting new data to %s' % resource_uri)
+
+        if isinstance(metadata['data_location'], str):
+            log.debug('Using existing data_location %s' % metadata['data_location'])
+        else:
+            log.debug('Creating new data_location')
+
+        if not dry_run:
+            result = self.api(resource_uri).post(metadata)
+
         return result
 
-    def update(self):
+    def update(self, dry_run=False):
         """
         Update the metadata and data_location records in the API.
         """
+        log = dry_run_logger if dry_run else logger
+
         dataset = self.svo_cache.dataset(self.dataset)
         metadata_root_uri = dataset['metadata']['resource_uri']
 
@@ -256,13 +273,23 @@ class SvoRecord:
             # If the data_location is shared with other metadata, create a new one. If not, simply update the existing
             # data_location.
             if self._is_data_location_shared(data_location_id, KNOWN_DATASETS):
+
                 # Generate a new data_location.
-                metadata['data_location'] = self._generate_data_location(self.dataset)
+                log.debug('data_location is shared, generating a new one')
+                if not dry_run:
+                    metadata['data_location'] = self._generate_data_location(self.dataset)
             else:
-                self._update_data_location(existing_data_location)
-                metadata['data_location'] = existing_data_location
+                log.debug('Updating existing data_location at %s' % existing_data_location['resource_uri'])
+                if not dry_run:
+                    self._update_data_location(existing_data_location)
+                    metadata['data_location'] = existing_data_location
 
         # We update the existing record by adding the 'oid' to the root URI for
         # the metadata and executing a PATCH request.
-        result = self.api(metadata_root_uri)(oid).patch(metadata)
+        result = None
+        log.debug('Patching metadata at %s%s' % (metadata_root_uri, oid))
+
+        if not dry_run:
+            result = self.api(metadata_root_uri)(oid).patch(metadata)
+
         return result

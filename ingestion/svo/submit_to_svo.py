@@ -1,9 +1,13 @@
+import logging
 import os
 import re
 
 from data_access.utils.get_file_url import get_file_url
 from ingestion.svo.svo_record import SvoRecord
 from django.conf import settings
+
+logger = logging.getLogger('SVO')
+dry_run_logger = logging.getLogger('SVO dry-run')
 
 
 def filter_file_path(path):
@@ -29,7 +33,7 @@ def submit_to_svo(data_cube, primary_fits_hdu, **kwargs):
     api_url = kwargs.get('api_url', settings.SVO_API_URL)
 
     file_url = kwargs.get('file_url', get_file_url(data_cube))
-    file_path = kwargs.get('file_path',  get_file_path(data_cube))
+    file_path = kwargs.get('file_path', get_file_path(data_cube))
 
     svo_cache = kwargs.get('svo_cache', None)
 
@@ -40,15 +44,11 @@ def submit_to_svo(data_cube, primary_fits_hdu, **kwargs):
                        api_url=api_url, dataset=data_cube.instrument.name, thumbnail_url=None,
                        svo_cache=svo_cache)
 
+    log = dry_run_logger if dry_run else logger
+
     if record.exists_in_svo():
-        if dry_run:
-            print('[dry-run] Would have updated an existing record in the SVO: %s' % data_cube.filename)
-        else:
-            print('Updating an existing record in the SVO: %s' % data_cube.filename)
-            record.update()
+        log.debug('Updating an existing record in the SVO: %s' % data_cube.filename)
+        record.update(dry_run)
     else:
-        if dry_run:
-            print('[dry-run] Would have created a new record in the SVO: %s' % data_cube.filename)
-        else:
-            print('Creating a new record in the SVO: %s' % data_cube.filename)
-            record.create()
+        log.debug('Creating a new record in the SVO: %s' % data_cube.filename)
+        record.create(dry_run)
