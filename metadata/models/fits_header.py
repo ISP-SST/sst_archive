@@ -3,7 +3,7 @@ from django.db import models
 
 class FITSHeader(models.Model):
     data_cube = models.OneToOneField('observations.DataCube', related_name='fits_header', null=True, blank=True,
-                                     on_delete=models.SET_NULL)
+                                     on_delete=models.CASCADE)
     fits_header = models.TextField(null=True, blank=True)
 
     class Meta:
