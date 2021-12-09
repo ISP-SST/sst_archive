@@ -7,7 +7,7 @@ from django.dispatch import receiver
 class UserProfile(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE, related_name='profile')
     affiliation = models.CharField(max_length=100, blank=True, null=True,
-                                   help_text='University or research center affiliation.')
+                                   help_text='University affiliation.')
     purpose = models.CharField(verbose_name='Account purpose', max_length=190, null=True, blank=True,
                                help_text='The reason why the account was created.')
     email_verification_date = models.DateTimeField(null=True, blank=True)
