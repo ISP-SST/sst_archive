@@ -26,7 +26,7 @@ def _get_confirmation(info_message, confirmation_message):
 
 
 def _submit_files_to_svo(filenames, **submit_kwargs):
-    dry_run = submit_kwargs['dry_run']
+    dry_run = submit_kwargs.get('dry_run', False)
     log = dry_run_logger if dry_run else logger
 
     cubes = DataCube.objects.filter(filename__in=filenames).select_related('fits_header')
