@@ -6,7 +6,7 @@
 
 <div class="container col-6 align-self-center p-5 border bg-white rounded">
 
-<h2>Access to this data is restricted</h2>
+<h2 class="mb-5">Access to this data is restricted</h2>
 
 {% if release_comment %}
 <div class="alert alert-primary">
@@ -24,15 +24,15 @@
             you will be granted access to the data.</p>
     </div>
 {% else %}
-    <p>Special permissions are required to access this data. Please contact the PI mentioned to request the data in
-        question.</p>
+    <p>Special permissions are required to access this data. Please contact the PI mentioned in the comment to request
+        the data in question.</p>
 {% endif %}
 
 {% if user.is_authenticated %}
 
 <p>
     The account you're currently signed in to does not have the necessary permissions. If this is not correct, please
-    <a href="mailto:{{ admin_email }}">contact the system administrator</a>.
+    reach out to <a href="mailto:{{ contact_email }}"> {{ contact_email }}</a>.
 </p>
 
 {% else %}

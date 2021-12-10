@@ -28,7 +28,7 @@ def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
     if not access_granted:
         return render(request, 'data_access/access_denied.html', {
             'data_cube': data_cube,
-            'admin_email': settings.ADMIN_EMAIL,
+            'contact_email': settings.DEFAULT_CONTACT_EMAIL,
             'swedish_data': swedish_data,
             'release_comment': data_cube.access_control.release_comment
         }, status=403)

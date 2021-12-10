@@ -7,15 +7,12 @@
 
 <div class="container col-6 align-self-center border p-5 bg-white rounded">
 
-<h2>File was not found</h2>
+<h2 class="mb-5">File was not found</h2>
 
-<div class="mt-5">
+<p>The file <code>{{ filename }}</code> does not exist at the expected location.</p>
 
-    <p>The file <code>{{ filename }}</code> does not exist at the expected location.</p>
+<p>Please <a href="mailto:{{ contact_email }}?subject=Stockholm SST Archive: File not found {{ filename }}">contact the system administrator</a> and report this issue.</p>
 
-    <p>Please <a href="mailto:{{ contact_email }}?subject=Stockholm SST Archive: File not found {{ filename }}">contact the system administrator</a> and report this issue.</p>
-
-</div>
 </div>
 
 {% endblock %}
