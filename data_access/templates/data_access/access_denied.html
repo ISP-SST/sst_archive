@@ -6,11 +6,7 @@
 
 <div class="container col-6 align-self-center p-5 border bg-white rounded">
 
-<h2>Content is restricted</h2>
-
-    <p>
-    Special permissions are required to access this data.
-</p>
+<h2>Access to this data is restricted</h2>
 
 {% if release_comment %}
 <div class="alert alert-primary">
@@ -27,8 +23,10 @@
             University and state that you are a Swedish user. Once you've done that your account will be verified and
             you will be granted access to the data.</p>
     </div>
+{% else %}
+    <p>Special permissions are required to access this data. Please contact the PI mentioned to request the data in
+        question.</p>
 {% endif %}
-
 
 {% if user.is_authenticated %}
 
@@ -40,7 +38,7 @@
 {% else %}
 
 <p>
-    If you have already registered a user that has the correct permissions, please
+    If you already have a registered a user in the Stockholm SST Archive that has access to this data, please
     <a href="{% url 'account_login' %}?next={{request.get_full_path|iriencode}}">sign in</a>.
 </p>
 
