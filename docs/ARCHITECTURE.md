@@ -21,12 +21,12 @@ Here's a current list of the apps in the system and what their responsibilities 
 
 ### [api](../api/README.md)
 
-Provides the basis for an web based API. Currently the API only powers the HTTP endpoint for ingestion, but this can be
+Provides the basis for a web based API. Currently, the API only powers the HTTP endpoint for ingestion, but this can be
 extended in the future to provide a more feature rich API that would enable, for example, JavaScript SPAs.
 
 ### [core](../core/README.md)
 
-This app is responsible for laying some ground-work for the rest of the service. This includes extending the User
+This app is responsible for laying some groundwork for the rest of the service. This includes extending the User
 model with additional profile information and integrating the `django-allauth` auth framework into the service.
 
 ### [data_access](../data_access/README.md)
