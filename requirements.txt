@@ -17,5 +17,9 @@ matplotlib~=3.4.3
 django-allauth~=0.45.0
 
 # django-recaptcha is used in tandem with allauth to provide a sign up experience
-# that adds a measure of validation for non-
+# that adds a measure of protection against bots.
 django-recaptcha~=2.0.6
+
+# django-cleanup is used to purge obsolete files that have been replaced during re-ingestion.
+# This ensures that the `media/` directory doesn't grow uncontrollably.
+django_cleanup~=5.2.0
