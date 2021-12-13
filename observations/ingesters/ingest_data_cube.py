@@ -22,7 +22,7 @@ def _assign_to_observation(data_cube: DataCube, primary_fits_hdu: fits.Header):
     data_cube.save()
 
 
-def ingest_observation_data_cube(fits_cube: str, instrument: Instrument, primary_fits_hdu: fits.PrimaryHDU, oid,
+def ingest_observation_data_cube(fits_cube: str, instrument: Instrument, primary_fits_hdu: fits.Header, oid,
                                  file_size=None):
     fits_file_path = Path(fits_cube)
 

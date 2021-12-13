@@ -1,7 +1,8 @@
 import os
 
 from django.conf import settings
-from django.http import HttpRequest, HttpResponse, FileResponse
+from django.http import HttpRequest, FileResponse
+from django.http.response import HttpResponseBase
 from django.shortcuts import render
 
 from data_access.models import is_data_cube_restricted_to_swedish_users
@@ -9,7 +10,7 @@ from data_access.utils import data_cube_requires_access_grant, user_has_access_t
 from observations.models import DataCube
 
 
-def download_data_cube(request: HttpRequest, filename: str) -> HttpResponse:
+def download_data_cube(request: HttpRequest, filename: str) -> HttpResponseBase:
     """
     View that lets the user download a DataCube if they have the right access token or user permissions.
     """

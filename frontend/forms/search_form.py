@@ -92,14 +92,14 @@ class DropdownCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
 class SearchForm(forms.Form):
     start_date = forms.DateField(label='Start Date',
                                  initial=initial_start_date,
-                                 widget=forms.DateInput(format=('%Y-%m-%d'),
+                                 widget=forms.DateInput(format='%Y-%m-%d',
                                                         attrs={
                                                             'class': 'form-control',
                                                             'placeholder': 'Select a date',
                                                             'type': 'date'}))
     end_date = forms.DateField(label='End Date',
                                initial=datetime.date.today,
-                               widget=forms.DateInput(format=('%Y-%m-%d'),
+                               widget=forms.DateInput(format='%Y-%m-%d',
                                                       attrs={
                                                           'class': 'form-control',
                                                           'placeholder': 'Select a date',

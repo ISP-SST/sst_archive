@@ -14,7 +14,7 @@ def _get_timestamp(ref_datetime, elapsed_seconds):
     return round(dt.timestamp() * 1000)
 
 
-def generate_r0_plot_data_v4(fits_hdus: fits.header.Header):
+def generate_r0_plot_data_v4(fits_hdus: fits.HDUList):
     primary_hdu = fits_hdus[0]
 
     ref_datetime = datetime.datetime.fromisoformat(primary_hdu.header['DATEREF'])

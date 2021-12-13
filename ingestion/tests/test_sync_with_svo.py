@@ -196,7 +196,7 @@ class TestSyncWithSvo(TestCase):
         self.assertEqual(len(all_metadata), 2)
 
         oids = set([metadata['oid'] for metadata in all_metadata])
-        self.assertEqual(oids, set([PRIMARY_TEST_OID, SECONDARY_TEST_OID]))
+        self.assertEqual(oids, {PRIMARY_TEST_OID, SECONDARY_TEST_OID})
 
     def test_sync_data_cubes_remove_removed_entries_in_svo(self):
         """
@@ -209,7 +209,7 @@ class TestSyncWithSvo(TestCase):
 
         self.assertEqual(len(all_metadata), 2)
         oids = set([metadata['oid'] for metadata in all_metadata])
-        self.assertEqual(oids, set([PRIMARY_TEST_OID, SECONDARY_TEST_OID]))
+        self.assertEqual(oids, {PRIMARY_TEST_OID, SECONDARY_TEST_OID})
 
         # Remove data locally.
         self.secondary_data_cube.delete()
@@ -221,7 +221,7 @@ class TestSyncWithSvo(TestCase):
 
         self.assertEqual(len(all_metadata), 1)
         oids = set([metadata['oid'] for metadata in all_metadata])
-        self.assertEqual(oids, set([PRIMARY_TEST_OID]))
+        self.assertEqual(oids, {PRIMARY_TEST_OID})
 
     def test_sync_data_cubes_update_existing_when_specified(self):
         """
@@ -234,7 +234,7 @@ class TestSyncWithSvo(TestCase):
 
         self.assertEqual(len(all_metadata), 2)
         oids = set([metadata['oid'] for metadata in all_metadata])
-        self.assertEqual(oids, set([PRIMARY_TEST_OID, SECONDARY_TEST_OID]))
+        self.assertEqual(oids, {PRIMARY_TEST_OID, SECONDARY_TEST_OID})
 
         NEW_DATA_CUBE_SIZE = 10
         NEW_DATA_CUBE_RELEASEC = 'New Release Comment'
@@ -254,7 +254,7 @@ class TestSyncWithSvo(TestCase):
 
         self.assertEqual(len(all_metadata), 2)
         oids = set([metadata['oid'] for metadata in all_metadata])
-        self.assertEqual(oids, set([PRIMARY_TEST_OID, SECONDARY_TEST_OID]))
+        self.assertEqual(oids, {PRIMARY_TEST_OID, SECONDARY_TEST_OID})
 
         primary_metadata = next(filter(lambda m: m['oid'] == PRIMARY_TEST_OID, all_metadata))
 

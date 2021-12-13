@@ -14,7 +14,7 @@ def account_profile(request: HttpRequest):
     else:
         validation_status = get_user_swedish_user_validation_status(request.user)
 
-        if validation_status == None:
+        if validation_status is None:
             swedish_user = 'No'
         elif validation_status == ValidationResult.APPROVED:
             swedish_user = 'Approved'
