@@ -10,6 +10,5 @@ router_v1.register(r'tags', views.TagViewSet)
 import ingestion.urls
 
 urlpatterns = [
-    path('v1/', include(router_v1.urls)),
-    path('v1/search', views.search_data_cubes),
+    path('v1/', include(router_v1.urls))
 ]
