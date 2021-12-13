@@ -15,8 +15,8 @@ class DataCubeIngestionSerializer(serializers.Serializer):
     oid = serializers.CharField(required=False)
     relative_path = serializers.CharField()
 
-    owner_email_addresses = serializers.ListField()
-    swedish_data = serializers.BooleanField()
+    owner_email_addresses = serializers.ListField(required=False)
+    swedish_data = serializers.BooleanField(required=False)
 
     def validate_relative_path(self, value):
         path = Path(generate_absolute_path_to_data_cube(value))
@@ -49,8 +49,8 @@ class DataCubeIngestionSerializer(serializers.Serializer):
         oid = data_cube_data.get('oid', None)
         fits_path = generate_absolute_path_to_data_cube(data_cube_data['relative_path'])
 
-        owner_email_addresses = data_cube_data['owner_email_addresses']
-        swedish_data = data_cube_data['swedish_data']
+        owner_email_addresses = data_cube_data.get('owner_email_addresses', None)
+        swedish_data = data_cube_data.get('swedish_data', None)
 
         try:
             ingested_cube = ingest_data_cube(fits_path,
