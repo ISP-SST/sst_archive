@@ -76,6 +76,9 @@ the relative path from the `science_data/` directory.
 Ingested cubes can easily be removed using the admin interface. The removal of a data cube will also cascade into any
 data models that are tied to that cube, including metadata, previews, data access entities.
 
+Deleting a data cube also removes the parent Observation if no other DataCube's are also referencing the same
+Observation.
+
  * Sign in to the admin interface with an admin user
  * Go to the `Data cubes` section
  * Locate the cube in the list

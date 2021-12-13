@@ -1,6 +1,11 @@
 from django.db import models
 
 
+def purge_orphaned_observation(observation):
+    if not DataCube.objects.filter(observation=observation).exists():
+        observation.delete()
+
+
 class DataCubeManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().prefetch_related('tags')
@@ -44,6 +49,15 @@ class DataCube(models.Model):
                                                     'be set to True')
 
     objects = DataCubeManager()
+
+    def delete(self, **kwargs):
+        """
+        Remove the associated Observation if it has been orphaned.
+        """
+        observation = self.observation
+        result = super().delete(**kwargs)
+        purge_orphaned_observation(observation)
+        return result
 
     def __str__(self):
         return self.filename
