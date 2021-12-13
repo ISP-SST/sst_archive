@@ -18,11 +18,9 @@ def _get_frame_data(image_data, index, wavelength_index=0):
 
 
 def generate_new_image_preview(preview_file, wavelength_pos=0.0, data_cube_path=None, data_cube=None, fits_hdus=None):
-    # FIXME(daniel): This plot does not take into consideration the WCS coordinates
-    #                included in the FITS cube. Rotation and scaling is likely off.
-    #                Perhaps these kinds of previews should rather be created in IDL
-    #                since crispex, for example, already knows how to display the data
-    #                properly.
+    """
+    This function provides a very simple way of generating a preview of the image data in a FITS cube.
+    """
 
     plt.style.use(astropy_mpl_style)
 

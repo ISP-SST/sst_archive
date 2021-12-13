@@ -85,7 +85,6 @@ class TestAccountEmailReVerification(TestCase):
             "account/verification_sent.%s" % settings.ACCOUNT_TEMPLATE_EXTENSION,
         )
 
-
         # Verify, and attempt to login.
         confirmation = EmailConfirmation.objects.filter(
             email_address__user__username=username

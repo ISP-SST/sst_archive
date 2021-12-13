@@ -1,4 +1,3 @@
-import unittest
 from pathlib import Path
 from unittest import skip
 
@@ -7,7 +6,6 @@ from django.conf import settings
 from django.test import TestCase
 
 from data_access.utils import get_file_url
-from ingestion.svo.svo_record import SvoRecord
 from ingestion.svo.svo_api import SvoApi
 
 from ingestion.svo.submit_to_svo import submit_to_svo
@@ -101,8 +99,6 @@ class TestSyncWithSvo(TestCase):
         self.assertEqual(metadata['fits_header'].strip(), self.primary_data_cube.fits_header.fits_header.strip())
         self.assertEqual(metadata['date_beg'], '2019-04-19T17:34:55.503Z')
         self.assertEqual(metadata['data_location']['file_url'], get_file_url(self.primary_data_cube))
-
-        # TODO(daniel): Compare a few more fields
 
     def test_submit_update_existing_data_cube_shared_data_location(self):
         """

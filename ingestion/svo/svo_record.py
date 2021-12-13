@@ -121,9 +121,8 @@ class SvoRecord:
                    'thumbnail_url'] != self.thumbnail_url or data_location_dict['offline'] != self.offline
 
     def _is_data_location_shared(self, data_location_id, datasets):
-        # TODO(daniel): This is a really inelegant way of determining if the data_location is shared between
-        #               two or more metadata entries. Perhaps we can make a quick initial check to bypass the
-        #               bulk of the work in a majority of cases.
+        # This is a really inelegant way of determining if the data_location is shared between two or more metadata
+        # entries. It is slightly redeemed by the fact that results from the SVO are cached.
 
         data_location_ref_count = 0
 

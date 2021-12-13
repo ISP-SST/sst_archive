@@ -16,7 +16,7 @@ class DataCube(models.Model):
         The available options are:
 
         GROUPED - DataCube was explicitly put in a group with other DataCubes.
-        MOSAIC - TODO(daniel) Describe this succinctly.
+        MOSAIC - This DataCube is part of a mosaic set for the same observation.
         """
         GROUPED = "grouped"
         MOSAIC = "mosaic"
