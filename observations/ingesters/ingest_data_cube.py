@@ -30,7 +30,7 @@ def ingest_observation_data_cube(fits_cube: str, instrument: Instrument, primary
         file_size = fits_file_path.stat().st_size
 
     data_cube, created = DataCube.objects.update_or_create(oid=oid, defaults={
-        'path': fits_file_path,
+        'path': fits_file_path.absolute(),
         'filename': fits_file_path.name,
         'size': file_size,
         'instrument': instrument
