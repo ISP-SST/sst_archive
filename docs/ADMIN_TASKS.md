@@ -37,6 +37,23 @@ A University Account will be shared between multiple users that belong to that u
    * Check `E-mail re-verification disabled` so that e-mail re-verification doesn't kick in at a later point in time.
  * Click `Save`
 
+### Approve Swedish user request
+
+When users sign up they can flag themselves as Swedish users. This will trigger a validation flow where the admin of
+the service receives an e-mail saying that a user has been entered into the validation queue and manual intervention
+is needed. The validation needs to be performed by an admin user that has access to the admin interface.
+
+ * Sign in to the admin interface with an admin user
+ * Go to the `Swedish user validation requests` section
+ * Locate the validation request in the list. Requests are sorted by validation result
+ * The row with the validation request should contain sufficient information to either make a decision right then and
+   there, or trigger you to reach out to the user in question with clarifying questions
+ * Once a validation decision has been made, select the validation row in the list
+ * From the `Action` dropdown, select `Approve selected request` or `Reject selected requests` depending on the decision
+ * Click `Go`
+
+If the validation is approved the user will automatically be added to the Swedish User group.
+
 ### Manually give access to data cube to an account
 
  * Sign in to the admin interface with an admin user
