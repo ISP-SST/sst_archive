@@ -12,5 +12,5 @@ def send_swedish_user_registration_admin_notice(request):
         'request': request,
         'hostname': settings.HOSTNAME,
     })
-    send_mail(EMAIL_SUBJECT, email_body, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_CONTACT_EMAIL],
+    send_mail(EMAIL_SUBJECT, email_body, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_SYSTEM_NOTIFICATION_EMAIL],
               fail_silently=True)

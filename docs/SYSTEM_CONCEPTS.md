@@ -115,7 +115,8 @@ There are a couple of ways to initiate ingestion of a FITS cube into the databas
  * Posting information about the file location to an HTTP end-point
  * Running the `ingest_fits_cube` management command and providing the same type of information
 
-See more information about this in the corresponding `Tasks` subsections.
+See more information about this in the [ADMIN_TASKS](./ADMIN_TASKS.md#Ingesting-a-data-cube-using-the-HTTP-endpoint)
+doc.
  
 ## SVO Synchronization
 
@@ -143,7 +144,7 @@ always seen as the master blueprint:
  * Any data present in the SVO that doesn't exist in archive will be assumed to have been removed from the archive and
    will therefore be removed from the SVO as well
 
-This script is meant to be run recurringly to ensure consistency between local archive and SVO.    
+This script is meant to be run recurringly to ensure consistency between local archive and SVO.
 
 ## E-mail (re-)verification
 
@@ -160,3 +161,13 @@ In certain scenarios it can be helpful to disable the e-mail re-verification req
 account is created for an entire organization instead of for an individual it might make more sense to disable e-mail 
 re-verification and allow the organization to handle distribution of the credentials for this account in a responsible
 manner.
+
+## Sending and Receiving E-mails 
+
+E-mails are used for the following purposes in the database:
+
+ * Receive questions and requests (uses the `DEFAULT_CONTACT_EMAIL` e-mail address specified in settings)
+ * Notify administrators of activities in the system (uses the `DEFAULT_SYSTEM_NOTIFICATION_EMAIL` e-mail address
+   specified in settings)
+ * Send requests and notifications to users (uses the `DEFAULT_FROM_EMAIL` e-mail address specified in settings). This
+   includes e-mail verification requests
