@@ -4,7 +4,7 @@
 
 ### 1. Add field to the Metadata model
 
-Update `metadata/models/metadata.py` and add a field with an appropriate
+Update [metadata/models/metadata.py](../metadata/models/metadata.py) and add a field with an appropriate
 name to model class. FITS header keywords are mapped to model member names
 in the following manner:
 
