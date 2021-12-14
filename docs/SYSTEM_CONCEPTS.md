@@ -144,3 +144,19 @@ always seen as the master blueprint:
    will therefore be removed from the SVO as well
 
 This script is meant to be run recurringly to ensure consistency between local archive and SVO.    
+
+## E-mail (re-)verification
+
+As an added level of security, any user that signs up in the system must have a valid e-mail address. This is enforced
+using the standard procedure of sending a verification e-mail to the user with a link that the user must click in order
+for the account to be allowed to log in. This functionality is largely offered by the 3rd party app `django-allauth`.
+
+In addition to the initial e-mail verification phase, custom extensions to the verification system also require the
+user to renew verifications. This is done to ensure that the user in the system still has access to the e-mail account
+in question. E-mail verifications are currently set to expire every 12 weeks, though this can be changed in the
+settings file.
+
+In certain scenarios it can be helpful to disable the e-mail re-verification requirement. For example, if a user
+account is created for an entire organization instead of for an individual it might make more sense to disable e-mail 
+re-verification and allow the organization to handle distribution of the credentials for this account in a responsible
+manner.
