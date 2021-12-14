@@ -1,4 +1,4 @@
-A Swedish user registration has changed on the queue:
+A Swedish user validation request has changed on the queue:
 
 User e-mail: {{ request.user.email }}
 Current status: {{ request.validation_result }}
