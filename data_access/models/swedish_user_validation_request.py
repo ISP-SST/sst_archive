@@ -83,6 +83,18 @@ class SwedishUserValidationRequest(models.Model):
     def purpose(self):
         return self.user.profile.purpose
 
+    @admin.display(description='First name')
+    def first_name(self):
+        return self.user.first_name
+
+    @admin.display(description='Last name')
+    def last_name(self):
+        return self.user.last_name
+
+    @admin.display(description='Affiliation')
+    def affiliation(self):
+        return self.user.profile.affiliation
+
     def save(self, *args, **kwargs):
         self.validation_date = datetime.datetime.now() if \
             self.validation_result != ValidationResult.NOT_PROCESSED else None
