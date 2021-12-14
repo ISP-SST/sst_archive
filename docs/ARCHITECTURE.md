@@ -11,6 +11,9 @@ The archive is built on top of [Django](https://www.djangoproject.com/) which pr
 convenient database abstraction model and ORM. The built-in database migration functionality makes it easy to evolve the
 database tables over time.
 
+In addition to this document, you may also find it useful to read about the [system concepts](./SYSTEM_CONCEPTS.md) 
+at play in the Stockholm SST Archive service. 
+
 ## Service Layout
 
 The service is broken up into multiple apps, which is a well-recognized building block of Django-based services. Each
