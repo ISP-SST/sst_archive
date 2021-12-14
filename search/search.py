@@ -34,8 +34,11 @@ class SearchResult:
     cubes_in_observation: list
 
 
-def datetime_from_date(date):
-    return datetime.datetime(year=date.year, month=date.month, day=date.day)
+def datetime_from_date(date, end_of_day=False):
+    if end_of_day:
+        return datetime.datetime(year=date.year, month=date.month, day=date.day, hour=23, minute=59, second=59)
+    else:
+        return datetime.datetime(year=date.year, month=date.month, day=date.day)
 
 
 class Column:
@@ -160,7 +163,7 @@ def search_observations(search_criteria: SearchCriteria, page_number=1, complex_
     complete_query['cubes__metadata__date_beg__gte'] = datetime_from_date(
         search_criteria.start_date) if search_criteria.start_date else datetime.datetime.min
     complete_query['cubes__metadata__date_end__lte'] = datetime_from_date(
-        search_criteria.end_date) if search_criteria.end_date else datetime.datetime.max
+        search_criteria.end_date, end_of_day=True) if search_criteria.end_date else datetime.datetime.max
 
     if search_criteria.spectral_line_ids:
         complete_query['cubes__metadata__%s__in' % SPECTRAL_LINE_METADATA_KEY] = search_criteria.spectral_line_ids
