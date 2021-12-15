@@ -8,86 +8,102 @@ User accounts can be created directly on the site using the Sign-up feature, but
 administrator in the admin interface. The latter way may be beneficial when more control over the user creation flow is
 desired.
 
- * Sign in to the admin interface with an admin user
- * Go to the `Users` section
- * Click `Add User +`
- * Enter the following information:
-   * _E-mail address_ – Affiliation (University) e-mail address for the user in question.
-   * `First name`, `Last name` – Set to user's real first and last name.
-   * _Password_ – Generate a new one.
-   * _Affiliation_ - Set to the name of the University in question.
-   * _Account purpose_ – Get this information from the user or set to empty.
- * Click `Save`
+* Sign in to the admin interface with an admin user
+* Go to the `Users` section
+* Click `Add User +`
+* Enter the following information:
+    * _E-mail address_ – Affiliation (University) e-mail address for the user in question.
+    * `First name`, `Last name` – Set to user's real first and last name.
+    * _Password_ – Generate a new one.
+    * _Affiliation_ - Set to the name of the University in question.
+    * _Account purpose_ – Get this information from the user or set to empty.
+* Click `Save`
 
 ### Creating a University Account
 
 A University Account will be shared between multiple users that belong to that university.
 
- * Sign in to the admin interface with an admin user
- * Go to the `Users` section
- * Click `Add User +`
- * Enter the following information:
-   * _E-mail address_ – Use an organization e-mail address for that university. The e-mail address does not have to be
-                        an active account that can receive e-mails if it's supposed to be used by multiple users.
-   * _Password_ – Generate a new one.
-   * _Affiliation_ - set to the name of the University in question
-   * _Account purpose_ – set to "University Account". If the e-mail address is not a personal e-mail, also add contact
-                         information to someone who administers this account in the university.
-   * Check `Verify e-mail` to ensure that the users of the account don't have to verify the e-mail.
-   * Check `E-mail re-verification disabled` so that e-mail re-verification doesn't kick in at a later point in time.
- * Click `Save`
+* Sign in to the admin interface with an admin user
+* Go to the `Users` section
+* Click `Add User +`
+* Enter the following information:
+    * _E-mail address_ – Use an organization e-mail address for that university. The e-mail address does not have to be
+      an active account that can receive e-mails if it's supposed to be used by multiple users.
+    * _Password_ – Generate a new one.
+    * _Affiliation_ - set to the name of the University in question
+    * _Account purpose_ – set to "University Account". If the e-mail address is not a personal e-mail, also add contact
+      information to someone who administers this account in the university.
+    * Check `Verify e-mail` to ensure that the users of the account don't have to verify the e-mail.
+    * Check `E-mail re-verification disabled` so that e-mail re-verification doesn't kick in at a later point in time.
+* Click `Save`
 
 ### Approve Swedish user request
 
-When users sign up they can flag themselves as Swedish users. This will trigger a validation flow where the admin of
-the service receives an e-mail saying that a user has been entered into the validation queue and manual intervention
-is needed. The validation needs to be performed by an admin user that has access to the admin interface.
+When users sign up they can flag themselves as Swedish users. This will trigger a validation flow where the admin of the
+service receives an e-mail saying that a user has been entered into the validation queue and manual intervention is
+needed. The validation needs to be performed by an admin user that has access to the admin interface.
 
- * Sign in to the admin interface with an admin user
- * Go to the `Swedish user validation requests` section
- * Locate the validation request in the list. Requests are sorted by validation result
- * The row with the validation request should contain sufficient information to either make a decision right then and
-   there, or trigger you to reach out to the user in question with clarifying questions
- * Once a validation decision has been made, select the validation row in the list
- * From the `Action` dropdown, select `Approve selected request` or `Reject selected requests` depending on the decision
- * Click `Go`
+* Sign in to the admin interface with an admin user
+* Go to the `Swedish user validation requests` section
+* Locate the validation request in the list. Requests are sorted by validation result
+* The row with the validation request should contain sufficient information to either make a decision right then and
+  there, or trigger you to reach out to the user in question with clarifying questions
+* Once a validation decision has been made, select the validation row in the list
+* From the `Action` dropdown, select `Approve selected request` or `Reject selected requests` depending on the decision
+* Click `Go`
 
 If the validation is approved the user will automatically be added to the Swedish User group.
 
 ### Manually give access to data cube to an account
 
- * Sign in to the admin interface with an admin user
- * Go to the `Data cube user grants` section
- * Click `Add data cube user grant +`
- * Enter the following information:
-   * `E-mail address` – Provide the e-mail address of the user that will receive access to the Cube.
-   * `Data Cube` – Select the cube that you want to grant access to.
- * Click `Save`
+* Sign in to the admin interface with an admin user
+* Go to the `Data cube user grants` section
+* Click `Add data cube user grant +`
+* Enter the following information:
+    * `E-mail address` – Provide the e-mail address of the user that will receive access to the Cube.
+    * `Data Cube` – Select the cube that you want to grant access to.
+* Click `Save`
 
 ### Manually add user to the Swedish User group
 
- * Sign in to the admin interface with an admin user
- * Go to the `Users` section
- * Find the user in question in the list (using the search feature can be helpful) and click on the username
- * Go to `Permissions -> Groups` 
- * Select the `Swedish User` group in the list and click the right arrow button to move the group over to the
-   list of `Chosen groups`
- * Click `Save`
- 
+* Sign in to the admin interface with an admin user
+* Go to the `Users` section
+* Find the user in question in the list (using the search feature can be helpful) and click on the username
+* Go to `Permissions -> Groups`
+* Select the `Swedish User` group in the list and click the right arrow button to move the group over to the list
+  of `Chosen groups`
+* Click `Save`
+
 ### Ingesting a data cube using the HTTP endpoint
 
-To ingest a FITS data cube into the database the FITS file *must* reside in the designated `science_data/` directory.
-This is also where exported science data cubes are supposed to end up. You will need to reference the data cube using
-the relative path from the `science_data/` directory.
+The most straight forward way of ingesting new data cubes into the archive is by using the `submit_to_sst_archive.py`
+script.
 
- * Make sure that you have access to an admin account on the site
- * Make sure that this user also has a valid API Token:
-   * In the admin interface, go to `Tokens`
-   * If there's no token for this user, click `Add Token +` and click `Save`
- * Grab the script in `ingestion/scripts/submit_to_sst_archive.py`
- * Run the script. Example:
-   `submit_to_sst_archive.py 2020-09-10/CHROMIS/<NAME-OF-FITS-FILE>.fits --api-key <API-KEY> --interactive`
- 
+To ingest a FITS data cube into the database the FITS file *must* reside in the designated `${SCIENCE_DATA_ROOT}`
+directory that is known in the backend and configured in the [settings file](../sst_archive/settings/). This should be
+where exported science data cubes end up and where the backend server can access them. You will need to reference the
+data cube using the relative path from the `science_data/` directory.
+
+* Make sure that you have access to an admin account on the site
+* Make sure that this user also has a valid API Token:
+    * In the admin interface, go to `Tokens`
+    * If there's no token for this user, click `Add Token +` and click `Save`
+* Grab the script in `ingestion/scripts/submit_to_sst_archive.py`
+* Run the script. Example:
+  `submit_to_sst_archive.py 2020-09-10/CHROMIS/<NAME-OF-FITS-FILE>.fits --api-key <API-KEY> --interactive`
+
+#### Interactive Mode
+
+Interactive mode is activated by providing the `--interactive` command line flag. When the flag is set the submission
+script will prompt the user for additional data that needs to be provided to the archive and that can't be found inside
+the FITS data cube. The next section details such information.
+
+#### Specifying ownership and Swedish data status
+
+When using the `--interactive` flag you will be prompted for information the user(s) that own the data and whether the
+data is classified as Swedish data. This information can also be provided directly on the command line if that fits your
+use case better. Since this data does not exist inside FITS data cube
+
 ### Removing an ingested data cube
 
 Ingested cubes can easily be removed using the admin interface. The removal of a data cube will also cascade into any
@@ -96,42 +112,42 @@ data models that are tied to that cube, including metadata, previews, data acces
 Deleting a data cube also removes the parent Observation if no other DataCube's are also referencing the same
 Observation.
 
- * Sign in to the admin interface with an admin user
- * Go to the `Data cubes` section
- * Locate the cube in the list
- * Either:
-   - Select it, choose the `Delete selected data cubes` action and click `Go`
-   - Open up the data cube, click on `Delete` at the bottom of the page
-   
+* Sign in to the admin interface with an admin user
+* Go to the `Data cubes` section
+* Locate the cube in the list
+* Either:
+    - Select it, choose the `Delete selected data cubes` action and click `Go`
+    - Open up the data cube, click on `Delete` at the bottom of the page
+
 ### Synchronizing the local database contents with the SVO
 
 _[TODO: RECURRING SVO SYNCHRONIZATION JOB NOT RUNNING, REMOVE THIS NOTE WHEN IT IS]_
 
-Synchronization of the local database should happen on a recurring basis  
+Synchronization of the local database should happen on a recurring basis
 
 ### Deploying changes to the Stockholm SST Archive
 
- * SSH into `dubshen`
- * `cd /srv/www/dubshen/sst_archive/`
- * Enter the right virtual Python environment: `. ./venv/bin/activate`
- * Pull the latest changes: `git pull`
- * Migrate database:
-   * `sudo -u www-data ./scripts/manage-prod.sh makemigrations`
-   * `sudo -u www-data ./scripts/manage-prod.sh migrate`
-   * If necessary: `sudo -u www-data ./scripts/manage-prod.sh collectstatic`
- * Reload Apache: `sudo apachectl graceful`
- 
+* SSH into `dubshen`
+* `cd /srv/www/dubshen/sst_archive/`
+* Enter the right virtual Python environment: `. ./venv/bin/activate`
+* Pull the latest changes: `git pull`
+* Migrate database:
+    * `sudo -u www-data ./scripts/manage_prod.sh makemigrations`
+    * `sudo -u www-data ./scripts/manage_prod.sh migrate`
+    * If necessary: `sudo -u www-data ./scripts/manage_prod.sh collectstatic`
+* Reload Apache: `sudo apachectl graceful`
+
 ## Advanced Tasks
 
 ### Ingesting a data cube using the management command
 
-This is a more direct way of adding cubes to the database. It allows for more control, but is also lacking some
-features when compared to ingestion via HTTP endpoint. For example, the management script currently does not ask for
-information about data ownership or Swedish data status. On the other hand the management script allows for more
-fine-grained control when it comes to deciding what ingestion steps to take. By default, the generation of preview
-images and videos can be skipped in this script. This can be useful from a debugging perspective. 
+This is a more direct way of adding cubes to the database. It allows for more control, but is also lacking some features
+when compared to ingestion via HTTP endpoint. For example, the management script currently does not ask for information
+about data ownership or Swedish data status. On the other hand the management script allows for more fine-grained
+control when it comes to deciding what ingestion steps to take. By default, the generation of preview images and videos
+can be skipped in this script. This can be useful from a debugging perspective.
 
- * SSH into `dubshen`
- * Go to the `/srv/www/dubshen/sst_archive/` directory
- * Enter the right virtual Python environment: `. ./venv/bin/activate`
- * `sudo -u www-data ./scripts/manage-prod.sh ingest_fits_cube -f <cube-file.fits> --generate-image-previews --generate-video-previews`
+* SSH into `dubshen`
+* Go to the `/srv/www/dubshen/sst_archive/` directory
+* Enter the right virtual Python environment: `. ./venv/bin/activate`
+* `sudo -u www-data ./scripts/manage_prod.sh ingest_fits_cube -f <cube-file.fits> --generate-image-previews --generate-video-previews`
