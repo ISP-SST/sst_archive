@@ -50,7 +50,7 @@ If you happen to have access to the entire `/storage/science_data` folder on `du
 you can use the `ingest_test_data.sh` script. Just point the script to the `science_data/` root directory. Ingesting all
 of it and generating all the previews usually takes a few minutes.
 
-## Learning How It Works
+## Learning About the System
 
 A good place to start getting to know the inner workings of the SST Archive is to have a look at the
-[architecture documentation](./docs/ARCHITECTURE.md). 
+[system concepts](./docs/SYSTEM_CONCEPTS.md) and [architecture documentation](./docs/ARCHITECTURE.md) documents.
