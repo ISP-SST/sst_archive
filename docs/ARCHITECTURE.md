@@ -11,8 +11,8 @@ The archive is built on top of [Django](https://www.djangoproject.com/) which pr
 convenient database abstraction model and ORM. The built-in database migration functionality makes it easy to evolve the
 database tables over time.
 
-In addition to this document, you may also find it useful to read about the [system concepts](./SYSTEM_CONCEPTS.md) 
-at play in the Stockholm SST Archive service. 
+In addition to this document, you may also find it useful to read about the [system concepts](./SYSTEM_CONCEPTS.md)
+at play in the Stockholm SST Archive service.
 
 ## Service Layout
 
@@ -29,8 +29,8 @@ extended in the future to provide a more feature rich API that would enable, for
 
 ### [core](../core/README.md)
 
-This app is responsible for laying some groundwork for the rest of the service. This includes extending the User
-model with additional profile information and integrating the `django-allauth` auth framework into the service.
+This app is responsible for laying some groundwork for the rest of the service. This includes extending the User model
+with additional profile information and integrating the `django-allauth` auth framework into the service.
 
 ### [data_access](../data_access/README.md)
 
@@ -48,8 +48,8 @@ As implied by the name, this app serves as the main entry-point for ingesting da
 important to note that the ingestion steps for individual data types is hosted by the app that also owns the data models
 into which the data will be ingested.
 
-The `ingestion` app is also responsible for synchronizing the contents of the local database with the SOLARNET
-Virtual Observatory. 
+The `ingestion` app is also responsible for synchronizing the contents of the local database with the SOLARNET Virtual
+Observatory.
 
 ### [metadata](../metadata/README.md)
 
