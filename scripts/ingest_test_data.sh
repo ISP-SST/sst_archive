@@ -3,10 +3,13 @@
 ENVIRONMENT="$1"
 ENVIRONMENT_SETTINGS="sst_archive.settings.${ENVIRONMENT}"
 
-BASE_DIR="$2"
+shift
 
-ALL_ARGS=("$@")
-PASS_THROUGH_OPTIONS=("${ALL_ARGS[@]:2}")
+BASE_DIR="$1"
+
+shift
+
+PASS_THROUGH_OPTIONS="$@"
 
 FITS_CUBES=(
 "2019-04-16/CHROMIS/nb_3950_2019-04-16T08:20:03_scans=0-111_corrected_export2021-03-30T11:57:00_im.fits"
@@ -106,23 +109,25 @@ FITS_CUBES=(
 "2020-10-16/CHROMIS/nb_4846_2020-10-16T09:11:04_scans=0-10_corrected_export2021-06-08T15:40:55_im.fits"
 )
 
+ROOT_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
+
 MAX_COUNT=100
 
 INGESTION_OPTIONS="--settings ${ENVIRONMENT_SETTINGS} ${PASS_THROUGH_OPTIONS}"
 
-MPLCONFIGDIR=`mktemp -d -p "$DIR"`
+MPLCONFIGDIR=`mktemp -d`
 echo "Creating MPLCONFIGDIR $MPLCONFIGDIR"
 
 export MPLCONFIGDIR="$MPLCONFIGDIR"
 
 function cleanup {
   rm -rf "$MPLCONFIGDIR"
-  echo "Deleted directory $WORK_DIR"
+  echo "Deleted MPLCONFIGDIR $WORK_DIR"
 }
 
 trap cleanup EXIT
 
-. ./venv/bin/activate
+. "${ROOT_DIR}/venv/bin/activate"
 
 for file in "${FITS_CUBES[@]}"; do
   if [ "$MAX_COUNT" -le 0 ]; then
@@ -133,7 +138,7 @@ for file in "${FITS_CUBES[@]}"; do
   fi
 
   echo "Ingesting FITS cube: ${file}"
-  ./manage.py ingest_fits_cube ${INGESTION_OPTIONS} -f "${BASE_DIR}/${file}"
+  "${ROOT_DIR}/manage.py" ingest_fits_cube ${INGESTION_OPTIONS} -f "${BASE_DIR}/${file}"
 done
 
 deactivate

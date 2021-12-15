@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
 
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-REPO_ROOT_DIR="$( realpath ${SCRIPT_DIR}/.. )"
+ROOT_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
 
-DB_FILE="${REPO_ROOT_DIR}/db.sqlite3"
+DB_FILE="${ROOT_DIR}/db.sqlite3"
 
 SU_DEFAULT_NAME="daniel"
 SU_DEFAULT_EMAIL="daniel.nitsche@astro.su.se"
+
+. "${ROOT_DIR}/venv/bin/activate"
 
 if [ -f "${DB_FILE}" ]; then
   read -p "Database ${DB_FILE} already exists. Delete it (y/N)? " remove
@@ -15,9 +16,11 @@ if [ -f "${DB_FILE}" ]; then
   fi
 fi
 
-./manage.py makemigrations
-./manage.py migrate
-./manage.py createcachetable
+"${ROOT_DIR}/manage.py" makemigrations
+"${ROOT_DIR}/manage.py" migrate
+"${ROOT_DIR}/manage.py" createcachetable
 
 echo "Adding super user to database"
-./manage.py createsuperuser --username "${SU_DEFAULT_NAME}" --email "${SU_DEFAULT_EMAIL}"
+"${ROOT_DIR}/manage.py" createsuperuser --username "${SU_DEFAULT_NAME}" --email "${SU_DEFAULT_EMAIL}"
+
+deactivate

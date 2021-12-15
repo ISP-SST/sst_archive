@@ -102,23 +102,25 @@ FITS_CUBES=(
 "2020-10-16/CHROMIS/nb_4846_2020-10-16T09:11:04_scans=0-10_corrected_export2021-06-08T15:40:55_im.fits"
 )
 
+ROOT_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
+
 MAX_COUNT=100
 
 INGESTION_OPTIONS="--settings ${ENVIRONMENT_SETTINGS} ${PASS_THROUGH_OPTIONS}"
 
-MPLCONFIGDIR=`mktemp -d -p "$DIR"`
-echo "Creating MPLCONFIGDIR $MPLCONFIGDIR"
+MPLCONFIGDIR=`mktemp -d`
+echo "Creating MPLCONFIGDIR ${MPLCONFIGDIR}"
 
 export MPLCONFIGDIR="$MPLCONFIGDIR"
 
 function cleanup {
-  rm -rf "$MPLCONFIGDIR"
-  echo "Deleted directory $WORK_DIR"
+  rm -rf "${MPLCONFIGDIR}"
+  echo "Deleted MPLCONFIGDIR ${MPLCONFIGDIR}"
 }
 
 trap cleanup EXIT
 
-. ./venv/bin/activate
+. "${ROOT_DIR}/venv/bin/activate"
 
 for file in "${FITS_CUBES[@]}"; do
   if [ "$MAX_COUNT" -le 0 ]; then
@@ -129,7 +131,7 @@ for file in "${FITS_CUBES[@]}"; do
   fi
 
   echo "Ingesting FITS cube: ${file}"
-  ./manage.py ingest_fits_cube ${INGESTION_OPTIONS} -f "${BASE_DIR}/${file}"
+  "${ROOT_DIR}/manage.py" ingest_fits_cube ${INGESTION_OPTIONS} -f "${BASE_DIR}/${file}"
 done
 
 deactivate
