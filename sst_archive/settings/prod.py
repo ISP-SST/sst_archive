@@ -2,16 +2,16 @@ from sst_archive.settings import *
 
 # Database
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'sst_archive',
-		'USER': 'sst_archive',
-		'HOST': 'localhost',
-		'PASSWORD': get_secret('DB_PASSWORD'),
-		'OPTIONS': {
-			'sql_mode': 'STRICT_TRANS_TABLES'
-		}
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sst_archive',
+        'USER': 'sst_archive',
+        'HOST': 'localhost',
+        'PASSWORD': get_secret('DB_PASSWORD'),
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES'
+        }
+    }
 }
 
 HOSTNAME = 'https://dubshen.astro.su.se'
@@ -20,7 +20,7 @@ ADMIN_EMAIL = 'noreply@dubshen.astro.su.se'
 # TODO(daniel): This should be updated with the proper hostname of the service.
 ALLOWED_HOSTS = ['*']
 
-DEBUG = True
+DEBUG = False
 
 SECRET_KEY = get_secret('SECRET_KEY')
 
