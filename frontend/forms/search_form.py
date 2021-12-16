@@ -77,17 +77,6 @@ def get_instruments_choices():
 class DropdownCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     template_name = 'frontend/widgets/dropdown_checkbox_select.html'
 
-    def __init__(self, attrs=None):
-        if attrs:
-            self.full_field_name = attrs.get('full_field_name', None)
-        super().__init__(attrs)
-
-    def get_context(self, name, value, attrs):
-        return {
-            **super().get_context(name, value, attrs),
-            'full_field_name': self.full_field_name
-        }
-
 
 class SearchForm(forms.Form):
     start_date = forms.DateField(label='Start Date',
@@ -111,11 +100,7 @@ class SearchForm(forms.Form):
     spectral_lines = forms.MultipleChoiceField(label='Spectral Lines',
                                                choices=get_spectral_line_choices,
                                                required=False,
-                                               widget=DropdownCheckboxSelectMultiple(
-                                                   attrs={
-                                                       'full_field_name': 'Spectral Lines'
-                                                   }
-                                               ))
+                                               widget=DropdownCheckboxSelectMultiple)
     # Re-add this field when the tags feature is implemented and launched.
     """
     features = forms.MultipleChoiceField(label='Features', choices=get_features_choices,
