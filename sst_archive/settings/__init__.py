@@ -35,6 +35,13 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured("Set the {} setting".format(setting))
 
 
+def _user_display(user):
+    if user.first_name or user.last_name:
+        return '%s %s' % (user.first_name, user.last_name)
+    else:
+        return user.email
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -188,13 +195,6 @@ SITE_ID = 1
 RECAPTCHA_PUBLIC_KEY = get_secret('RECAPTCHA_SITE_KEY')
 RECAPTCHA_PRIVATE_KEY = get_secret('RECAPTCHA_SECRET_KEY')
 RECAPTCHA_USE_SSL = True
-
-
-def _user_display(user):
-    if user.first_name or user.last_name:
-        return '%s %s' % (user.first_name, user.last_name)
-    else:
-        return user.email
 
 
 ACCOUNT_EMAIL_REQUIRED = True
