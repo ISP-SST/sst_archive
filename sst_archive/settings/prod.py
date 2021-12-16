@@ -18,7 +18,7 @@ HOSTNAME = 'https://dubshen.astro.su.se'
 ADMIN_EMAIL = 'noreply@dubshen.astro.su.se'
 
 # TODO(daniel): This should be updated with the proper hostname of the service.
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['dubshen.astro.su.se']
 
 DEBUG = False
 
@@ -47,8 +47,9 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': '/var/log/sst_archive/sst_archive.log',
+            'maxBytes': 10485760,
         },
     },
     'loggers': {
