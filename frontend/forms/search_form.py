@@ -105,9 +105,7 @@ class SearchForm(forms.Form):
     """
     features = forms.MultipleChoiceField(label='Features', choices=get_features_choices,
                                          required=False,
-                                         widget=DropdownCheckboxSelectMultiple(attrs={
-                                             'full_field_name': 'Features'
-                                         }))
+                                         widget=DropdownCheckboxSelectMultiple)
     """
     polarimetry = forms.ChoiceField(label='Polarimetry',
                                     required=True,
