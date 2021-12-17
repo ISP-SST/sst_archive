@@ -40,12 +40,14 @@ as the database backend and is therefore quicker to get started with:
     ./manage.py runserver --settings sst_archive.settings.dev --insecure
 
 That should get the service up and running. But you won't see any data since it hasn't yet been ingested into the
-database. To do that, you need to have access to some FITS cubes.
+database. To do that, you need to have access to some FITS cubes. 
+
+### Ingesting Test Data
 
 If you only have access to a couple of FITS cubes you can use the `ingest_fits_cube` Django management command:
 
     ./manage.py ingest_fits_cube -f <PATH-TO-FITS-CUBE> [--generate-image-previews --generate-animated-previews]
 
-If you happen to have access to the entire `/storage/science_data` folder on `dubshen` mounted on your local drive then
+If you happen to have access to the entire `/storage/science_data` folder mounted on your local drive then
 you can use the `ingest_test_data.sh` script. Just point the script to the `science_data/` root directory. Ingesting all
 of it and generating all the previews usually takes a few minutes.
