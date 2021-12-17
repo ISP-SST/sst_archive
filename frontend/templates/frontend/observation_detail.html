@@ -149,7 +149,9 @@
                         </div>
                         {% endif %}
                         {% else %}
-                        <div class="badge bg-success rounded-pill">Publicly Available</div>
+                        <div class="badge bg-success rounded-pill" data-bs-toggle="tooltip" data-bs-html="true"
+                             title="<p>This observation data is publicly available.</p><p>{{release_comment}}</p>">Publicly Available <i class="bi bi-info-circle-fill"></i>
+                        </div>
                         {% endif %}
                     </td>
                 </tr>
@@ -165,8 +167,8 @@
                             </button>
                         </form>
                         {% else %}
-                        <a class="btn btn-primary" data-bs-toggle="tooltip"
-                           href="{% url 'download_data_cube' data_cube.filename %}" title="{{ data_cube.filename }}"><i
+                        <a class="btn btn-primary"
+                           href="{% url 'download_data_cube' data_cube.filename %}"><i
                                 class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
                         {% endif %}
                     </td>
