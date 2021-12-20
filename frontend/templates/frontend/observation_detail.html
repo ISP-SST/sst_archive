@@ -211,7 +211,7 @@
 
         <div class="row">
         {% for overlapping_observation in overlapping_observations %}
-        {% with overlapping_observation.cubes.first as overlapping_cube  %}
+        {% with overlapping_observation.cubes.all|first as overlapping_cube  %}
         <div class="col flex-grow-0">
             <div class="card">
                 <a href="{% url 'observation_detail' overlapping_cube.observation.id %}"
