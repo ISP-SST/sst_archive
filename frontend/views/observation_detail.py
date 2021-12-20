@@ -1,4 +1,4 @@
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.shortcuts import render
 
 from data_access.models import are_some_data_cubes_accessible_to_swedish_users
@@ -67,6 +67,11 @@ def observation_detail(request, observation_pk):
 
         release_comment = release_comment or cube.access_control.release_comment
 
+    overlapping_data_cubes = DataCube.objects.exclude(Q(metadata__date_beg__gt=observation.date_end) |
+                                                      Q(metadata__date_end__lt=observation.date_beg) |
+                                                      Q(pk__in=[cube.id for cube in data_cubes])).select_related(
+        'previews', 'metadata', 'instrument', 'observation')
+
     context = {
         'observation': observation,
         'is_data_cube_group': is_data_cube_group,
@@ -88,6 +93,7 @@ def observation_detail(request, observation_pk):
         'release_date': release_date,
         'swedish_data': swedish_data,
         'release_comment': release_comment,
+        'overlapping_data_cubes': overlapping_data_cubes
     }
 
     return render(request, 'frontend/observation_detail.html', context)

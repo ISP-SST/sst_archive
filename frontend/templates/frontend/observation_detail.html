@@ -139,7 +139,8 @@
                     <td>
                         {% if restricted %}
                         <div class="badge bg-danger rounded-pill" data-bs-toggle="tooltip" data-bs-html="true"
-                             title="<p>This observation data is not publicly available in its entirety.</p><p>{{release_comment}}</p>">Restricted <i class="bi bi-info-circle-fill"></i>
+                             title="<p>This observation data is not publicly available in its entirety.</p><p>{{release_comment}}</p>">
+                            Restricted <i class="bi bi-info-circle-fill"></i>
                         </div>
 
                         {% if swedish_data %}
@@ -150,14 +151,15 @@
                         {% endif %}
                         {% else %}
                         <div class="badge bg-success rounded-pill" data-bs-toggle="tooltip" data-bs-html="true"
-                             title="<p>This observation data is publicly available.</p><p>{{release_comment}}</p>">Publicly Available <i class="bi bi-info-circle-fill"></i>
+                             title="<p>This observation data is publicly available.</p><p>{{release_comment}}</p>">
+                            Publicly Available <i class="bi bi-info-circle-fill"></i>
                         </div>
                         {% endif %}
                     </td>
                 </tr>
 
                 <tr>
-                    <td>FITS Cube(s):</td>
+                    <td>FITS cube(s):</td>
                     <td style="vertical-align: middle">
                         {% if is_data_cube_group %}
                         <form action="{% url 'download_multiple_data_cubes' %}">
@@ -169,7 +171,8 @@
                         {% else %}
                         <a class="btn btn-primary"
                            href="{% url 'download_data_cube' data_cube.filename %}"><i
-                                class="bi bi-download"></i> Download FITS data cube ({{ data_cube.size|filesizeformat }})</a>
+                                class="bi bi-download"></i> Download FITS data cube ({{data_cube.size|filesizeformat}}
+                            )</a>
                         {% endif %}
                     </td>
                 </tr>
@@ -200,6 +203,38 @@
         </figure>
         {% endif %}
     </div>
+
+    {% if overlapping_data_cubes %}
+    <div class="row mb-5 p-3 gx-0">
+        <h5 class="text-center mb-3">Related observations <a class="bi bi-question-circle" data-bs-toggle="tooltip"
+         href="#" title="This section shows other observations that have been made at roughly the same time."></a></h5>
+
+        <div class="row">
+        {% for overlapping_cube in overlapping_data_cubes %}
+        <div class="col flex-grow-0">
+            <div class="card">
+                <a href="{% url 'observation_detail' overlapping_cube.observation.id %}"
+                   style="width: 120px; height: 120px; overflow: hidden">
+                    <img class="card-img-top" src="{{ overlapping_cube.previews.thumbnail.url }}"/>
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ overlapping_cube.metadata.waveband }}</h5>
+                    <p class="card-text">
+                        <small>
+                        {{ overlapping_cube.instrument.name }} <br>
+                        {{ overlapping_cube.metadata.date_beg.time }} &mdash;
+                        {{ overlapping_cube.metadata.date_end.time }}
+                        </small>
+                    </p>
+                    <a href="{% url 'observation_detail' overlapping_cube.observation.id %}" class="btn btn-primary">Go
+                        to</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <div class="row mb-5">
         <div class="accordion" id="metadata-accordion">
