@@ -27,7 +27,7 @@ def update_parent_observation(parent_observation):
     if date_begs:
         parent_observation.date_beg = min(date_begs)
     if date_ends:
-        parent_observation.date_end = max(date_begs)
+        parent_observation.date_end = max(date_ends)
 
     parent_observation.save()
 
