@@ -18,15 +18,15 @@ class TestIngestMetadata(TestCase):
         Instrument.objects.bulk_create([Instrument(name='CHROMIS'), Instrument(name='CRISP')])
         instrument = Instrument.objects.get(name__iexact='CHROMIS')
         path = Path(DUMMY_FITS_FILE_PATH)
-        self.date_beg = datetime.datetime(2019, 4, 19, 17, 34, 55, 503950)
-        self.date_end = datetime.datetime(2019, 4, 19, 17, 36, 30, 3073)
 
-        # TODO(Daniel): Would be good to use an abstraction to create the Observation along with the DataCube. We may
-        #  want to consider hooking into the save() function for the DataCube to ensure that an observation exists.
         self.data_cube = DataCube.objects.create(oid='2019-04-19T17:34:39_6173_0-4', filename=path.name, path=path,
                                                  size=10000000, instrument=instrument)
-        self.data_cube.observation = Observation.objects.create(point_id='2019-04-19T17:34:39', date_beg=self.date_beg,
-                                                                date_end=self.date_end)
+        # TODO(Daniel): Would be good to use an abstraction to create the Observation along with the DataCube. We may
+        #  want to consider hooking into the save() function for the DataCube to ensure that an observation exists.
+        date_beg = datetime.datetime(2019, 4, 19, 17, 34, 55, 503950)
+        date_end = date_beg
+        self.data_cube.observation = Observation.objects.create(point_id='2019-04-19T17:34:39', date_beg=date_beg,
+                                                                date_end=date_end)
         self.data_cube.save()
 
     def test_ingest_metadata(self):
@@ -42,3 +42,8 @@ class TestIngestMetadata(TestCase):
         self.assertEqual(metadata.waveband, 'Fe I 6173')
         self.assertEqual(metadata.date_beg, datetime.datetime(2019, 4, 19, 17, 34, 55, 503950))
         self.assertAlmostEquals(metadata.datamin, -1.42056e-08, 5)
+
+        # Check that datetimes have been set correctly on the Observation.
+        observation = self.data_cube.observation
+        self.assertEqual(observation.date_beg, datetime.datetime(2019, 4, 19, 17, 34, 55, 503950))
+        self.assertEqual(observation.date_end, datetime.datetime(2019, 4, 19, 17, 36, 30, 30730))
