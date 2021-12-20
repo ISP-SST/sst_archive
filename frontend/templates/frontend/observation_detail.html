@@ -204,13 +204,14 @@
         {% endif %}
     </div>
 
-    {% if overlapping_data_cubes %}
+    {% if overlapping_observations %}
     <div class="row mb-5 p-3 gx-0">
         <h5 class="text-center mb-3">Related observations <a class="bi bi-question-circle" data-bs-toggle="tooltip"
          href="#" title="This section shows other observations that have been made at roughly the same time."></a></h5>
 
         <div class="row">
-        {% for overlapping_cube in overlapping_data_cubes %}
+        {% for overlapping_observation in overlapping_observations %}
+        {% with overlapping_observation.cubes.first as overlapping_cube  %}
         <div class="col flex-grow-0">
             <div class="card">
                 <a href="{% url 'observation_detail' overlapping_cube.observation.id %}"
@@ -226,11 +227,10 @@
                         {{ overlapping_cube.metadata.date_end.time }}
                         </small>
                     </p>
-                    <a href="{% url 'observation_detail' overlapping_cube.observation.id %}" class="btn btn-primary">Go
-                        to</a>
                 </div>
             </div>
         </div>
+        {% endwith %}
         {% endfor %}
         </div>
     </div>

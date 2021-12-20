@@ -67,10 +67,11 @@ def observation_detail(request, observation_pk):
 
         release_comment = release_comment or cube.access_control.release_comment
 
-    overlapping_data_cubes = DataCube.objects.exclude(Q(metadata__date_beg__gt=observation.date_end) |
-                                                      Q(metadata__date_end__lt=observation.date_beg) |
-                                                      Q(pk__in=[cube.id for cube in data_cubes])).select_related(
-        'previews', 'metadata', 'instrument', 'observation')
+    datacube_dataset = DataCube.objects.select_related('metadata', 'instrument', 'previews', 'observation')
+    overlapping_observations = Observation.objects.exclude(Q(date_beg__gt=observation.date_end) |
+                                                           Q(date_end__lt=observation.date_beg) |
+                                                           Q(pk=observation.id)).prefetch_related(
+        Prefetch('cubes', queryset=datacube_dataset)).order_by('-date_beg')
 
     context = {
         'observation': observation,
@@ -93,7 +94,7 @@ def observation_detail(request, observation_pk):
         'release_date': release_date,
         'swedish_data': swedish_data,
         'release_comment': release_comment,
-        'overlapping_data_cubes': overlapping_data_cubes
+        'overlapping_observations': overlapping_observations
     }
 
     return render(request, 'frontend/observation_detail.html', context)
