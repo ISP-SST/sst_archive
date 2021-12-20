@@ -67,6 +67,7 @@ def observation_detail(request, observation_pk):
 
         release_comment = release_comment or cube.access_control.release_comment
 
+    # Fetch any observations whose observation times overlap.
     datacube_dataset = DataCube.objects.select_related('metadata', 'instrument', 'previews', 'observation')
     overlapping_observations = Observation.objects.exclude(Q(date_beg__gt=observation.date_end) |
                                                            Q(date_end__lt=observation.date_beg) |
