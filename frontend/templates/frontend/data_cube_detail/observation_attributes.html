@@ -1,0 +1,120 @@
+<table class="table" style="table-layout: fixed">
+    <tr>
+        <td>Features:</td>
+        <td>
+            {% for tag in data_cube.tags.all %}
+            <span class="badge bg-light rounded-pill text-dark">{{ tag }}</span>
+            {% empty %}
+            &mdash;
+            {% endfor %}
+        </td>
+    </tr>
+
+    <tr>
+        <td>Observation time (UTC):</td>
+        <td>
+            <p>Started {{ date_beg }}</p>
+            <p>Ended {{ date_end }}.</p>
+            <p>Total duration: {{ date_end|timeuntil:date_beg }}</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Instrument:</td>
+        <td>
+            <ul style="list-style-type: none; padding-left: 0">
+                {% for instrument in instruments %}
+                <li>{{ instrument }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Spectral line(s):</td>
+        <td>
+            <ul style="list-style-type: none; padding-left: 0">
+                {% for line in spectral_lines %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Observer(s):</td>
+        <td>
+            <ul style="list-style-type: none; padding-left: 0">
+                {% for observer in observers %}
+                <li>{{ observer }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Scans:</td>
+        <td>{{ total_number_of_scans }}</td>
+    </tr>
+
+    <tr>
+        <td>Polarimetric:</td>
+        <td>{% if polarimetric %}Yes{% else %}No{% endif %}</td>
+    </tr>
+
+    <tr>
+        <td>Average cadence:</td>
+        <td>
+            {% if metadata.cadavg %}
+            {{ metadata.cadavg }} seconds
+            {% else %}
+            &mdash;
+            {% endif %}
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            Release status:
+        </td>
+        <td>
+            {% if restricted %}
+            <div class="badge bg-danger rounded-pill" data-bs-toggle="tooltip" data-bs-html="true"
+                 title="<p>This observation data is not publicly available in its entirety.</p><p>{{release_comment}}</p>">
+                Restricted <i class="bi bi-info-circle-fill"></i>
+            </div>
+
+            {% if swedish_data %}
+            <div class="badge bg-info rounded-pill" data-bs-html="true" data-bs-toggle="tooltip"
+                 title="<p>Access to this observation data is restricted but immediately available to Swedish researchers.</p><p>Gain access by registering a user and specifying that you are based in Sweden.</p>">
+                Swedish Data
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="badge bg-success rounded-pill" data-bs-toggle="tooltip" data-bs-html="true"
+                 title="<p>This observation data is publicly available.</p><p>{{release_comment}}</p>">
+                Publicly Available <i class="bi bi-info-circle-fill"></i>
+            </div>
+            {% endif %}
+        </td>
+    </tr>
+
+    <tr>
+        <td>FITS cube(s):</td>
+        <td style="vertical-align: middle">
+            {% if is_data_cube_group %}
+            <form action="{% url 'download_multiple_data_cubes' %}">
+                {{ download_form.as_p }}
+                <button class="btn btn-primary" type="submit"><i class="bi bi-download"></i> Download
+                    selected
+                </button>
+            </form>
+            {% else %}
+            <a class="btn btn-primary"
+               href="{% url 'download_data_cube' data_cube.filename %}"><i
+                    class="bi bi-download"></i> Download FITS data cube ({{data_cube.size|filesizeformat}}
+                )</a>
+            {% endif %}
+        </td>
+    </tr>
+</table>

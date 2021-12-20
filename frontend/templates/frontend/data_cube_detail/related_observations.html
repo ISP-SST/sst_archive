@@ -1,0 +1,27 @@
+<h5 class="mb-3">Related Observations <a class="bi bi-question-circle" data-bs-toggle="tooltip"
+         href="#" title="This section shows other observations that have been made at roughly the same time."></a></h5>
+
+<div class="row">
+    {% for overlapping_observation in overlapping_observations %}
+    {% with overlapping_observation.cubes.all|first as overlapping_cube  %}
+    <div class="col flex-grow-0">
+        <div class="card">
+            <a href="{% url 'observation_detail' overlapping_cube.observation.id %}"
+               style="width: 120px; height: 120px; overflow: hidden">
+                <img class="card-img-top" src="{{ overlapping_cube.previews.thumbnail.url }}"/>
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">{{ overlapping_cube.metadata.waveband }}</h5>
+                <p class="card-text">
+                    <small>
+                    {{ overlapping_cube.instrument.name }} <br>
+                    {{ overlapping_cube.metadata.date_beg.time }} &mdash;
+                    {{ overlapping_cube.metadata.date_end.time }}
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+</div>
