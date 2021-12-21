@@ -57,7 +57,7 @@
         </div>
 
         <div class="mb-5 col-6 ">
-            {% include "frontend/data_cube_detail/observation_attributes.html" %}
+            {% include "frontend/observation_details/observation_attributes.html" %}
         </div>
     </div>
 
@@ -65,7 +65,7 @@
         {% if r0_json_data %}
         <figure class="col-6">
             <h5 class="text-center">Seeing (r<sub>0</sub>)</h5>
-            {% include "frontend/data_cube_detail/r0_graph.html" %}
+            {% include "frontend/observation_details/r0_graph.html" %}
         </figure>
         {% else %}
         <figure class="col-6 row" style="height: 200px">
@@ -76,7 +76,7 @@
         {% if spectral_line_data %}
         <figure class="col-6">
             <h5 class="text-center">Spectral Line Profile</h5>
-            {% include "frontend/data_cube_detail/spectral_line_profile_graph.html" %}
+            {% include "frontend/observation_details/spectral_line_profile_graph.html" %}
         </figure>
         {% else %}
         <figure class="col-6 row" style="height: 200px">
@@ -87,12 +87,12 @@
 
     {% if overlapping_observations %}
     <div class="row mb-5 p-3 gx-0">
-        {% include "frontend/data_cube_detail/related_observations.html" %}
+        {% include "frontend/observation_details/related_observations.html" %}
     </div>
     {% endif %}
 
     <div class="row mb-5">
-        {% include "frontend/data_cube_detail/fits_metadata.html" %}
+        {% include "frontend/observation_details/fits_metadata.html" %}
     </div>
 
     {% else %}
