@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from frontend.utils import get_complex_filter
 from frontend.forms import SearchForm, get_initial_search_form, persist_search_form
+from frontend.utils import get_complex_filter
 from search.search import SearchCriteria, search_observations
 
 

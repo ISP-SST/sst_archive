@@ -4,7 +4,9 @@ from django.utils.safestring import mark_safe
 
 
 class ImagePreview(models.Model):
-    """Represents a static image preview of the DataCube."""
+    """
+    Represents a static image preview of the DataCube.
+    """
     data_cube = models.OneToOneField('observations.DataCube', related_name='previews', null=False,
                                      on_delete=models.CASCADE)
     full_size = models.ImageField('Preview image stored in the managed upload folder', upload_to='previews/', null=True)
@@ -23,4 +25,3 @@ class ImagePreview(models.Model):
 
     def __str__(self):
         return self.full_size.name
-

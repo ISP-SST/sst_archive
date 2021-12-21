@@ -1,6 +1,11 @@
+import logging
+
 from django.conf import settings
 
 from ingestion.svo.svo_api import SvoApi
+
+logger = logging.getLogger('SVO')
+dry_run_logger = logging.getLogger('SVO dry-run')
 
 
 def delete_from_svo(resource_uri, **kwargs):
@@ -12,8 +17,7 @@ def delete_from_svo(resource_uri, **kwargs):
 
     api = SvoApi(api_url, username, api_key)
 
-    if dry_run:
-        print('[dry-run] Would have deleted resource from SVO: %s' % resource_uri)
-    else:
-        print('Deleting resource from SVO: %s' % resource_uri)
-        api(resource_uri).delete()
+    log = dry_run_logger if dry_run else logger
+
+    log.debug('Deleting resource from SVO: %s' % resource_uri)
+    api(resource_uri).delete()

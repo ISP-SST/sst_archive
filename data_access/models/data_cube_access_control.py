@@ -14,7 +14,7 @@ class DataCubeAccessControl(models.Model):
         UNSPECIFIED = "unspecified"
 
     data_cube = models.OneToOneField('observations.DataCube', on_delete=models.CASCADE,
-                                         related_name='access_control', null=True, unique=True)
+                                     related_name='access_control', null=True, unique=True)
     release_date = models.DateField(null=True)
     release_comment = models.TextField(verbose_name='Release comment',
                                        help_text='Comment about the release restrictions'

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import os
 
-import datetime
 import matplotlib
 import matplotlib.pyplot as plt
 from astropy.io import fits
@@ -23,7 +23,7 @@ def generate_r0_plot(data_cube, plot_file):
 
     fig, ax = plt.subplots()
 
-    hmm = plt.figure(figsize=(8,2))
+    hmm = plt.figure(figsize=(8, 2))
 
     ax.grid(color='#d0d0d0', linestyle='-.', linewidth=0.7)
     ax.set_ylim(bottom=0.0, top=0.25)
@@ -72,4 +72,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

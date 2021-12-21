@@ -1,6 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 
 from core.utils import extend_admin
 from data_access.models import DataCubeUserGrant

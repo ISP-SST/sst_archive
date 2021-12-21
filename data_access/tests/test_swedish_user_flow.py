@@ -1,11 +1,11 @@
 import datetime
 
 from django.contrib.auth.models import Group, User
+from django.test import TestCase
 
 from data_access.models import enqueue_swedish_user_registration_request, SwedishUserValidationRequest, \
     ValidationResult
 from observations.models import Instrument, DataCube
-from django.test import TestCase
 
 
 class TestSwedishUserFlow(TestCase):
@@ -13,8 +13,9 @@ class TestSwedishUserFlow(TestCase):
         self.maxDiff = None
         Instrument.objects.bulk_create(
             [Instrument(name='CHROMIS', description=''), Instrument(name='CRISP', description='')])
-        self.data_cube = DataCube.objects.create(oid='test_oid', filename='test_file.fits', path='/path/to/test_file.fits',
-                                size=1000000000, instrument=Instrument.objects.get(name='CHROMIS'))
+        self.data_cube = DataCube.objects.create(oid='test_oid', filename='test_file.fits',
+                                                 path='/path/to/test_file.fits',
+                                                 size=1000000000, instrument=Instrument.objects.get(name='CHROMIS'))
         self.swedish_group = Group.objects.create(name='Swedish User')
 
         self.test_user = User.objects.create(username='test_user', email='test@example.com')

@@ -9,7 +9,6 @@ from ingestion.svo.svo_api import SvoApi
 from ingestion.svo.svo_cache import SvoCache
 from observations.models import DataCube, Instrument
 
-
 REQUEST_METADATA_LIMIT = 50
 
 logger = logging.getLogger('SVO')

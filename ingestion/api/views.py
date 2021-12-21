@@ -1,4 +1,4 @@
-from rest_framework import mixins, viewsets, status
+from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response

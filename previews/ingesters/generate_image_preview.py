@@ -47,12 +47,12 @@ def generate_new_image_preview(preview_file, wavelength_pos=0.0, data_cube_path=
 def generate_new_image_preview_in_separate_process(preview_file, data_cube_path, wavelength_pos=0.0):
     script_path = os.path.realpath(__file__)
     python_executable = sys.executable
-    subprocess.check_call([python_executable, script_path, data_cube_path, preview_file, '--wavelength', str(wavelength_pos)])
+    subprocess.check_call(
+        [python_executable, script_path, data_cube_path, preview_file, '--wavelength', str(wavelength_pos)])
 
 
 def generate_image_preview(preview_file, generate_if_missing=False, scale_x=-1,
-                         scale_y=-1, fits_hdus=None, data_cube_path=None, data_cube=None):
-
+                           scale_y=-1, fits_hdus=None, data_cube_path=None, data_cube=None):
     if not data_cube_path and data_cube:
         data_cube_path = data_cube.path
 

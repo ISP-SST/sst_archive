@@ -2,9 +2,10 @@ import logging
 import os
 import re
 
+from django.conf import settings
+
 from data_access.utils.get_file_url import get_file_url
 from ingestion.svo.svo_record import SvoRecord
-from django.conf import settings
 
 logger = logging.getLogger('SVO')
 dry_run_logger = logging.getLogger('SVO dry-run')

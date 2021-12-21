@@ -4,7 +4,6 @@ from astropy.io import fits
 
 from observations.utils import generate_sparse_list_string
 
-
 FILENAME_SCANS_REGEX = re.compile(r'.*_scans=(?P<scans>[^_]+).*')
 
 

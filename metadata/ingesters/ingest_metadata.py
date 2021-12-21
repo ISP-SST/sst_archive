@@ -1,5 +1,5 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
 import django.db.models.fields
 from astropy.io import fits

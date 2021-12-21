@@ -114,7 +114,7 @@ class SearchForm(forms.Form):
                                              ('nonpolarimetric', 'Non-Polarimetric')),
                                     widget=forms.Select(attrs={'class': 'form-select'}))
     advanced_query = forms.CharField(label=mark_safe(_get_query_label()), required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
+                                     widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 def get_initial_search_form(request):

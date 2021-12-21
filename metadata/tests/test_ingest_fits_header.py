@@ -1,7 +1,7 @@
 from pathlib import Path
-from django.test import TestCase
 
 from astropy.io import fits
+from django.test import TestCase
 
 from metadata.ingesters.ingest_fits_header import ingest_fits_header
 from metadata.models import FITSHeader
@@ -18,7 +18,8 @@ class TestIngestFITSHeader(TestCase):
             [Instrument(name='CHROMIS', description=''), Instrument(name='CRISP', description='')])
         instrument = Instrument.objects.get(name__iexact='CHROMIS')
         path = Path(DUMMY_FITS_FILE_PATH)
-        self.data_cube = DataCube.objects.create(oid='2019-04-19T17:34:39_6173_0-4', filename=path.name, path=path, size=10000000, instrument=instrument)
+        self.data_cube = DataCube.objects.create(oid='2019-04-19T17:34:39_6173_0-4', filename=path.name, path=path,
+                                                 size=10000000, instrument=instrument)
 
     def test_ingest_fits_header_basic(self):
         fits_hdu = fits.header.Header.fromstring(FITS_HEADER_EXAMPLE)

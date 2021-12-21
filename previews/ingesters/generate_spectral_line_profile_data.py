@@ -3,8 +3,8 @@
 import argparse
 import datetime
 import json
-import statistics
 import os
+import statistics
 
 from astropy.io import fits
 
@@ -14,7 +14,6 @@ def _get_datetime(ref_datetime, elapsed_seconds):
 
 
 def generate_spectral_line_profile_data_v3(fits_hdus):
-
     primary_hdu = fits_hdus[0]
 
     try:
@@ -66,7 +65,8 @@ def generate_spectral_line_profile_data_v3(fits_hdus):
     factor = 10e7
 
     amplitude_values = [[v[0][0] * factor for v in data_median_values[scan_index][0]] for scan_index in range(n_time)]
-    amplitude_values = [statistics.mean([ amplitude_values[scan_index][wl_index] for scan_index in range(n_time)]) for wl_index in range(n_wave)]
+    amplitude_values = [statistics.mean([amplitude_values[scan_index][wl_index] for scan_index in range(n_time)]) for
+                        wl_index in range(n_wave)]
 
     wcs_values = wcs_tab_hdu.data.field(ttype)[0]
 

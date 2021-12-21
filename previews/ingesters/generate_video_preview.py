@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
+import os
 from pathlib import Path
 
 import ffmpeg
-import os
 
 
 def generate_video_preview(preview_file, scale_x=-1, scale_y=-1, data_cube_path=None, data_cube=None, fits_hdus=None):

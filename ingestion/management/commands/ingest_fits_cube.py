@@ -33,4 +33,3 @@ class Command(BaseCommand):
                 raise CommandError('Cannot open provided FITS cube: %s' % fits_file)
 
         ingest_data_cube(fits_file, oid=oid, **options)
-

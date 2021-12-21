@@ -28,8 +28,9 @@ class TestIngestAndCheck(TestCase):
         self.maxDiff = None
         Instrument.objects.bulk_create(
             [Instrument(name='CHROMIS', description=''), Instrument(name='CRISP', description='')])
-        self.data_cube = DataCube.objects.create(oid='test_oid', filename='test_file.fits', path='/path/to/test_file.fits',
-                                size=1000000000, instrument=Instrument.objects.get(name='CHROMIS'))
+        self.data_cube = DataCube.objects.create(oid='test_oid', filename='test_file.fits',
+                                                 path='/path/to/test_file.fits',
+                                                 size=1000000000, instrument=Instrument.objects.get(name='CHROMIS'))
         self.swedish_group = Group.objects.create(name='Swedish')
 
         self.swedish_test_user = User.objects.create(username='swedish_test_user',
@@ -70,7 +71,8 @@ class TestIngestAndCheck(TestCase):
 
         grant = DataCubeGroupGrant.objects.create(group=self.swedish_group, data_cube=data_cube)
 
-        self.assertTrue(user_has_access_to_data_cube(self.swedish_test_user, data_cube, datetime_now=get_datetime(2019, 1, 1)))
+        self.assertTrue(
+            user_has_access_to_data_cube(self.swedish_test_user, data_cube, datetime_now=get_datetime(2019, 1, 1)))
         self.assertFalse(user_has_access_to_data_cube(self.test_user, data_cube, datetime_now=get_datetime(2019, 1, 1)))
 
         self.assertTrue(user_has_access_to_data_cube(self.test_user, data_cube, datetime_now=get_datetime(2022, 1, 1)))
@@ -86,7 +88,9 @@ class TestIngestAndCheck(TestCase):
         grant = DataCubeUserGrant.objects.create(user_email=self.test_user.email, data_cube=data_cube)
 
         self.assertTrue(user_has_access_to_data_cube(self.test_user, data_cube, datetime_now=get_datetime(2019, 1, 1)))
-        self.assertFalse(user_has_access_to_data_cube(self.swedish_test_user, data_cube, datetime_now=get_datetime(2019, 1, 1)))
+        self.assertFalse(
+            user_has_access_to_data_cube(self.swedish_test_user, data_cube, datetime_now=get_datetime(2019, 1, 1)))
 
         self.assertTrue(user_has_access_to_data_cube(self.test_user, data_cube, datetime_now=get_datetime(2022, 1, 1)))
-        self.assertTrue(user_has_access_to_data_cube(self.swedish_test_user, data_cube, datetime_now=get_datetime(2022, 1, 1)))
+        self.assertTrue(
+            user_has_access_to_data_cube(self.swedish_test_user, data_cube, datetime_now=get_datetime(2022, 1, 1)))

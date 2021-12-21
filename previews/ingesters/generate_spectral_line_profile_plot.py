@@ -82,7 +82,8 @@ def generate_spectral_line_profile_plot(fits_hdus, plot_file, size=(4, 1)):
     factor = 10e7
 
     amplitude_values = [[v[0][0] * factor for v in data_median_values[scan_index][0]] for scan_index in range(n_time)]
-    amplitude_values = [statistics.mean([ amplitude_values[scan_index][wl_index] for scan_index in range(n_time)]) for wl_index in range(n_wave)]
+    amplitude_values = [statistics.mean([amplitude_values[scan_index][wl_index] for scan_index in range(n_time)]) for
+                        wl_index in range(n_wave)]
 
     wcs_values = wcs_tab_hdu.data.field(ttype)[0]
 
@@ -91,7 +92,8 @@ def generate_spectral_line_profile_plot(fits_hdus, plot_file, size=(4, 1)):
     else:
         wavelength_values = [v[0][0][i_wave] for v in wcs_values[scan_index]]
 
-    plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=4, markerfacecolor=marker_color, markeredgecolor="None")
+    plt.plot(wavelength_values, amplitude_values, marker='o', ls='', lw=4, markerfacecolor=marker_color,
+             markeredgecolor="None")
 
     plt.savefig(plot_file)
     plt.close()
@@ -107,7 +109,7 @@ def main():
     parser = argparse.ArgumentParser(description='Create Spectral Line Profile plot from FITS file.')
     parser.add_argument('fits_file', help='file to export data from')
     parser.add_argument('output', default=None, help='output image file')
-    parser.add_argument('--size', default=(4,2), help='size of the output plot on the format <WIDTH>x<HEIGHT>')
+    parser.add_argument('--size', default=(4, 2), help='size of the output plot on the format <WIDTH>x<HEIGHT>')
 
     args = parser.parse_args()
 

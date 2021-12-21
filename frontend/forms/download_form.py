@@ -16,4 +16,5 @@ def create_download_form(download_choices):
                                               'class': 'form-select',
                                               'size': 5
                                           }))
+
     return DownloadCubesForm()

@@ -5,4 +5,4 @@ from observations.models import Instrument
 
 @admin.register(Instrument)
 class InstrumentAdmin(admin.ModelAdmin):
-	pass
+    pass

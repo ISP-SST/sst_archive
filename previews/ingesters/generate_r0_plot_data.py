@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import os
 
-import datetime
 from astropy.io import fits
 
 from .generate_scan_times_data import generate_scan_times_data
@@ -33,8 +33,8 @@ def generate_r0_plot_data_v4(fits_hdus: fits.HDUList):
 
     r0_timestamps = [_get_timestamp(ref_datetime, t[0]) for t in r0_hdu.data.field('TIME-ATMOS_R0')[0]]
 
-    r0_values_low = [[ r0_timestamps[i], float(r0_values_all[i][0])] for i in range(len(r0_values_all))]
-    r0_values_low_high = [[ r0_timestamps[i], float(r0_values_all[i][1])] for i in range(len(r0_values_all))]
+    r0_values_low = [[r0_timestamps[i], float(r0_values_all[i][0])] for i in range(len(r0_values_all))]
+    r0_values_low_high = [[r0_timestamps[i], float(r0_values_all[i][1])] for i in range(len(r0_values_all))]
 
     scan_times_data_struct = generate_scan_times_data(fits_hdus)
 
@@ -45,7 +45,7 @@ def generate_r0_plot_data_v4(fits_hdus: fits.HDUList):
 
     return {
         'version': 4,
-        'data': { **r0_data_struct, **scan_times_data_struct }
+        'data': {**r0_data_struct, **scan_times_data_struct}
     }
 
 
