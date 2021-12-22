@@ -42,4 +42,4 @@
 * Add secondary image + video preview (wings)
 * Search by region in solar disk
 * Show region in solar disk in observation details
- 
+* Add button to quickly reset search dates to "since the beginning of time"
